@@ -94,6 +94,7 @@ export default function ResultsSummary({ assessment, onShowContactForm }) {
       <div className="text-center">
         <button
           onClick={onShowContactForm}
+          data-contact-trigger
           className="inline-flex items-center px-8 py-4 bg-primary hover:bg-primary-dark text-white text-lg font-semibold rounded-lg shadow-lg transition-colors"
         >
           <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -5,3 +5,46 @@
 body {
   @apply bg-gray-50 text-gray-900;
 }
+
+/* Print-friendly styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-show {
+    display: block !important;
+  }
+  
+  .print-title {
+    display: block !important;
+  }
+  
+  .security-measures-print {
+    page-break-inside: avoid;
+  }
+  
+  input[type="checkbox"] {
+    -webkit-appearance: checkbox;
+    appearance: checkbox;
+  }
+  
+  /* Ensure sections are expanded when printing */
+  #security-content,
+  #incident-content {
+    display: block !important;
+  }
+  
+  /* Better page breaks */
+  section {
+    page-break-inside: avoid;
+  }
+  
+  /* Hide unnecessary elements */
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
+}
+
