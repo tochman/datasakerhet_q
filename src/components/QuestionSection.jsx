@@ -23,6 +23,17 @@ export default function QuestionSection({
   options = []
 }) {
   
+  // Helper function to render description or helpText
+  const renderHelpContent = () => {
+    if (description) {
+      return <div className="text-sm text-gray-600 mb-4">{description}</div>
+    }
+    if (helpText) {
+      return <p className="text-sm text-gray-600 mb-4 italic">{helpText}</p>
+    }
+    return null
+  }
+  
   if (type === "checkbox") {
     const selectedServices = value || []
     
@@ -38,12 +49,7 @@ export default function QuestionSection({
         <label className="block text-lg font-semibold text-gray-800 mb-4">
           {question}
         </label>
-        {description && (
-          <div className="text-sm text-gray-600 mb-4">{description}</div>
-        )}
-        {!description && helpText && (
-          <p className="text-sm text-gray-600 mb-4 italic">{helpText}</p>
-        )}
+        {renderHelpContent()}
         <div className="space-y-3">
           {options.map((option) => (
             <label 
@@ -76,12 +82,7 @@ export default function QuestionSection({
       <label className="block text-lg font-semibold text-gray-800 mb-4">
         {question}
       </label>
-      {description && (
-        <div className="text-sm text-gray-600 mb-4">{description}</div>
-      )}
-      {!description && helpText && (
-        <p className="text-sm text-gray-600 mb-4 italic">{helpText}</p>
-      )}
+      {renderHelpContent()}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {radioOptions.map((option) => (
           <label 
