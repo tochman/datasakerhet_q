@@ -29,7 +29,7 @@ export default function QuestionSection({
       return <div className="text-sm text-gray-600 mb-4">{description}</div>
     }
     if (helpText) {
-      return <p className="text-sm text-gray-600 mb-4 italic">{helpText}</p>
+      return <div className="text-sm text-gray-600 mb-4 italic">{helpText}</div>
     }
     return null
   }
