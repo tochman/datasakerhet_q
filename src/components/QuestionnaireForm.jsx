@@ -44,99 +44,21 @@ export default function QuestionnaireForm() {
         },
         {
           key: "q4",
-          text: "Omfattas er verksamhet av EU:s cybersäkerhetskrav (NIS 2-direktivet)?",
-          description: (
-            <>
-              <p className="mb-3">
-                Europeiska Unionen har ett direktiv, kallat <strong>NIS 2-direktivet (EU 2022/2555)</strong>, 
-                som ställer krav på att vissa viktiga samhällsfunktioner och digitala tjänster har hög cybersäkerhet.
-              </p>
-              <p className="mb-3 font-semibold">
-                Förtydligande: Hör er verksamhet till någon av följande sektorer eller tjänster 
-                som ofta omfattas av detta direktiv (och ni är ett medelstort eller större företag, 
-                se även fråga 3 om storlek)?
-              </p>
-              
-              {/* Expanderbar sektorlista */}
-              <details className="mb-3 bg-blue-50 rounded-lg p-4">
-                <summary className="cursor-pointer font-semibold text-primary hover:text-primary-dark">
-                  📋 Klicka för att se sektorer och exempel
-                </summary>
-                <ul className="mt-3 space-y-2 text-sm">
-                  <li className="flex items-start">
-                    <span className="mr-2">⚡</span>
-                    <div>
-                      <strong>Energi:</strong> T.ex. leverantörer av el, gas, fjärrvärme/kyla, olja eller vätgas.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">✈️</span>
-                    <div>
-                      <strong>Transport:</strong> T.ex. aktörer inom flyg, järnväg, sjöfart eller vägtransporter.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">🏦</span>
-                    <div>
-                      <strong>Bank- och finanssektorn:</strong> T.ex. banker, värdepappersföretag eller organisationer som hanterar finansiell infrastruktur.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">🏥</span>
-                    <div>
-                      <strong>Hälso- och sjukvård:</strong> T.ex. sjukhus, primärvård, laboratorier eller läkemedelstillverkare.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">💧</span>
-                    <div>
-                      <strong>Dricksvatten och avlopp:</strong> T.ex. större leverantörer av dricksvatten eller avloppstjänster.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">📮</span>
-                    <div>
-                      <strong>Post- och kurirtjänster:</strong> T.ex. större leverantörer av posttjänster.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">♻️</span>
-                    <div>
-                      <strong>Avfallshantering:</strong> T.ex. större aktörer inom avfallshantering.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">🏭</span>
-                    <div>
-                      <strong>Tillverkning:</strong> T.ex. företag som tillverkar medicintekniska produkter, fordon, elektronik, maskiner, kemikalier eller livsmedel.
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">☁️</span>
-                    <div>
-                      <strong>Vissa digitala leverantörer:</strong> T.ex. vissa molntjänster, datacentraltjänster, sökmotorer eller plattformar för sociala nätverkstjänster (om de inte redan omfattas av fråga 8).
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-2">🔬</span>
-                    <div>
-                      <strong>Forskning:</strong> T.ex. större universitet eller forskningsorganisationer.
-                    </div>
-                  </li>
-                </ul>
-              </details>
-
-              {/* Observera-box */}
-              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mt-3">
-                <p className="text-sm text-gray-700">
-                  ⚠️ <strong>Observera:</strong> Denna lista är inte uttömmande, och er verksamhet 
-                  kan omfattas även om den inte specifikt nämns ovan. Även företagets storlek 
-                  (medelstort eller större) är ett viktigt kriterium för privata aktörer.
-                </p>
-              </div>
-            </>
-          ),
-          type: "radio"
+          text: "Är ditt företag verksamt inom någon av dessa branscher:",
+          helpText: "Välj den eller de branscher som stämmer för er verksamhet. Dessa branscher omfattas ofta av NIS 2-direktivet (EU 2022/2555) om ert företag är medelstort eller större (se fråga 3).",
+          type: "checkbox",
+          options: [
+            "Energi (el, gas, fjärrvärme/kyla, olja, vätgas)",
+            "Transport (flyg, järnväg, sjöfart, vägtransporter)",
+            "Bank och finans",
+            "Hälso- och sjukvård",
+            "Dricksvatten och avlopp",
+            "Post och kurirtjänster",
+            "Avfallshantering",
+            "Tillverkning (medicinteknik, fordon, elektronik, maskiner, kemikalier, livsmedel)",
+            "Digitala leverantörer (molntjänster, datacenter, sökmotorer)",
+            "Forskning (universitet, forskningsorganisationer)"
+          ]
         },
         {
           key: "q5",
@@ -289,7 +211,7 @@ export default function QuestionnaireForm() {
     const coveredByPart2And3 = 
       answers.q6 === 'ja' && (
         answers.q3 === 'ja' || 
-        answers.q4 === 'ja' || 
+        (answers.q4 && answers.q4.length > 0) || 
         answers.q5 === 'ja' || 
         answers.q7 === 'ja' || 
         (answers.q8 && answers.q8.length > 0) ||
@@ -305,8 +227,8 @@ export default function QuestionnaireForm() {
       answers.q15 !== 'ja'
     
     const hasUncertainAnswers = Object.entries(answers).some(([key, value]) => {
-      if (key === 'q8') {
-        // För q8, kontrollera inte "vet ej" här
+      if (key === 'q8' || key === 'q4') {
+        // För q8 och q4 (checkbox), kontrollera inte "vet ej" här
         return false
       }
       return value === 'vet_ej'
@@ -355,7 +277,7 @@ export default function QuestionnaireForm() {
           q1: answers.q1 || null,
           q2: answers.q2 || null,
           q3: answers.q3 || null,
-          q4: answers.q4 || null,
+          q4: (answers.q4 && answers.q4.length > 0) ? JSON.stringify(answers.q4) : null,
           q5: answers.q5 || null,
           q6: answers.q6 || null,
           q7: answers.q7 || null,
