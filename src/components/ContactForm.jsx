@@ -86,7 +86,7 @@ export default function ContactForm({ surveyResponseId }) {
 
   if (submitted) {
     return (
-      <div className="max-w-2xl mx-auto bg-green-50 border-2 border-green-300 rounded-lg p-8 text-center">
+      <div id="contact-form" className="max-w-2xl mx-auto bg-green-50 border-2 border-green-300 rounded-lg p-8 text-center">
         <svg className="w-16 h-16 text-green-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -101,7 +101,7 @@ export default function ContactForm({ surveyResponseId }) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+    <div id="contact-form" className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         Kontaktinformation
       </h2>

@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabaseClient'
 import QuestionSection from './QuestionSection'
 import ResultsSummary from './ResultsSummary'
 import ContactForm from './ContactForm'
+import SecurityMeasures from './SecurityMeasures'
 
 /**
  * Huvudformulär med alla 17 frågor om Cybersäkerhetslagen
@@ -325,6 +326,12 @@ export default function QuestionnaireForm() {
           assessment={assessment} 
           onShowContactForm={() => setShowContactForm(true)} 
         />
+        
+        {assessment.result === 'omfattas' && (
+          <div className="max-w-4xl mx-auto">
+            <SecurityMeasures />
+          </div>
+        )}
       </div>
     )
   }
