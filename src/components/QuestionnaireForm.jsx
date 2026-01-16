@@ -20,7 +20,6 @@ export default function QuestionnaireForm() {
   const [showResults, setShowResults] = useState(false)
   const [databaseError, setDatabaseError] = useState(false)
   const [databaseErrorDetails, setDatabaseErrorDetails] = useState(null)
-  const [debugMode, setDebugMode] = useState(false)
 
   // Hjälpfunktioner för att kontrollera verksamhetstyp
   const isPublicOrganization = (answers) => {
@@ -257,7 +256,7 @@ export default function QuestionnaireForm() {
 
   // Debug logging (endast i development)
   useEffect(() => {
-    if (import.meta.env.DEV || debugMode) {
+    if (import.meta.env.DEV) {
       console.log('🔍 DEBUG INFO:');
       console.log('  User type:', userType);
       console.log('  Visible questions:', visibleQuestionIds);
@@ -265,7 +264,7 @@ export default function QuestionnaireForm() {
       console.log('  Answers so far:', answers);
       console.log('  Progress:', `${currentQuestionIndex + 1}/${visibleQuestions.length}`);
     }
-  }, [userType, currentQuestionIndex, answers, debugMode, visibleQuestionIds, visibleQuestions]);
+  }, [userType, currentQuestionIndex, answers, visibleQuestionIds, visibleQuestions]);
 
   // Filtrera frågor baserat på svar (adaptiv logik) - DEPRECATED, using new flow logic
   // const visibleQuestions = useMemo(() => {
@@ -290,20 +289,11 @@ export default function QuestionnaireForm() {
     
     // Kontrollera early exit condition
     if (checkEarlyExit(key, value)) {
-      return; // Stoppa här
+      return; // Stoppa här och visa resultat
     }
     
-    // Automatiskt gå till nästa synlig fråga
-    const nextIndex = currentQuestionIndex + 1;
-    const updatedVisibleQuestions = questions.filter(q => q.showIf(newAnswers));
-    
-    if (nextIndex < updatedVisibleQuestions.length) {
-      setCurrentQuestionIndex(nextIndex);
-      window.scrollTo(0, 0);
-    } else {
-      // Alla frågor besvarade
-      handleSubmit(newAnswers);
-    }
+    // Navigation sker ENDAST via Nästa/Föregående-knappar
+    // Ingen auto-navigation här
   }
 
   // Validera om nuvarande fråga är besvarad
@@ -434,6 +424,12 @@ export default function QuestionnaireForm() {
       // Försök spara till Supabase med graceful fallback
       let surveyId = null;
       try {
+        // Check if Supabase is properly configured
+        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+          console.warn('⚠️ Supabase environment variables not configured. Using localStorage only.');
+          throw new Error('Supabase not configured');
+        }
+
         // Check if Supabase client is configured
         if (!supabase) {
           throw new Error('Supabase client not initialized - check environment variables');
@@ -467,42 +463,15 @@ export default function QuestionnaireForm() {
           .select();
 
         if (error) {
-          // Detailed error logging
-          const errorInfo = {
-            message: error.message,
-            code: error.code,
-            details: error.details,
-            hint: error.hint,
-            status: error.status
-          };
-          console.error('❌ Supabase error details:', errorInfo);
-          
-          // Spara till localStorage istället
-          const localBackup = {
-            id: `local_${Date.now()}`,
-            answers: finalAnswers,
-            assessment: result,
-            timestamp: new Date().toISOString()
-          };
-          localStorage.setItem('survey_backup', JSON.stringify(localBackup));
-          surveyId = localBackup.id;
-          setDatabaseError(true);
-          setDatabaseErrorDetails(errorInfo);
+          console.warn('⚠️ Kunde inte spara till databas:', error.message);
+          throw error; // Går till catch-blocket nedan
         } else if (data && data[0]) {
           surveyId = data[0].id;
           setDatabaseError(false);
           setDatabaseErrorDetails(null);
-          console.log('✓ Survey saved successfully to database');
+          console.log('✅ Svar sparade i databas');
         }
       } catch (dbErr) {
-        // Detailed error logging
-        const errorInfo = {
-          message: dbErr.message,
-          name: dbErr.name,
-          stack: import.meta.env.DEV ? dbErr.stack : undefined
-        };
-        console.error('❌ Database connection error:', errorInfo);
-        
         // Spara till localStorage istället
         const localBackup = {
           id: `local_${Date.now()}`,
@@ -513,7 +482,11 @@ export default function QuestionnaireForm() {
         localStorage.setItem('survey_backup', JSON.stringify(localBackup));
         surveyId = localBackup.id;
         setDatabaseError(true);
-        setDatabaseErrorDetails(errorInfo);
+        setDatabaseErrorDetails({
+          message: dbErr.message || 'Kunde inte ansluta till databas',
+          timestamp: new Date().toISOString()
+        });
+        console.log('💾 Svar sparade lokalt (localStorage)');
       }
 
       setSurveyResponseId(surveyId);
@@ -561,10 +534,10 @@ export default function QuestionnaireForm() {
                 </div>
                 <div className="ml-3 flex-1">
                   <p className="text-sm text-yellow-700">
-                    <strong>Observera:</strong> Dina svar kunde inte sparas i databasen, men de finns sparade lokalt i din webbläsare. 
-                    Du kan fortsätta se ditt resultat nedan. Om du vill att vi kontaktar dig, fyll i kontaktformuläret.
+                    <strong>Observera:</strong> Dina svar har sparats lokalt i din webbläsare. 
+                    Du kan fortsätta se ditt resultat nedan. Om du vill bli kontaktad av oss, fyll i kontaktformuläret längre ner.
                   </p>
-                  {(import.meta.env.DEV || debugMode) && databaseErrorDetails && (
+                  {import.meta.env.DEV && databaseErrorDetails && (
                     <details className="mt-2">
                       <summary className="text-xs text-yellow-600 cursor-pointer hover:text-yellow-800">
                         🔍 Teknisk information (för utvecklare)
@@ -613,11 +586,8 @@ export default function QuestionnaireForm() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Cybersäkerhetslagen (2025:1506)
           </h1>
-          <p className="text-lg text-gray-600 mb-2">
-            Adaptivt bedömningsformulär
-          </p>
-          <p className="text-sm text-gray-500">
-            Formuläret anpassar sig efter dina svar – du får endast relevanta frågor
+          <p className="text-lg text-gray-600">
+            Bedömning av din verksamhet
           </p>
         </div>
 
@@ -652,15 +622,6 @@ export default function QuestionnaireForm() {
                 <h2 className="text-2xl font-bold text-gray-900">
                   {currentQuestion.sectionTitle}
                 </h2>
-                {currentSection > 1 && (
-                  <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mt-4">
-                    <p className="text-sm text-blue-700">
-                      ℹ️ <strong>Anpassat formulär</strong>
-                      <br />
-                      Baserat på dina tidigare svar visas endast relevanta frågor för din verksamhetstyp.
-                    </p>
-                  </div>
-                )}
               </div>
             )}
 
@@ -715,8 +676,8 @@ export default function QuestionnaireForm() {
           </p>
         )}
         
-        {/* Debug panel - endast i development */}
-        {(import.meta.env.DEV || debugMode) && (
+        {/* Debug panel - endast i development mode */}
+        {import.meta.env.DEV && (
           <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg max-w-sm text-xs z-50">
             <h3 className="font-bold mb-2">🔍 Debug Info</h3>
             <div className="space-y-1">
@@ -726,14 +687,6 @@ export default function QuestionnaireForm() {
               <p><strong>Progress:</strong> {currentQuestionIndex + 1}/{visibleQuestions.length}</p>
               <p><strong>Answers:</strong> {Object.keys(answers).length} questions answered</p>
             </div>
-            {!import.meta.env.DEV && (
-              <button 
-                onClick={() => setDebugMode(false)}
-                className="mt-2 text-xs bg-red-500 px-2 py-1 rounded hover:bg-red-600"
-              >
-                Stäng
-              </button>
-            )}
           </div>
         )}
       </div>
