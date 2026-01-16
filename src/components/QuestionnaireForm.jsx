@@ -19,6 +19,7 @@ export default function QuestionnaireForm() {
   const [loading, setLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [databaseError, setDatabaseError] = useState(false)
+  const [databaseErrorDetails, setDatabaseErrorDetails] = useState(null)
   const [debugMode, setDebugMode] = useState(false)
 
   // Hjälpfunktioner för att kontrollera verksamhetstyp
@@ -433,6 +434,11 @@ export default function QuestionnaireForm() {
       // Försök spara till Supabase med graceful fallback
       let surveyId = null;
       try {
+        // Check if Supabase client is configured
+        if (!supabase) {
+          throw new Error('Supabase client not initialized - check environment variables');
+        }
+
         const { data, error } = await supabase
           .from('survey_responses')
           .insert([{
@@ -461,7 +467,16 @@ export default function QuestionnaireForm() {
           .select();
 
         if (error) {
-          console.warn('Supabase-fel (fortsätter ändå):', error);
+          // Detailed error logging
+          const errorInfo = {
+            message: error.message,
+            code: error.code,
+            details: error.details,
+            hint: error.hint,
+            status: error.status
+          };
+          console.error('❌ Supabase error details:', errorInfo);
+          
           // Spara till localStorage istället
           const localBackup = {
             id: `local_${Date.now()}`,
@@ -472,12 +487,22 @@ export default function QuestionnaireForm() {
           localStorage.setItem('survey_backup', JSON.stringify(localBackup));
           surveyId = localBackup.id;
           setDatabaseError(true);
+          setDatabaseErrorDetails(errorInfo);
         } else if (data && data[0]) {
           surveyId = data[0].id;
           setDatabaseError(false);
+          setDatabaseErrorDetails(null);
+          console.log('✓ Survey saved successfully to database');
         }
       } catch (dbErr) {
-        console.warn('Kunde inte nå databas (fortsätter ändå):', dbErr);
+        // Detailed error logging
+        const errorInfo = {
+          message: dbErr.message,
+          name: dbErr.name,
+          stack: import.meta.env.DEV ? dbErr.stack : undefined
+        };
+        console.error('❌ Database connection error:', errorInfo);
+        
         // Spara till localStorage istället
         const localBackup = {
           id: `local_${Date.now()}`,
@@ -488,6 +513,7 @@ export default function QuestionnaireForm() {
         localStorage.setItem('survey_backup', JSON.stringify(localBackup));
         surveyId = localBackup.id;
         setDatabaseError(true);
+        setDatabaseErrorDetails(errorInfo);
       }
 
       setSurveyResponseId(surveyId);
@@ -533,11 +559,21 @@ export default function QuestionnaireForm() {
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <div className="ml-3">
+                <div className="ml-3 flex-1">
                   <p className="text-sm text-yellow-700">
                     <strong>Observera:</strong> Dina svar kunde inte sparas i databasen, men de finns sparade lokalt i din webbläsare. 
                     Du kan fortsätta se ditt resultat nedan. Om du vill att vi kontaktar dig, fyll i kontaktformuläret.
                   </p>
+                  {(import.meta.env.DEV || debugMode) && databaseErrorDetails && (
+                    <details className="mt-2">
+                      <summary className="text-xs text-yellow-600 cursor-pointer hover:text-yellow-800">
+                        🔍 Teknisk information (för utvecklare)
+                      </summary>
+                      <pre className="mt-2 text-xs bg-yellow-100 p-2 rounded overflow-auto">
+                        {JSON.stringify(databaseErrorDetails, null, 2)}
+                      </pre>
+                    </details>
+                  )}
                 </div>
               </div>
             </div>
@@ -589,10 +625,14 @@ export default function QuestionnaireForm() {
         <div className="mb-8">
           <div className="flex justify-between mb-2">
             <span className="text-sm font-medium text-primary">
-              Fråga {currentQuestionIndex + 1} av {visibleQuestions.length}
+              {Object.keys(answers).length > 0 ? (
+                <>Frågor besvarade: {Object.keys(answers).length}</>
+              ) : (
+                <>Börja med första frågan</>
+              )}
             </span>
             <span className="text-sm font-medium text-primary">
-              {Math.round(progress)}%
+              Fråga {currentQuestionIndex + 1} av {visibleQuestions.length}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
