@@ -18,6 +18,25 @@ export default function QuestionnaireForm() {
   const [loading, setLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
 
+  // Hjälpfunktioner för att kontrollera verksamhetstyp
+  const isPublicOrganization = (answers) => {
+    return answers.q1 === 'ja' || answers.q2 === 'ja';
+  };
+
+  const isPrivateOrganization = (answers) => {
+    return answers.q1 !== 'ja' && answers.q2 !== 'ja';
+  };
+
+  const hasSwedishSite = (answers) => {
+    return answers.q3 === 'ja';
+  };
+
+  const isSmallCompany = (answers) => {
+    const notNIS2 = !answers.q4 || answers.q4.length === 0;
+    const notLarge = answers.q5 !== 'ja';
+    return notNIS2 && notLarge;
+  };
+
   // Definiera alla frågor med adaptiv logik (showIf conditions)
   const questions = [
     // DEL 1: Offentlig verksamhet
@@ -36,7 +55,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 1: Statlig, regional eller kommunal verksamhet",
       question: "Är din verksamhet en region, en kommun eller ett kommunalförbund?",
       helpText: "Regionala och kommunala verksamheter omfattas direkt av lagen.",
-      showIf: (answers) => answers.q1 !== 'ja', // Visa endast om q1=NEJ
+      showIf: (answers) => !isPublicOrganization(answers) || answers.q1 !== 'ja',
       type: 'radio'
     },
     
@@ -47,7 +66,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 2: Privat verksamhet",
       question: "Har din verksamhet sitt huvudsakliga säte eller etablering i Sverige?",
       helpText: "Privata verksamheter måste ha sitt huvudsakliga säte eller etablering i Sverige för att omfattas av lagen (1 kap. 4 § 2, 1 kap. 5 §, 1 kap. 7 §).",
-      showIf: (answers) => answers.q1 !== 'ja' && answers.q2 !== 'ja',
+      showIf: (answers) => isPrivateOrganization(answers),
       type: 'radio',
       earlyExit: {
         condition: (answer) => answer === 'nej',
@@ -64,9 +83,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 2: Privat verksamhet",
       question: "Omfattas er verksamhet av EU:s cybersäkerhetskrav (NIS 2-direktivet)?",
       helpText: "Välj den eller de branscher som stämmer för er verksamhet. Dessa branscher omfattas ofta av NIS 2-direktivet (EU 2022/2555) om ert företag är medelstort eller större.",
-      showIf: (answers) => 
-        (answers.q1 !== 'ja' && answers.q2 !== 'ja') && 
-        answers.q3 === 'ja',
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers),
       type: 'checkbox',
       options: [
         "Energi (el, gas, fjärrvärme/kyla, olja, vätgas)",
@@ -87,9 +104,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 2: Privat verksamhet",
       question: "Är din verksamhet ett medelstort eller större företag?",
       helpText: "Ett medelstort företag har färre än 250 anställda OCH antingen en årsomsättning på högst 50 miljoner euro ELLER en balansomslutning på högst 43 miljoner euro. Är ni större än så, eller motsvarar ni dessa gränser, svarar du \"Ja\".",
-      showIf: (answers) => 
-        (answers.q1 !== 'ja' && answers.q2 !== 'ja') && 
-        answers.q3 === 'ja',
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers),
       type: 'radio'
     },
     {
@@ -98,14 +113,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 2: Privat verksamhet",
       question: "Är din verksamhet en privat utbildningsanordnare (t.ex. en privat högskola) som har tillstånd att utfärda examina?",
       helpText: "Privata utbildningsanordnare med rätt att utfärda examina omfattas av lagen.",
-      showIf: (answers) => {
-        // Visa endast för små privata verksamheter som inte redan omfattas
-        const isPrivate = answers.q1 !== 'ja' && answers.q2 !== 'ja';
-        const hasSwedishSite = answers.q3 === 'ja';
-        const notNIS2 = !answers.q4 || answers.q4.length === 0;
-        const notLarge = answers.q5 !== 'ja';
-        return isPrivate && hasSwedishSite && notNIS2 && notLarge;
-      },
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers) && isSmallCompany(answers),
       type: 'radio'
     },
     
@@ -116,11 +124,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 3: Digitala tjänster och samhällsfunktion",
       question: "Tillhandahåller din verksamhet allmänna telenät (t.ex. bredbandsnät) eller tjänster för elektronisk kommunikation som är tillgängliga för allmänheten i Sverige (t.ex. telefonitjänster eller internetleverantörer)?",
       helpText: "Leverantörer av telenät och elektronisk kommunikation omfattas av lagen.",
-      showIf: (answers) => {
-        const isPrivate = answers.q1 !== 'ja' && answers.q2 !== 'ja';
-        const hasSwedishSite = answers.q3 === 'ja';
-        return isPrivate && hasSwedishSite;
-      },
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers),
       type: 'radio'
     },
     {
@@ -129,11 +133,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 3: Digitala tjänster och samhällsfunktion",
       question: "Erbjuder din verksamhet digitala tjänster? (Markera alla som stämmer)",
       helpText: "Digitala tjänster som molntjänster, datacenter och CDN omfattas av lagen.",
-      showIf: (answers) => {
-        const isPrivate = answers.q1 !== 'ja' && answers.q2 !== 'ja';
-        const hasSwedishSite = answers.q3 === 'ja';
-        return isPrivate && hasSwedishSite;
-      },
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers),
       type: 'checkbox',
       options: [
         "Molntjänster (cloud services)",
@@ -155,12 +155,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 3: Digitala tjänster och samhällsfunktion",
       question: "Är din verksamhet den enda leverantören i Sverige av en tjänst som är avgörande för att viktiga samhällsfunktioner eller ekonomisk verksamhet ska fungera?",
       helpText: "Verksamheter som är enda leverantörer av kritiska tjänster omfattas även om de är små.",
-      showIf: (answers) => {
-        const isPrivate = answers.q1 !== 'ja' && answers.q2 !== 'ja';
-        const hasSwedishSite = answers.q3 === 'ja';
-        const notClearlyCovered = (!answers.q4 || answers.q4.length === 0) && answers.q5 !== 'ja';
-        return isPrivate && hasSwedishSite && notClearlyCovered;
-      },
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers) && isSmallCompany(answers),
       type: 'radio'
     },
     {
@@ -169,12 +164,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 3: Digitala tjänster och samhällsfunktion",
       question: "Skulle ett avbrott i er tjänst allvarligt kunna påverka människors liv och hälsa, samhällets säkerhet, folkhälsan eller orsaka stora problem i digitala system?",
       helpText: "Verksamheter vars avbrott skulle ha allvarliga konsekvenser omfattas av lagen.",
-      showIf: (answers) => {
-        const isPrivate = answers.q1 !== 'ja' && answers.q2 !== 'ja';
-        const hasSwedishSite = answers.q3 === 'ja';
-        const notClearlyCovered = (!answers.q4 || answers.q4.length === 0) && answers.q5 !== 'ja';
-        return isPrivate && hasSwedishSite && notClearlyCovered;
-      },
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers) && isSmallCompany(answers),
       type: 'radio'
     },
     {
@@ -183,12 +173,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 3: Digitala tjänster och samhällsfunktion",
       question: "Är er verksamhet extra viktig på nationell eller regional nivå för en viss bransch eller tjänst, eller för andra branscher som är beroende av er?",
       helpText: "Verksamheter med särskild betydelse för samhället omfattas av lagen.",
-      showIf: (answers) => {
-        const isPrivate = answers.q1 !== 'ja' && answers.q2 !== 'ja';
-        const hasSwedishSite = answers.q3 === 'ja';
-        const notClearlyCovered = (!answers.q4 || answers.q4.length === 0) && answers.q5 !== 'ja';
-        return isPrivate && hasSwedishSite && notClearlyCovered;
-      },
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers) && isSmallCompany(answers),
       type: 'radio'
     },
     {
@@ -197,11 +182,7 @@ export default function QuestionnaireForm() {
       sectionTitle: "Del 3: Digitala tjänster och samhällsfunktion",
       question: "Tillhandahåller din verksamhet \"betrodda tjänster\" (t.ex. e-legitimation eller elektronisk underskrift)?",
       helpText: "Leverantörer av betrodda tjänster omfattas alltid av lagen, även om de skulle vara undantagna på annat sätt.",
-      showIf: (answers) => {
-        const isPrivate = answers.q1 !== 'ja' && answers.q2 !== 'ja';
-        const hasSwedishSite = answers.q3 === 'ja';
-        return isPrivate && hasSwedishSite;
-      },
+      showIf: (answers) => isPrivateOrganization(answers) && hasSwedishSite(answers),
       type: 'radio'
     },
     
@@ -279,9 +260,9 @@ export default function QuestionnaireForm() {
     const newAnswers = { ...answers, [key]: value };
     setAnswers(newAnswers);
     
-    // Check early exit
+    // Kontrollera early exit condition
     if (checkEarlyExit(key, value)) {
-      return; // Stop här
+      return; // Stoppa här
     }
     
     // Automatiskt gå till nästa synlig fråga
@@ -329,6 +310,25 @@ export default function QuestionnaireForm() {
   };
 
   /**
+   * Kontrollerar om en privat verksamhet omfattas av kriterierna i Del 2 & 3
+   * @param {Object} answers - Svar från formuläret
+   * @returns {boolean} - True om privat verksamhet omfattas
+   */
+  const isPrivateOrganizationCovered = (answers) => {
+    return answers.q3 === 'ja' && (
+      (answers.q4 && answers.q4.length > 0) || 
+      answers.q5 === 'ja' || 
+      answers.q6 === 'ja' || 
+      answers.q7 === 'ja' || 
+      (answers.q8 && answers.q8.length > 0) ||
+      answers.q9 === 'ja' || 
+      answers.q10 === 'ja' || 
+      answers.q11 === 'ja' || 
+      answers.q12 === 'ja'
+    );
+  };
+
+  /**
    * Bedömer om en verksamhet omfattas av Cybersäkerhetslagen (2025:1506)
    * 
    * Viktiga principer:
@@ -342,22 +342,10 @@ export default function QuestionnaireForm() {
    */
   const assessCoverage = (answers) => {
     // Del 1: Statlig, regional eller kommunal
-    const coveredByPart1 = answers.q1 === 'ja' || answers.q2 === 'ja';
+    const coveredByPart1 = isPublicOrganization(answers);
     
     // Del 2 och 3: Privat verksamhet och digitala tjänster
-    // Viktigt: Kräver svenskt säte/etablering (q3) enligt 1 kap. 4 § 2, 5 §, 7 §
-    const coveredByPart2And3 = 
-      answers.q3 === 'ja' && (
-        (answers.q4 && answers.q4.length > 0) || 
-        answers.q5 === 'ja' || 
-        answers.q6 === 'ja' || 
-        answers.q7 === 'ja' || 
-        (answers.q8 && answers.q8.length > 0) ||
-        answers.q9 === 'ja' || 
-        answers.q10 === 'ja' || 
-        answers.q11 === 'ja' || 
-        answers.q12 === 'ja'
-      );
+    const coveredByPart2And3 = isPrivateOrganizationCovered(answers);
     
     // Del 4: Undantag (endast om frågor visades)
     const hasException = 
