@@ -133,7 +133,7 @@ export default function SecurityMeasures() {
     }
   ]
 
-  // Load från localStorage
+  // Load from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('security_measures_checklist')
     if (saved) {
@@ -146,7 +146,7 @@ export default function SecurityMeasures() {
     }
   }, [])
 
-  // Save till localStorage
+  // Save to localStorage
   const handleCheckboxChange = (id) => {
     const updated = { ...checklist, [id]: !checklist[id] }
     setChecklist(updated)
@@ -165,7 +165,7 @@ export default function SecurityMeasures() {
     }))
   }
 
-  // Räkna progress
+  // Calculate progress
   const totalItems = securityMeasures.length + incidentProcedures.length
   const completedItems = Object.values(checklist).filter(Boolean).length
   const progressPercentage = totalItems > 0 ? (completedItems / totalItems) * 100 : 0
