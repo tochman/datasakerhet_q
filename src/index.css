@@ -6,6 +6,46 @@ body {
   @apply bg-gray-50 text-gray-900;
 }
 
+/* Förbättrad styling för expanderbara sektioner */
+details summary {
+  list-style: none;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary::before {
+  content: '▶';
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.2s;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+details summary:hover {
+  opacity: 0.8;
+}
+
+/* Smooth animation för expandering */
+details[open] > summary + * {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Print-friendly styles */
 @media print {
   .no-print {

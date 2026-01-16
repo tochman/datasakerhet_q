@@ -7,7 +7,8 @@ import React from 'react'
  * @param {string} props.questionKey - Nyckel för frågan (t.ex. "q1")
  * @param {string} props.value - Nuvarande svar
  * @param {function} props.onChange - Callback för när svaret ändras
- * @param {string} props.helpText - Valfri hjälptext
+ * @param {string} props.helpText - Valfri hjälptext (sträng)
+ * @param {JSX.Element} props.description - Valfri utökad beskrivning (JSX)
  * @param {string} props.type - Typ av fråga: "radio" eller "checkbox"
  * @param {Array} props.options - För checkbox: lista med alternativ
  */
@@ -17,9 +18,23 @@ export default function QuestionSection({
   value, 
   onChange, 
   helpText,
+  description,
   type = "radio",
   options = []
 }) {
+  
+  // Helper function to render description or helpText
+  const renderHelpContent = () => {
+    const baseClasses = "text-sm text-gray-600 mb-4"
+    
+    if (description) {
+      return <div className={baseClasses}>{description}</div>
+    }
+    if (helpText) {
+      return <div className={`${baseClasses} italic`}>{helpText}</div>
+    }
+    return null
+  }
   
   if (type === "checkbox") {
     const selectedServices = value || []
@@ -36,9 +51,7 @@ export default function QuestionSection({
         <label className="block text-lg font-semibold text-gray-800 mb-4">
           {question}
         </label>
-        {helpText && (
-          <p className="text-sm text-gray-600 mb-4 italic">{helpText}</p>
-        )}
+        {renderHelpContent()}
         <div className="space-y-3">
           {options.map((option) => (
             <label 
@@ -71,9 +84,7 @@ export default function QuestionSection({
       <label className="block text-lg font-semibold text-gray-800 mb-4">
         {question}
       </label>
-      {helpText && (
-        <p className="text-sm text-gray-600 mb-4 italic">{helpText}</p>
-      )}
+      {renderHelpContent()}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {radioOptions.map((option) => (
           <label 

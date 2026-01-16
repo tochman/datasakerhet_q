@@ -44,9 +44,21 @@ export default function QuestionnaireForm() {
         },
         {
           key: "q4",
-          text: "Omfattas er verksamhet av bilagorna i EU:s så kallade NIS 2-direktiv (EU 2022/2555)?",
-          helpText: "Detta direktiv handlar om säkerhet för nätverks- och informationssystem.",
-          type: "radio"
+          text: "Är ditt företag verksamt inom någon av dessa branscher:",
+          helpText: "Välj den eller de branscher som stämmer för er verksamhet. Dessa branscher omfattas ofta av NIS 2-direktivet (EU 2022/2555) om ert företag är medelstort eller större (se fråga 3).",
+          type: "checkbox",
+          options: [
+            "Energi (el, gas, fjärrvärme/kyla, olja, vätgas)",
+            "Transport (flyg, järnväg, sjöfart, vägtransporter)",
+            "Bank och finans",
+            "Hälso- och sjukvård",
+            "Dricksvatten och avlopp",
+            "Post och kurirtjänster",
+            "Avfallshantering",
+            "Tillverkning (medicinteknik, fordon, elektronik, maskiner, kemikalier, livsmedel)",
+            "Digitala leverantörer (molntjänster, datacenter, sökmotorer)",
+            "Forskning (universitet, forskningsorganisationer)"
+          ]
         },
         {
           key: "q5",
@@ -199,7 +211,7 @@ export default function QuestionnaireForm() {
     const coveredByPart2And3 = 
       answers.q6 === 'ja' && (
         answers.q3 === 'ja' || 
-        answers.q4 === 'ja' || 
+        (answers.q4 && answers.q4.length > 0) || 
         answers.q5 === 'ja' || 
         answers.q7 === 'ja' || 
         (answers.q8 && answers.q8.length > 0) ||
@@ -215,8 +227,8 @@ export default function QuestionnaireForm() {
       answers.q15 !== 'ja'
     
     const hasUncertainAnswers = Object.entries(answers).some(([key, value]) => {
-      if (key === 'q8') {
-        // För q8, kontrollera inte "vet ej" här
+      if (key === 'q8' || key === 'q4') {
+        // För q8 och q4 (checkbox), kontrollera inte "vet ej" här
         return false
       }
       return value === 'vet_ej'
@@ -265,7 +277,7 @@ export default function QuestionnaireForm() {
           q1: answers.q1 || null,
           q2: answers.q2 || null,
           q3: answers.q3 || null,
-          q4: answers.q4 || null,
+          q4: answers.q4 ? JSON.stringify(answers.q4) : null,
           q5: answers.q5 || null,
           q6: answers.q6 || null,
           q7: answers.q7 || null,
@@ -390,6 +402,7 @@ export default function QuestionnaireForm() {
                 value={answers[question.key]}
                 onChange={handleAnswerChange}
                 helpText={question.helpText}
+                description={question.description}
                 type={question.type}
                 options={question.options}
               />
