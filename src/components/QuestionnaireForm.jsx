@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import QuestionSection from './QuestionSection'
 import ResultsSummary from './ResultsSummary'
 import ContactForm from './ContactForm'
 import SecurityMeasures from './SecurityMeasures'
+import { getUserType, getVisibleQuestionIds } from '../utils/questionFlows'
 
 /**
  * Huvudformulär med adaptivt/dynamiskt frågeformulär
@@ -17,6 +18,8 @@ export default function QuestionnaireForm() {
   const [showContactForm, setShowContactForm] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
+  const [databaseError, setDatabaseError] = useState(false)
+  const [debugMode, setDebugMode] = useState(false)
 
   // Hjälpfunktioner för att kontrollera verksamhetstyp
   const isPublicOrganization = (answers) => {
@@ -239,10 +242,34 @@ export default function QuestionnaireForm() {
     }
   ]
 
-  // Filtrera frågor baserat på svar (adaptiv logik)
+  // Bestäm användartyp baserat på svar
+  const userType = useMemo(() => getUserType(answers), [answers]);
+  
+  // Hämta synliga frågor baserat på användartyp
+  const visibleQuestionIds = useMemo(() => {
+    return getVisibleQuestionIds(userType);
+  }, [userType]);
+  
   const visibleQuestions = useMemo(() => {
-    return questions.filter(q => q.showIf(answers));
-  }, [answers]);
+    return questions.filter(q => visibleQuestionIds.includes(parseInt(q.id.replace('q', ''))));
+  }, [visibleQuestionIds]);
+
+  // Debug logging (endast i development)
+  useEffect(() => {
+    if (import.meta.env.DEV || debugMode) {
+      console.log('🔍 DEBUG INFO:');
+      console.log('  User type:', userType);
+      console.log('  Visible questions:', visibleQuestionIds);
+      console.log('  Current question:', visibleQuestions[currentQuestionIndex]?.id);
+      console.log('  Answers so far:', answers);
+      console.log('  Progress:', `${currentQuestionIndex + 1}/${visibleQuestions.length}`);
+    }
+  }, [userType, currentQuestionIndex, answers, debugMode, visibleQuestionIds, visibleQuestions]);
+
+  // Filtrera frågor baserat på svar (adaptiv logik) - DEPRECATED, using new flow logic
+  // const visibleQuestions = useMemo(() => {
+  //   return questions.filter(q => q.showIf(answers));
+  // }, [answers]);
 
   // Kontrollera early exit condition
   const checkEarlyExit = (questionId, answer) => {
@@ -403,45 +430,72 @@ export default function QuestionnaireForm() {
       // Beräkna bedömning
       const result = assessCoverage(finalAnswers);
       
-      // Spara till Supabase
-      const { data, error } = await supabase
-        .from('survey_responses')
-        .insert([{
-          q1: finalAnswers.q1 || null,
-          q2: finalAnswers.q2 || null,
-          q3: finalAnswers.q3 || null,
-          q4: finalAnswers.q4 ? JSON.stringify(finalAnswers.q4) : null,
-          q5: finalAnswers.q5 || null,
-          q6: finalAnswers.q6 || null,
-          q7: finalAnswers.q7 || null,
-          q8_services: finalAnswers.q8 || null,
-          q9: finalAnswers.q9 || null,
-          q10: finalAnswers.q10 || null,
-          q11: finalAnswers.q11 || null,
-          q12: finalAnswers.q12 || null,
-          q13: finalAnswers.q13 || null,
-          q14: finalAnswers.q14 || null,
-          q15: finalAnswers.q15 || null,
-          q16: finalAnswers.q16 || null,
-          q17: finalAnswers.q17 || null,
-          assessment_result: result.result,
-          assessment_message: result.message,
-          assessment_details: result.details,
-          wants_contact: false
-        }])
-        .select();
+      // Försök spara till Supabase med graceful fallback
+      let surveyId = null;
+      try {
+        const { data, error } = await supabase
+          .from('survey_responses')
+          .insert([{
+            q1: finalAnswers.q1 || null,
+            q2: finalAnswers.q2 || null,
+            q3: finalAnswers.q3 || null,
+            q4: finalAnswers.q4 ? JSON.stringify(finalAnswers.q4) : null,
+            q5: finalAnswers.q5 || null,
+            q6: finalAnswers.q6 || null,
+            q7: finalAnswers.q7 || null,
+            q8_services: finalAnswers.q8 || null,
+            q9: finalAnswers.q9 || null,
+            q10: finalAnswers.q10 || null,
+            q11: finalAnswers.q11 || null,
+            q12: finalAnswers.q12 || null,
+            q13: finalAnswers.q13 || null,
+            q14: finalAnswers.q14 || null,
+            q15: finalAnswers.q15 || null,
+            q16: finalAnswers.q16 || null,
+            q17: finalAnswers.q17 || null,
+            assessment_result: result.result,
+            assessment_message: result.message,
+            assessment_details: result.details,
+            wants_contact: false
+          }])
+          .select();
 
-      if (error) throw error;
-
-      if (data && data[0]) {
-        setSurveyResponseId(data[0].id);
+        if (error) {
+          console.warn('Supabase-fel (fortsätter ändå):', error);
+          // Spara till localStorage istället
+          const localBackup = {
+            id: `local_${Date.now()}`,
+            answers: finalAnswers,
+            assessment: result,
+            timestamp: new Date().toISOString()
+          };
+          localStorage.setItem('survey_backup', JSON.stringify(localBackup));
+          surveyId = localBackup.id;
+          setDatabaseError(true);
+        } else if (data && data[0]) {
+          surveyId = data[0].id;
+          setDatabaseError(false);
+        }
+      } catch (dbErr) {
+        console.warn('Kunde inte nå databas (fortsätter ändå):', dbErr);
+        // Spara till localStorage istället
+        const localBackup = {
+          id: `local_${Date.now()}`,
+          answers: finalAnswers,
+          assessment: result,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem('survey_backup', JSON.stringify(localBackup));
+        surveyId = localBackup.id;
+        setDatabaseError(true);
       }
-      
+
+      setSurveyResponseId(surveyId);
       setAssessment(result);
       setShowResults(true);
     } catch (error) {
-      console.error('Fel vid sparande:', error);
-      alert('Ett fel uppstod vid sparande. Vänligen försök igen.');
+      console.error('Fel vid bearbetning:', error);
+      alert('Ett oväntat fel uppstod. Vänligen försök igen.');
     } finally {
       setLoading(false);
     }
@@ -468,6 +522,28 @@ export default function QuestionnaireForm() {
             Bedömning slutförd
           </p>
         </div>
+        
+        {/* Database error warning */}
+        {databaseError && (
+          <div className="max-w-4xl mx-auto mb-6">
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-yellow-700">
+                    <strong>Observera:</strong> Dina svar kunde inte sparas i databasen, men de finns sparade lokalt i din webbläsare. 
+                    Du kan fortsätta se ditt resultat nedan. Om du vill att vi kontaktar dig, fyll i kontaktformuläret.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <ResultsSummary 
           assessment={assessment} 
           onShowContactForm={() => setShowContactForm(true)} 
@@ -597,6 +673,28 @@ export default function QuestionnaireForm() {
           <p className="text-center text-sm text-gray-500 mt-4">
             Vänligen besvara frågan för att fortsätta
           </p>
+        )}
+        
+        {/* Debug panel - endast i development */}
+        {(import.meta.env.DEV || debugMode) && (
+          <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg max-w-sm text-xs z-50">
+            <h3 className="font-bold mb-2">🔍 Debug Info</h3>
+            <div className="space-y-1">
+              <p><strong>User type:</strong> {userType}</p>
+              <p><strong>Current Q:</strong> {currentQuestion?.id}</p>
+              <p><strong>Visible Q&apos;s:</strong> {visibleQuestionIds.join(', ')}</p>
+              <p><strong>Progress:</strong> {currentQuestionIndex + 1}/{visibleQuestions.length}</p>
+              <p><strong>Answers:</strong> {Object.keys(answers).length} questions answered</p>
+            </div>
+            {!import.meta.env.DEV && (
+              <button 
+                onClick={() => setDebugMode(false)}
+                className="mt-2 text-xs bg-red-500 px-2 py-1 rounded hover:bg-red-600"
+              >
+                Stäng
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>
