@@ -19,6 +19,11 @@ export const getUserType = (answers) => {
     return 'OFFENTLIG_KOMMUN';
   }
   
+  // If Q1 is "nej", need to check Q2
+  if (answers.q1 === 'nej' && answers.q2 === undefined) {
+    return 'AFTER_Q1';
+  }
+  
   // Privat verksamhet
   if (answers.q1 === 'nej' && answers.q2 === 'nej') {
     // Inget svenskt säte = early exit
@@ -64,6 +69,9 @@ export const getUserType = (answers) => {
 export const QUESTION_FLOWS = {
   // Initial state - only show Q1
   'INITIAL': [1],
+  
+  // After Q1 answered "nej", show Q2
+  'AFTER_Q1': [1, 2],
   
   // Statlig myndighet - Q1 + undantag (Q13-Q17)
   'OFFENTLIG_STATLIG': [1, 13, 14, 15, 16, 17],
