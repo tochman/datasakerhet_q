@@ -179,23 +179,34 @@ export default function QuestionnaireForm() {
   }
 
   /**
-   * Bedömningslogik enligt specifikationen
+   * Bedömer om en verksamhet omfattas av Cybersäkerhetslagen (2025:1506)
+   * 
+   * Viktiga principer:
+   * - Del 1 (statliga/kommunala verksamheter): Omfattas direkt, q6 är inte relevant
+   * - Del 2 & 3 (privata verksamheter): KRÄVER svenskt säte (q6 = ja) enligt 1 kap. 4 § 2
+   * - Del 4 (undantag): Kan göra att verksamheten inte omfattas trots att den annars skulle
+   * 
+   * @param {Object} answers - Svar från formuläret
+   * @returns {Object} Bedömningsresultat med result, message, details
    */
   const assessCoverage = (answers) => {
     // Del 1: Statlig, regional eller kommunal
     const coveredByPart1 = answers.q1 === 'ja' || answers.q2 === 'ja'
     
     // Del 2 och 3: Privat verksamhet och digitala tjänster
+    // Viktigt: Kräver svenskt säte/etablering (q6) enligt 1 kap. 4 § 2, 5 §, 7 §
     const coveredByPart2And3 = 
-      answers.q3 === 'ja' || 
-      answers.q4 === 'ja' || 
-      answers.q5 === 'ja' || 
-      answers.q7 === 'ja' || 
-      (answers.q8 && answers.q8.length > 0) ||
-      answers.q9 === 'ja' || 
-      answers.q10 === 'ja' || 
-      answers.q11 === 'ja' || 
-      answers.q12 === 'ja'
+      answers.q6 === 'ja' && (
+        answers.q3 === 'ja' || 
+        answers.q4 === 'ja' || 
+        answers.q5 === 'ja' || 
+        answers.q7 === 'ja' || 
+        (answers.q8 && answers.q8.length > 0) ||
+        answers.q9 === 'ja' || 
+        answers.q10 === 'ja' || 
+        answers.q11 === 'ja' || 
+        answers.q12 === 'ja'
+      )
     
     // Del 4: Undantag
     const hasException = 
