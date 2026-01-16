@@ -36,12 +36,95 @@ NIS 2-direktivet (EU 2022/2555) omfattar verksamheter inom följande sektorer:
 ## Funktioner
 
 ### För Användare
-- ✅ **Frågeformulär med 17 frågor** uppdelade i 4 delar
+- ✅ **Adaptivt frågeformulär** – visar endast relevanta frågor baserat på dina svar
+- ✅ **Smartare användarflöden**:
+  - **Offentliga verksamheter**: 6-7 frågor (från tidigare 17)
+  - **Privata utan svenskt säte**: 3 frågor med omedelbart resultat
+  - **Små privata verksamheter**: 6-12 frågor istället för alla 17
+  - **Större verksamheter**: 13-16 relevanta frågor
 - ✅ **Automatisk bedömning** enligt lagstiftningens kriterier
-- ✅ **Visuell progress-indikator** för användarvänlig navigation
+- ✅ **Dynamisk progress-indikator** som visar faktiskt återstående frågor
+- ✅ **Early exit** för verksamheter som inte omfattas
+- ✅ **Kontextberoende hjälptext** för varje fråga
 - ✅ **Kontaktformulär** för de som vill ha mer information
 - ✅ **Responsiv design** som fungerar på alla enheter
 - ✅ **Tillgänglighet** enligt WCAG 2.1 AA-standard
+
+## Adaptivt formulär
+
+Frågeformuläret använder smart adaptiv logik som anpassar frågorna baserat på dina svar. Detta ger en betydligt snabbare och mer relevant upplevelse.
+
+### Hur det fungerar
+
+**Fråga 3 är nyckelfrågan** – Har din verksamhet svenskt säte?
+- Om NEJ → Omedelbart resultat (endast 3 frågor totalt)
+- Om JA → Fortsätter med relevanta frågor om verksamheten
+
+**Frågor visas endast när de är relevanta:**
+- Offentliga verksamheter hoppar över privata frågor
+- Små företag får färre frågor om digitala tjänster
+- Stora företag eller NIS 2-verksamheter får alla relevanta frågor
+- Undantagsfrågor visas endast för verksamheter som kan omfattas
+
+### Exempel på användarflöden
+
+#### Scenario 1: Offentlig verksamhet (Kommun)
+```
+Q1: Statlig myndighet? → NEJ
+Q2: Region/kommun? → JA
+[Hoppar direkt till undantag]
+Q13-Q17: Undantagsfrågor
+→ Resultat (7 frågor totalt, ~60% färre än tidigare)
+```
+
+#### Scenario 2: Utländskt företag
+```
+Q1: Statlig myndighet? → NEJ
+Q2: Region/kommun? → NEJ
+Q3: Svenskt säte? → NEJ
+→ Resultat: "Omfattas ej" (3 frågor totalt, ~82% färre än tidigare)
+```
+
+#### Scenario 3: Litet svenskt företag utan digitala tjänster
+```
+Q1-Q2: NEJ (inte offentlig)
+Q3: Svenskt säte? → JA
+Q4: NIS 2-sektor? → Inga val
+Q5: Medelstort/stort? → NEJ
+Q6: Privat utbildning? → NEJ
+Q7: Telenät? → NEJ
+Q8: Digitala tjänster? → Inga val
+Q12: Betrodda tjänster? → NEJ
+→ Resultat: "Omfattas troligen ej" (9 frågor totalt)
+```
+
+#### Scenario 4: Stort företag inom NIS 2
+```
+Q1-Q2: NEJ (inte offentlig)
+Q3: Svenskt säte? → JA
+Q4: NIS 2-sektor? → JA (t.ex. Energi)
+Q5: Medelstort/stort? → JA
+Q7-Q12: Alla digitala tjänster och samhällsfunktioner
+Q13-Q17: Undantagsfrågor
+→ Resultat: "Omfattas" (15 frågor totalt)
+```
+
+### Fördelar med adaptivt formulär
+
+**Snabbare genomförande:**
+- Offentliga verksamheter: ~60% färre frågor
+- Utländska företag: ~82% färre frågor
+- Små privata företag: ~30-50% färre frågor
+
+**Bättre användarupplevelse:**
+- Ingen frustration över irrelevanta frågor
+- Tydligare koppling mellan svar och frågor
+- Omedelbar feedback när resultatet är klart
+
+**Mer korrekta bedömningar:**
+- Fråga 3 (svenskt säte) kommer tidigt och hindrar onödiga genomgångar
+- Endast relevanta frågor för varje verksamhetstyp
+- Tydligare hjälptexter för varje fråga
 
 ## Användarfokuserad design
 
