@@ -235,23 +235,174 @@ Lagrar kontaktinformation för användare som vill ha mer information.
 
 ## Bedömningslogik
 
-Applikationen använder följande logik för att bedöma om en verksamhet omfattas:
+### Hur bedöms om en verksamhet omfattas av lagen?
 
-1. **Omfattas om:**
-   - Del 1: Statlig/regional/kommunal verksamhet (Q1 eller Q2 = Ja)
-   - ELLER Del 2-3: Uppfyller storlek/sektor-krav (Q3-Q12)
-   - OCH INTE har undantag (Del 4)
+Applikationen analyserar svaren genom ett strukturerat beslutsträd baserat på Cybersäkerhetslagens kriterier. Bedömningen sker i fyra steg:
 
-2. **Undantag om:**
-   - Uppfyller kriterier för att omfattas
-   - MEN bedriver säkerhetskänslig/brottsbekämpande verksamhet (Q13, Q14, Q16, Q17 = Ja)
-   - SÅVIDA INTE tillhandahåller betrodda tjänster (Q15 = Ja)
+#### Steg 1: Statlig, regional eller kommunal verksamhet
+Verksamheten omfattas **direkt** om den är:
+- **Fråga 1 (Ja):** En statlig myndighet som fattar viktiga gränsöverskridande beslut
+- **Fråga 2 (Ja):** En region, kommun eller kommunalförbund
 
-3. **Osäker om:**
-   - Användaren svarat "Vet ej" på någon fråga
+#### Steg 2 & 3: Privat verksamhet och digitala tjänster
+En privat verksamhet omfattas om **minst ett** av följande kriterier uppfylls:
+- **Fråga 3 (Ja):** Medelstort eller större företag (≥250 anställda ELLER omsättning >50M€ ELLER balansomslutning >43M€)
+- **Fråga 4 (Ja):** Omfattas av NIS 2-direktivets bilagor (EU 2022/2555)
+- **Fråga 5 (Ja):** Privat utbildningsanordnare med tillstånd att utfärda examina
+- **Fråga 7 (Ja):** Tillhandahåller allmänna telenät eller elektroniska kommunikationstjänster
+- **Fråga 8 (minst ett val):** Tillhandahåller digitala tjänster (molntjänster, datacenter, CDN, managed services, etc.)
+- **Fråga 9 (Ja):** Enda leverantören av kritisk samhällstjänst i Sverige
+- **Fråga 10 (Ja):** Avbrott skulle allvarligt påverka liv, hälsa eller säkerhet
+- **Fråga 11 (Ja):** Extra viktig verksamhet på nationell/regional nivå
+- **Fråga 12 (Ja):** Tillhandahåller betrodda tjänster (e-legitimation, e-underskrift)
 
-4. **Omfattas ej om:**
-   - Inte uppfyller kriterierna ovan
+**OBS:** Fråga 6 om svenskt säte är en förutsättning men påverkar inte direkt bedömningen.
+
+#### Steg 4: Undantag från lagen
+Verksamheter kan vara undantagna **även om** de uppfyller kriterierna ovan:
+
+**Undantagna verksamheter:**
+- **Fråga 13 (Ja):** Bedriver huvudsakligen säkerhetskänslig eller brottsbekämpande verksamhet
+- **Fråga 14 (Ja):** Privat aktör som enbart sysslar med säkerhetskänslig verksamhet eller levererar till brottsbekämpande myndigheter
+- **Fråga 16 (Ja):** Regeringen, Regeringskansliet, ambassader, kommittéer, riksdagsmyndigheter, domstolar
+- **Fråga 17 (Ja):** Fullmäktige eller styrelser i kommunalförbund, kommun- eller regionfullmäktige
+
+**Viktigt:** Om verksamheten tillhandahåller **betrodda tjänster** (Fråga 15 = Ja), gäller **INTE** undantaget. Då omfattas verksamheten ändå av lagen.
+
+### Bedömningsresultat
+
+Systemet ger ett av fyra möjliga resultat:
+
+#### 🔴 Omfattas
+**Resultat:** "Din verksamhet omfattas sannolikt av Cybersäkerhetslagen (2025:1506)"
+
+**Betyder:** 
+- Verksamheten uppfyller kriterierna i Del 1 eller Del 2-3
+- Inget giltigt undantag föreligger
+- Verksamheten behöver följa lagens krav på cybersäkerhet och incidentrapportering
+
+**Vad händer nu:**
+Verksamheter som omfattas måste:
+1. Implementera riskhanteringsåtgärder för cybersäkerhet
+2. Rapportera allvarliga IT-incidenter till behörig myndighet
+3. Hantera säkerhetsrisker i leverantörskedjan
+4. Vidta åtgärder för att säkra nätverks- och informationssystem
+
+#### 🟢 Omfattas ej
+**Resultat:** "Din verksamhet omfattas sannolikt inte av Cybersäkerhetslagen"
+
+**Betyder:**
+- Verksamheten uppfyller inte kriterierna för att omfattas
+- Inga direkta lagkrav enligt Cybersäkerhetslagen
+
+**Rekommendation:**
+Även om verksamheten inte omfattas är det god praxis att:
+- Implementera grundläggande cybersäkerhetsåtgärder
+- Ha beredskap för IT-incidenter
+- Följa relevanta branschstandarder (ISO 27001, etc.)
+
+#### 🟡 Undantag
+**Resultat:** "Din verksamhet kan vara undantagen trots att den annars skulle omfattas"
+
+**Betyder:**
+- Verksamheten uppfyller kriterierna för att omfattas
+- Men verksamheten kan vara undantagen p.g.a. säkerhetskänslig eller brottsbekämpande verksamhet
+- Undantaget gäller INTE om betrodda tjänster tillhandahålls
+
+**Behöver verifieras:**
+Detta är en komplex juridisk situation som kräver:
+- Verifiering av om undantaget verkligen gäller
+- Eventuell konsultation med tillsynsmyndighet
+- Juridisk rådgivning för säkerhet
+
+#### ⚪ Osäker bedömning
+**Resultat:** "Bedömningen är osäker på grund av 'Vet ej'-svar"
+
+**Betyder:**
+- En eller flera frågor besvarades med "Vet ej"
+- Systemet kan inte göra en säker bedömning
+
+**Nästa steg:**
+1. Ta reda på saknade uppgifter
+2. Genomför bedömningen igen med kompletta svar
+3. Kontakta oss för hjälp att utreda osäkra områden
+
+### Rådgivning till användare
+
+Oavsett bedömningsresultat visar applikationen följande viktiga information:
+
+**⚠️ Juridiskt förbehåll:**
+> "Denna bedömning är en indikation baserad på lagtexten. För en definitiv bedömning och juridisk rådgivning rekommenderas att konsultera en jurist specialiserad på IT- och säkerhetsrätt."
+
+**💡 Om du är osäker:**
+Om du inte känner dig redo att hantera cybersäkerhetskraven själv, eller om bedömningen är osäker, erbjuder vi stöd:
+
+- **Kontakta oss för en fördjupad analys** - Vi hjälper dig att förstå exakt vad lagen innebär för just din verksamhet
+- **Få hjälp med implementering** - Vägledning om vilka åtgärder som behövs
+- **Juridisk second opinion** - Verifiera din bedömning med juridisk expertis
+- **Utbildning och workshops** - Lär teamet om cybersäkerhetskrav
+
+Använd kontaktformuläret efter bedömningen för att få mer information. Vi återkommer inom 1-2 arbetsdagar.
+
+### Teknisk implementation
+
+Bedömningslogiken implementeras i funktionen `assessCoverage()` i `QuestionnaireForm.jsx`:
+
+```javascript
+const assessCoverage = (answers) => {
+  // Del 1: Statlig, regional eller kommunal
+  const coveredByPart1 = answers.q1 === 'ja' || answers.q2 === 'ja'
+  
+  // Del 2 och 3: Privat verksamhet och digitala tjänster
+  const coveredByPart2And3 = 
+    answers.q3 === 'ja' || 
+    answers.q4 === 'ja' || 
+    answers.q5 === 'ja' || 
+    answers.q7 === 'ja' || 
+    (answers.q8 && answers.q8.length > 0) ||
+    answers.q9 === 'ja' || 
+    answers.q10 === 'ja' || 
+    answers.q11 === 'ja' || 
+    answers.q12 === 'ja'
+  
+  // Del 4: Undantag
+  const hasException = 
+    (answers.q13 === 'ja' || answers.q14 === 'ja' || answers.q16 === 'ja' || answers.q17 === 'ja') &&
+    answers.q15 !== 'ja'
+  
+  const hasUncertainAnswers = Object.entries(answers).some(([key, value]) => {
+    if (key === 'q8') return false
+    return value === 'vet_ej'
+  })
+  
+  // Sammanfattande bedömning
+  if ((coveredByPart1 || coveredByPart2And3) && !hasException) {
+    return {
+      result: "omfattas",
+      message: "Din verksamhet omfattas sannolikt av Cybersäkerhetslagen (2025:1506).",
+      details: "Baserat på dina svar uppfyller verksamheten kriterierna för att omfattas av lagen."
+    }
+  } else if ((coveredByPart1 || coveredByPart2And3) && hasException) {
+    return {
+      result: "undantag",
+      message: "Din verksamhet kan vara undantagen trots att den annars skulle omfattas.",
+      details: "Verksamheten uppfyller kriterier för att omfattas, men kan vara undantagen på grund av särskilda omständigheter."
+    }
+  } else if (hasUncertainAnswers) {
+    return {
+      result: "osäker",
+      message: "Bedömningen är osäker på grund av 'Vet ej'-svar.",
+      details: "För en säkrare bedömning behöver du ta reda på svaren på de frågor du är osäker på."
+    }
+  } else {
+    return {
+      result: "omfattas_ej",
+      message: "Din verksamhet omfattas sannolikt inte av Cybersäkerhetslagen.",
+      details: "Baserat på dina svar uppfyller verksamheten inte kriterierna för att omfattas av lagen."
+    }
+  }
+}
+```
 
 ## Säkerhet och Privacy
 
