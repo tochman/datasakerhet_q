@@ -44,8 +44,98 @@ export default function QuestionnaireForm() {
         },
         {
           key: "q4",
-          text: "Omfattas er verksamhet av bilagorna i EU:s så kallade NIS 2-direktiv (EU 2022/2555)?",
-          helpText: "Detta direktiv handlar om säkerhet för nätverks- och informationssystem.",
+          text: "Omfattas er verksamhet av EU:s cybersäkerhetskrav (NIS 2-direktivet)?",
+          description: (
+            <>
+              <p className="mb-3">
+                Europeiska Unionen har ett direktiv, kallat <strong>NIS 2-direktivet (EU 2022/2555)</strong>, 
+                som ställer krav på att vissa viktiga samhällsfunktioner och digitala tjänster har hög cybersäkerhet.
+              </p>
+              <p className="mb-3 font-semibold">
+                Förtydligande: Hör er verksamhet till någon av följande sektorer eller tjänster 
+                som ofta omfattas av detta direktiv (och ni är ett medelstort eller större företag, 
+                se även fråga 3 om storlek)?
+              </p>
+              
+              {/* Expanderbar sektorlista */}
+              <details className="mb-3 bg-blue-50 rounded-lg p-4">
+                <summary className="cursor-pointer font-semibold text-primary hover:text-primary-dark">
+                  📋 Klicka för att se sektorer och exempel
+                </summary>
+                <ul className="mt-3 space-y-2 text-sm">
+                  <li className="flex items-start">
+                    <span className="mr-2">⚡</span>
+                    <div>
+                      <strong>Energi:</strong> T.ex. leverantörer av el, gas, fjärrvärme/kyla, olja eller vätgas.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">✈️</span>
+                    <div>
+                      <strong>Transport:</strong> T.ex. aktörer inom flyg, järnväg, sjöfart eller vägtransporter.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">🏦</span>
+                    <div>
+                      <strong>Bank- och finanssektorn:</strong> T.ex. banker, värdepappersföretag eller organisationer som hanterar finansiell infrastruktur.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">🏥</span>
+                    <div>
+                      <strong>Hälso- och sjukvård:</strong> T.ex. sjukhus, primärvård, laboratorier eller läkemedelstillverkare.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">💧</span>
+                    <div>
+                      <strong>Dricksvatten och avlopp:</strong> T.ex. större leverantörer av dricksvatten eller avloppstjänster.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">📮</span>
+                    <div>
+                      <strong>Post- och kurirtjänster:</strong> T.ex. större leverantörer av posttjänster.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">♻️</span>
+                    <div>
+                      <strong>Avfallshantering:</strong> T.ex. större aktörer inom avfallshantering.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">🏭</span>
+                    <div>
+                      <strong>Tillverkning:</strong> T.ex. företag som tillverkar medicintekniska produkter, fordon, elektronik, maskiner, kemikalier eller livsmedel.
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">☁️</span>
+                    <div>
+                      <strong>Vissa digitala leverantörer:</strong> T.ex. vissa molntjänster, datacentraltjänster, sökmotorer eller plattformar för sociala nätverkstjänster (om de inte redan omfattas av fråga 8).
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">🔬</span>
+                    <div>
+                      <strong>Forskning:</strong> T.ex. större universitet eller forskningsorganisationer.
+                    </div>
+                  </li>
+                </ul>
+              </details>
+
+              {/* Observera-box */}
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mt-3">
+                <p className="text-sm text-gray-700">
+                  ⚠️ <strong>Observera:</strong> Denna lista är inte uttömmande, och er verksamhet 
+                  kan omfattas även om den inte specifikt nämns ovan. Även företagets storlek 
+                  (medelstort eller större) är ett viktigt kriterium för privata aktörer.
+                </p>
+              </div>
+            </>
+          ),
           type: "radio"
         },
         {
@@ -390,6 +480,7 @@ export default function QuestionnaireForm() {
                 value={answers[question.key]}
                 onChange={handleAnswerChange}
                 helpText={question.helpText}
+                description={question.description}
                 type={question.type}
                 options={question.options}
               />

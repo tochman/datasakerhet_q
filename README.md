@@ -16,6 +16,23 @@ Detta är ett interaktivt frågeformulär som hjälper företag och organisation
 
 Lagen ställer krav på organisationer inom kritiska sektorer att implementera cybersäkerhetsåtgärder och rapportera incidenter.
 
+### NIS 2-direktivet och sektorer som omfattas
+
+NIS 2-direktivet (EU 2022/2555) omfattar verksamheter inom följande sektorer:
+
+- ⚡ Energi (el, gas, fjärrvärme, olja, vätgas)
+- ✈️ Transport (flyg, järnväg, sjöfart, vägtransport)
+- 🏦 Bank och finans
+- 🏥 Hälso- och sjukvård
+- 💧 Dricksvatten och avlopp
+- 📮 Post och kurirtjänster
+- ♻️ Avfallshantering
+- 🏭 Tillverkning (medicinteknik, fordon, elektronik, m.m.)
+- ☁️ Digitala leverantörer (moln, datacenter, sökmotorer)
+- 🔬 Forskning (universitet, forskningsorganisationer)
+
+**Viktigt:** Även företagets storlek (medelstort eller större) är avgörande för om lagen gäller.
+
 ## Funktioner
 
 ### För Användare
@@ -25,6 +42,31 @@ Lagen ställer krav på organisationer inom kritiska sektorer att implementera c
 - ✅ **Kontaktformulär** för de som vill ha mer information
 - ✅ **Responsiv design** som fungerar på alla enheter
 - ✅ **Tillgänglighet** enligt WCAG 2.1 AA-standard
+
+## Användarfokuserad design
+
+Frågeformuläret är utformat för att vara tillgängligt även för användare utan förkunskaper om Cybersäkerhetslagen eller EU-direktiv.
+
+### Exempel: Fråga 4 - NIS 2-direktivet
+
+Istället för att fråga tekniskt om "bilagorna i EU:s NIS 2-direktiv", presenterar vi:
+
+- **Konkreta exempel** från 10 olika sektorer (Energi, Transport, Hälsovård, etc.)
+- **Visuella ikoner** för varje sektor
+- **Expanderbar lista** som inte överväldiger användaren
+- **Tydlig koppling** till företagsstorlek (fråga 3)
+- **Varning** om att listan inte är uttömmande
+
+Detta gör det mycket enklare för användare att identifiera om deras verksamhet omfattas, 
+utan att behöva ha djup kunskap om lagstiftningen.
+
+### Designprinciper
+
+1. **Enkelhet**: Använd vardagligt språk istället för juridiska termer
+2. **Konkreta exempel**: Ge tydliga exempel från verkliga verksamheter
+3. **Visuell vägledning**: Använd ikoner och färgkodning
+4. **Progressiv avslöjande**: Dölj detaljer bakom expanderbara sektioner
+5. **Koppling mellan frågor**: Hänvisa till tidigare frågor när relevant
 
 ### För Administratörer
 - ✅ **Admin-panel** med skyddad inloggning
