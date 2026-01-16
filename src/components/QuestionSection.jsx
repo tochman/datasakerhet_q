@@ -25,11 +25,13 @@ export default function QuestionSection({
   
   // Helper function to render description or helpText
   const renderHelpContent = () => {
+    const baseClasses = "text-sm text-gray-600 mb-4"
+    
     if (description) {
-      return <div className="text-sm text-gray-600 mb-4">{description}</div>
+      return <div className={baseClasses}>{description}</div>
     }
     if (helpText) {
-      return <div className="text-sm text-gray-600 mb-4 italic">{helpText}</div>
+      return <div className={`${baseClasses} italic`}>{helpText}</div>
     }
     return null
   }
