@@ -221,8 +221,39 @@ export default function QuestionnaireForm() {
     }
   ]
 
-  // Alla frågor visas alltid - ingen adaptiv filtrering
-  const visibleQuestions = questions;
+  // Filter questions based on Q0 answer
+  const visibleQuestions = useMemo(() => {
+    const q0Answer = answers.q0;
+    
+    // If user selected "Privat", skip Q1 and Q2 (public sector questions)
+    if (q0Answer === 'Privat') {
+      return questions.filter(q => q.id !== 'q1' && q.id !== 'q2');
+    }
+    
+    // Otherwise show all questions (for "Offentlig", "Vet ej", or if Q0 not answered yet)
+    return questions;
+  }, [answers.q0]);
+
+  // Adjust current question index if visible questions change
+  useEffect(() => {
+    // If current question index is beyond visible questions, go to last question
+    if (currentQuestionIndex >= visibleQuestions.length && visibleQuestions.length > 0) {
+      setCurrentQuestionIndex(visibleQuestions.length - 1);
+    }
+    
+    // If current question is no longer visible, find the next visible question
+    const currentQuestion = questions[currentQuestionIndex];
+    if (currentQuestion && !visibleQuestions.find(q => q.id === currentQuestion.id)) {
+      // Current question is filtered out, find first visible question after current position
+      const nextVisibleIndex = visibleQuestions.findIndex((q, idx) => idx >= currentQuestionIndex);
+      if (nextVisibleIndex !== -1) {
+        setCurrentQuestionIndex(nextVisibleIndex);
+      } else if (visibleQuestions.length > 0) {
+        // No visible question after current, go to last visible
+        setCurrentQuestionIndex(visibleQuestions.length - 1);
+      }
+    }
+  }, [visibleQuestions, currentQuestionIndex]);
 
   // Debug logging (endast i development)
   useEffect(() => {
