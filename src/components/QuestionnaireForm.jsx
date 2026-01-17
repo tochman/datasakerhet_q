@@ -1,9 +1,11 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react'
 import QuestionSection from './QuestionSection'
 import ResultsSummary from './ResultsSummary'
 import ContactForm from './ContactForm'
-import SecurityMeasures from './SecurityMeasures'
 import { getUserType, getVisibleQuestionIds } from '../utils/questionFlows'
+
+// Lazy load SecurityMeasures component (contains PDF libraries)
+const SecurityMeasures = lazy(() => import('./SecurityMeasures'))
 
 /**
  * Huvudformulär för bedömning av Cybersäkerhetslagen
@@ -651,11 +653,18 @@ export default function QuestionnaireForm() {
         
         {assessment.result === 'omfattas' && (
           <div className="max-w-4xl mx-auto">
-            <SecurityMeasures 
-              assessment={assessment} 
-              answers={answers}
-              surveyResponseId={surveyResponseId}
-            />
+            <Suspense fallback={
+              <div className="text-center py-8">
+                <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p className="text-gray-600">Laddar säkerhetsåtgärder...</p>
+              </div>
+            }>
+              <SecurityMeasures 
+                assessment={assessment} 
+                answers={answers}
+                surveyResponseId={surveyResponseId}
+              />
+            </Suspense>
           </div>
         )}
 
