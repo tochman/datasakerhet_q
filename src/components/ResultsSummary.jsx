@@ -74,6 +74,75 @@ export default function ResultsSummary({ assessment, answers, onShowContactForm 
         </div>
       </div>
 
+      {/* MCFFS 2026:1 Klassificering - Väsentlig/Viktig */}
+      {assessment.category && (
+        <div className={`border-2 rounded-sm p-6 mb-8 ${
+          assessment.category === 'väsentlig' 
+            ? 'bg-orange-50 border-orange-300' 
+            : 'bg-blue-50 border-blue-300'
+        }`}>
+          <div className="flex items-start">
+            <svg className={`w-8 h-8 mt-1 mr-4 flex-shrink-0 ${
+              assessment.category === 'väsentlig' ? 'text-orange-600' : 'text-blue-600'
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <div>
+              <h3 className={`text-xl font-bold mb-3 ${
+                assessment.category === 'väsentlig' ? 'text-orange-900' : 'text-blue-900'
+              }`}>
+                {assessment.category === 'väsentlig' 
+                  ? '⚠️ Väsentlig verksamhetsutövare' 
+                  : 'ℹ️ Viktig verksamhetsutövare'
+                }
+              </h3>
+              <p className={`mb-3 ${
+                assessment.category === 'väsentlig' ? 'text-orange-800' : 'text-blue-800'
+              }`}>
+                {assessment.category === 'väsentlig' ? (
+                  <>
+                    Enligt <strong>MCFFS 2026:1</strong> (Myndigheten för civilt försvar, beslutat 2026-01-08) 
+                    klassificeras er verksamhet som en <strong>väsentlig verksamhetsutövare</strong> baserat på era svar.
+                  </>
+                ) : (
+                  <>
+                    Enligt <strong>MCFFS 2026:1</strong> (Myndigheten för civilt försvar, beslutat 2026-01-08) 
+                    klassificeras er verksamhet som en <strong>viktig verksamhetsutövare</strong> baserat på era svar.
+                  </>
+                )}
+              </p>
+              <div className={`p-4 rounded border ${
+                assessment.category === 'väsentlig' 
+                  ? 'bg-orange-100 border-orange-300' 
+                  : 'bg-blue-100 border-blue-300'
+              }`}>
+                <h4 className="font-semibold mb-2">
+                  {assessment.category === 'väsentlig' ? 'Striktare krav gäller:' : 'Förhöjda krav gäller:'}
+                </h4>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  {assessment.category === 'väsentlig' ? (
+                    <>
+                      <li>Omfattande incidenthantering och snabb rapportering</li>
+                      <li>Regelbunden tillsyn från Myndigheten för samhällsskydd och beredskap (MSB)</li>
+                      <li>Högre krav på riskbedömningar och säkerhetsåtgärder</li>
+                      <li>Striktare sanktioner vid bristande efterlevnad</li>
+                      <li>Krav på säkerhetsansvarig person</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>Incidenthantering och rapportering till tillsynsmyndighet</li>
+                      <li>Regelbundna riskbedömningar och säkerhetsåtgärder</li>
+                      <li>Krav på tekniska och organisatoriska åtgärder</li>
+                      <li>Dokumentation av säkerhetsarbete</li>
+                    </>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Juridisk rekommendation */}
       <div className="bg-blue-50 border-2 border-blue-200 rounded-sm p-6 mb-8">
         <div className="flex items-start">

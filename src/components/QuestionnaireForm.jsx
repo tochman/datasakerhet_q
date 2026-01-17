@@ -249,6 +249,60 @@ export default function QuestionnaireForm() {
         return hasDigitalIndustry || !hasIndustries(answers);
       }
     },
+    
+    // Frågor för identifiering av VÄSENTLIGA verksamhetsutövare (MCFFS 2026:1)
+    {
+      id: 'q18',
+      section: 3,
+      sectionTitle: "Del 3: Etablering, storlek och generella kriterier",
+      question: "Är er verksamhet inom transport någon av följande? (Markera alla som stämmer)",
+      helpText: "Enligt MCFFS 2026:1 räknas dessa som väsentliga verksamhetsutövare med striktare krav.",
+      type: 'checkbox',
+      options: [
+        "Beredskapsflygplats (flygplats med avtal med Trafikverket)",
+        "Tillhandahåller flygkontrolltjänster",
+        "Karantänshamn (hamn utpekad av Folkhälsomyndigheten)",
+        "Skyddad plats (hamn, kaj eller skyddat område utpekat av Transportstyrelsen)",
+        "Ingen av ovanstående"
+      ],
+      showIf: (answers) => {
+        const hasTransport = Array.isArray(answers.q4) && answers.q4.includes('Transport (flyg, järnväg, sjöfart, vägtransporter)');
+        return hasTransport;
+      }
+    },
+    {
+      id: 'q19',
+      section: 3,
+      sectionTitle: "Del 3: Etablering, storlek och generella kriterier",
+      question: "Producerar eller distribuerar ni dricksvatten till minst 20 000 personer ELLER till akutsjukhus?",
+      helpText: "Enligt MCFFS 2026:1 och lagen om allmänna vattentjänster räknas dessa som väsentliga verksamhetsutövare. Ett akutsjukhus är en vårdinrättning för slutenvård med särskild akutmottagning.",
+      type: 'radio',
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => {
+        const hasWater = Array.isArray(answers.q4) && answers.q4.includes('Dricksvatten och avlopp');
+        return hasWater;
+      }
+    },
+    {
+      id: 'q20',
+      section: 3,
+      sectionTitle: "Del 3: Etablering, storlek och generella kriterier",
+      question: "Tillverkar, producerar eller distribuerar ni kemikalier som överstiger 1 ton per år OCH används inom något av följande områden? (Markera alla som stämmer)",
+      helpText: "Enligt MCFFS 2026:1 räknas dessa som viktiga verksamhetsutövare om de uppfyller både mängd- och användningskriterier.",
+      type: 'checkbox',
+      options: [
+        "Dricksvattenrening",
+        "Livsmedelsproduktion",
+        "Hälso- och sjukvård (inklusive läkemedel)",
+        "Kritisk infrastruktur (energi, transport, etc.)",
+        "Ingen av ovanstående"
+      ],
+      showIf: (answers) => {
+        const hasManufacturing = Array.isArray(answers.q4) && answers.q4.includes('Tillverkning (medicinteknik, fordon, elektronik, maskiner, kemikalier, livsmedel)');
+        return hasManufacturing;
+      }
+    },
+    
     {
       id: 'q9',
       section: 3,
@@ -475,6 +529,18 @@ export default function QuestionnaireForm() {
     // Totalt Potentiellt Omfattande
     const potentielltOmfattad = arOffentligOchOmfattasDirekt || arPotentielltOmfattadSomPrivat;
     
+    // Identifiera VÄSENTLIGA verksamhetsutövare enligt MCFFS 2026:1
+    const arVasentlig = 
+      // Transport: Beredskapsflygplatser, flygkontroll, karantänshamnar, skyddade platser
+      (hasSelections(answers.q18)) ||
+      // Dricksvatten: >20,000 personer eller akutsjukhus
+      (isYes(answers.q19));
+    
+    // Identifiera VIKTIGA verksamhetsutövare enligt MCFFS 2026:1
+    const arViktig = 
+      // Kemikalier: >1 ton/år för kritiska områden
+      (hasSelections(answers.q20));
+    
     // 2. Analys av "Potentiella Undantag"
     const undantagGaller = 
       isYes(answers.q13) ||  // Säkerhetskänslig/brottsbekämpande
@@ -530,16 +596,30 @@ export default function QuestionnaireForm() {
       return {
         result: "osäker",
         message: "Bedömningen är osäker på grund av 'Vet ej'-svar.",
-        details: "Systemet kan inte ge en tillförlitlig bedömning på grund av osäkra svar. För en säkrare bedömning behöver du ta reda på svaren på de frågor du är osäker på och göra om bedömningen."
+        details: "Systemet kan inte ge en tillförlitlig bedömning på grund av osäkra svar. För en säkrare bedömning behöver du ta reda på svaren på de frågor du är osäker på och göra om bedömningen.",
+        category: null
       };
     }
     
-    // 🔴 OMFATTAS
+    // 🔴 OMFATTAS - med väsentlig/viktig klassificering
     if (potentielltOmfattad && (!undantagGaller || betroddaTjansterTrumfarUndantag)) {
+      // Avgör om väsentlig eller viktig
+      let category = null;
+      let categoryMessage = "";
+      
+      if (arVasentlig) {
+        category = "väsentlig";
+        categoryMessage = " Du är en **väsentlig verksamhetsutövare** enligt MCFFS 2026:1, vilket innebär striktare krav på cybersäkerhet, omfattande incidenthantering och regelbunden tillsyn.";
+      } else if (arViktig) {
+        category = "viktig";
+        categoryMessage = " Du är en **viktig verksamhetsutövare** enligt MCFFS 2026:1, vilket innebär förhöjda cybersäkerhetskrav men inte lika strikta som för väsentliga verksamhetsutövare.";
+      }
+      
       return {
         result: "omfattas",
-        message: "Din verksamhet omfattas sannolikt av Cybersäkerhetslagen (2025:1506).",
-        details: "Baserat på dina svar uppfyller verksamheten kriterierna för att omfattas av lagen och måste följa dess krav."
+        message: "Din verksamhet omfattas sannolikt av Cybersäkerhetslagen (2025:1506)." + categoryMessage,
+        details: "Baserat på dina svar uppfyller verksamheten kriterierna för att omfattas av lagen och måste följa dess krav.",
+        category: category
       };
     }
     
@@ -548,7 +628,8 @@ export default function QuestionnaireForm() {
       return {
         result: "undantag",
         message: "Din verksamhet kan vara undantagen trots att den annars skulle omfattas.",
-        details: "Verksamheten uppfyller kriterier för att omfattas, men kan vara undantagen på grund av särskilda omständigheter. Detta kräver noggrann juridisk analys."
+        details: "Verksamheten uppfyller kriterier för att omfattas, men kan vara undantagen på grund av särskilda omständigheter. Detta kräver noggrann juridisk analys.",
+        category: null
       };
     }
     
@@ -556,7 +637,8 @@ export default function QuestionnaireForm() {
     return {
       result: "omfattas_ej",
       message: "Din verksamhet omfattas sannolikt inte av Cybersäkerhetslagen.",
-      details: "Baserat på dina svar uppfyller verksamheten inte kriterierna för att omfattas av lagen."
+      details: "Baserat på dina svar uppfyller verksamheten inte kriterierna för att omfattas av lagen.",
+      category: null
     };
   };
 

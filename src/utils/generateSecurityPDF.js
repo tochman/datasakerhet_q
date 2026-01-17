@@ -96,6 +96,51 @@ export const generateSecurityPDF = (assessment, measures, answers = {}) => {
 
   doc.setTextColor(0, 0, 0);
 
+  // === MCFFS 2026:1 KLASSIFICERING ===
+  if (assessment.category) {
+    // Kontrollera om vi behöver ny sida
+    if (yPosition > pageHeight - 60) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('MCFFS 2026:1 Klassificering', 20, yPosition);
+    yPosition += 8;
+
+    // Bakgrundsfärg baserat på kategori
+    if (assessment.category === 'väsentlig') {
+      doc.setFillColor(255, 237, 213); // orange-100
+      doc.rect(20, yPosition - 5, pageWidth - 40, 35, 'F');
+      doc.setTextColor(194, 65, 12); // orange-800
+    } else {
+      doc.setFillColor(219, 234, 254); // blue-100
+      doc.rect(20, yPosition - 5, pageWidth - 40, 35, 'F');
+      doc.setTextColor(30, 58, 138); // blue-800
+    }
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    const categoryTitle = assessment.category === 'väsentlig' 
+      ? 'Väsentlig verksamhetsutövare' 
+      : 'Viktig verksamhetsutövare';
+    doc.text(categoryTitle, 25, yPosition);
+    yPosition += 6;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    const categoryText = assessment.category === 'väsentlig'
+      ? 'Er verksamhet klassificeras som en väsentlig verksamhetsutövare enligt MCFFS 2026:1 (Myndigheten för civilt försvar). Detta innebär striktare krav på cybersäkerhet, omfattande incidenthantering och regelbunden tillsyn från MSB.'
+      : 'Er verksamhet klassificeras som en viktig verksamhetsutövare enligt MCFFS 2026:1 (Myndigheten för civilt försvar). Detta innebär förhöjda cybersäkerhetskrav men inte lika strikta som för väsentliga verksamhetsutövare.';
+    
+    const splitCategoryText = doc.splitTextToSize(categoryText, pageWidth - 50);
+    doc.text(splitCategoryText, 25, yPosition);
+    yPosition += splitCategoryText.length * 5 + 15;
+
+    doc.setTextColor(0, 0, 0);
+  }
+
   // === SÄKERHETSÅTGÄRDER ===
   if (measures && measures.length > 0) {
     // Kontrollera om vi behöver ny sida

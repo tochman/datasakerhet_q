@@ -235,6 +235,8 @@ export default function AdminPanel() {
     omfattasEj: responses.filter(r => r.assessment_result === 'omfattas_ej').length,
     undantag: responses.filter(r => r.assessment_result === 'undantag').length,
     osaker: responses.filter(r => r.assessment_result === 'osäker').length,
+    vasentlig: responses.filter(r => r.assessment_category === 'väsentlig').length,
+    viktig: responses.filter(r => r.assessment_category === 'viktig').length,
     wantsContact: responses.filter(r => r.wants_contact).length,
     pdfDownloads: pdfDownloads.length
   }
@@ -271,7 +273,7 @@ export default function AdminPanel() {
         </div>
 
         {/* Statistik */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="bg-white rounded-sm shadow p-3 sm:p-4">
             <div className="text-xl sm:text-2xl font-bold text-gray-900">{stats.total}</div>
             <div className="text-xs sm:text-sm text-gray-600">Totalt svar</div>
@@ -292,9 +294,17 @@ export default function AdminPanel() {
             <div className="text-2xl font-bold text-gray-900">{stats.osaker}</div>
             <div className="text-sm text-gray-700">Osäker</div>
           </div>
+          <div className="bg-orange-50 rounded-sm shadow p-4">
+            <div className="text-2xl font-bold text-orange-900">{stats.vasentlig}</div>
+            <div className="text-sm text-orange-700">Väsentlig</div>
+          </div>
           <div className="bg-blue-50 rounded-sm shadow p-4">
-            <div className="text-2xl font-bold text-blue-900">{stats.wantsContact}</div>
-            <div className="text-sm text-blue-700">Vill ha kontakt</div>
+            <div className="text-2xl font-bold text-blue-900">{stats.viktig}</div>
+            <div className="text-sm text-blue-700">Viktig</div>
+          </div>
+          <div className="bg-indigo-50 rounded-sm shadow p-4">
+            <div className="text-2xl font-bold text-indigo-900">{stats.wantsContact}</div>
+            <div className="text-sm text-indigo-700">Vill ha kontakt</div>
           </div>
           <div className="bg-purple-50 rounded-sm shadow p-4 cursor-pointer hover:bg-purple-100 transition-colors"
             onClick={() => setActiveTab('downloads')}>
@@ -419,6 +429,9 @@ export default function AdminPanel() {
                   <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Resultat
                   </th>
+                  <th className="hidden xl:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Kategori
+                  </th>
                   <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Plats
                   </th>
@@ -433,7 +446,7 @@ export default function AdminPanel() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredResponses.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                    <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
                       Inga svar att visa
                     </td>
                   </tr>
@@ -473,6 +486,19 @@ export default function AdminPanel() {
                              response.assessment_result === 'undantag' ? '!' : '?'}
                           </span>
                         </span>
+                      </td>
+                      <td className="hidden xl:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
+                        {response.assessment_category ? (
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            response.assessment_category === 'väsentlig' 
+                              ? 'bg-orange-100 text-orange-800' 
+                              : 'bg-blue-100 text-blue-800'
+                          }`}>
+                            {response.assessment_category}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
                       </td>
                       <td className="hidden sm:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                         {response.city && response.country ? (
