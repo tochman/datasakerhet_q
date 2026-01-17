@@ -569,10 +569,14 @@ export const generateIncidentProcessPDF = async () => {
   doc.setFont('helvetica', 'normal');
   const containmentData = [
     ['Incidenttyp', 'Containment-åtgärder'],
-    ['Malware/\nRansomware', '- Isolera drabbade system från nätverk\n- Blockera skadliga IP-adresser\n- Inaktivera smittade användarkonton'],
-    ['Phishing', '- Blockera avsändaradress\n- Ta bort e-post från alla brevlådor\n- Återställ komprometterade lösenord'],
-    ['Intrång', '- Inaktivera komprometterade konton\n- Ändra alla privilegierade lösenord\n- Isolera påverkade segment'],
-    ['DDoS', '- Aktivera DDoS-skydd\n- Kontakta ISP/CDN-leverantör\n- Implementera rate limiting']
+    ['Malware/\nRansomware', '- Isolera drabbade system från nätverk\n- Blockera skadliga IP-adresser och domäner\n- Inaktivera smittade användarkonton\n- Stäng av automatiska backupsynkroniseringar\n- Blockera lateral movement via SMB/RDP'],
+    ['Phishing', '- Blockera avsändaradress och domän\n- Ta bort e-post från alla brevlådor\n- Återställ komprometterade lösenord\n- Aktivera MFA på drabbade konton\n- Revokera aktiva sessioner'],
+    ['Intrång/\nBreach', '- Inaktivera komprometterade konton\n- Ändra alla privilegierade lösenord\n- Isolera påverkade segment\n- Blockera utgående trafik till C2-servrar\n- Revokera API-nycklar och certifikat'],
+    ['DDoS', '- Aktivera DDoS-skydd\n- Kontakta ISP/CDN-leverantör\n- Implementera rate limiting\n- Blockera attackkällor geografiskt\n- Aktivera "under attack"-läge'],
+    ['SQL Injection/\nWeb Attack', '- Inaktivera drabbad webbapplikation\n- Blockera skadliga IP-adresser\n- Aktivera WAF-regler\n- Begränsa databas-behörigheter\n- Isolera webb- och databasskikt'],
+    ['Insider Threat', '- Inaktivera användarkonto omedelbart\n- Revokera fysisk och digital åtkomst\n- Isolera användarens enheter från nätverket\n- Frys användardata för forensisk analys\n- Blockera dataexfiltrering (USB, molntjänster)'],
+    ['Credential\nStuffing', '- Tvinga lösenordsåterställning för drabbade konton\n- Aktivera MFA globalt\n- Blockera inloggningar från misstänkta IP-adresser\n- Implementera CAPTCHA vid inloggning\n- Aktivera geoblocking om lämpligt'],
+    ['Zero-Day\nExploit', '- Isolera sårbara system från internet\n- Implementera virtuell patching via WAF/IPS\n- Aktivera whitelist-baserad åtkomst\n- Övervaka för exploit-indikatorer\n- Begränsa lateral movement']
   ];
 
   autoTable(doc, {
