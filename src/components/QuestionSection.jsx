@@ -72,12 +72,14 @@ export default function QuestionSection({
     )
   }
   
-  // Radio buttons (Ja/Nej/Vet ej)
-  const radioOptions = [
-    { value: 'ja', label: 'Ja' },
-    { value: 'nej', label: 'Nej' },
-    { value: 'vet_ej', label: 'Vet ej' }
-  ]
+  // Radio buttons - use provided options or default to Ja/Nej/Vet ej
+  const radioOptions = options.length > 0 
+    ? options.map(opt => ({ value: opt, label: opt }))
+    : [
+        { value: 'ja', label: 'Ja' },
+        { value: 'nej', label: 'Nej' },
+        { value: 'vet_ej', label: 'Vet ej' }
+      ]
   
   return (
     <div className="mb-8">
