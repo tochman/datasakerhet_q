@@ -269,9 +269,9 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
           
           {/* Incident Process Guide Button */}
           <button
-            onClick={() => {
+            onClick={async () => {
               trackPDFDownload('Processbeskrivning');
-              generateIncidentProcessPDF();
+              await generateIncidentProcessPDF();
             }}
             className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-sm shadow transition-colors no-print"
           >

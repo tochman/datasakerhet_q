@@ -5,7 +5,26 @@ import autoTable from 'jspdf-autotable';
  * Genererar en professionell processbeskrivning för incidenthantering
  * Omfattande guide enligt best practice för cybersäkerhetsincidenter
  */
-export const generateIncidentProcessPDF = () => {
+export const generateIncidentProcessPDF = async () => {
+  // Load logo as base64
+  const loadLogoAsBase64 = async () => {
+    try {
+      const response = await fetch('/communitas_logo.png');
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error('Failed to load logo:', error);
+      return null;
+    }
+  };
+
+  const logoData = await loadLogoAsBase64();
+
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -15,6 +34,7 @@ export const generateIncidentProcessPDF = () => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
+  const bottomMargin = 35; // Marginal för footer med logga
   let yPosition = margin;
   
   // Standard font sizes för consistency
@@ -27,9 +47,47 @@ export const generateIncidentProcessPDF = () => {
     tiny: 8
   };
 
+  // Helper function to add footer to current page
+  const addFooter = () => {
+    const footerY = pageHeight - bottomMargin;
+    const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+    
+    // Light gray footer background
+    doc.setFillColor(248, 248, 248);
+    doc.rect(0, footerY, pageWidth, bottomMargin, 'F');
+    
+    // Add logo if available
+    if (logoData) {
+      try {
+        doc.addImage(logoData, 'PNG', margin, footerY + 4, 30, 7.5);
+      } catch (error) {
+        console.error('Failed to add logo to PDF:', error);
+      }
+    }
+    
+    // Footer text
+    doc.setFontSize(FONT_SIZES.tiny);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 120, 120);
+    doc.text('Incidenthantering enligt Cybersäkerhetslagen (2025:1506)', margin + 35, footerY + 12);
+    
+    // Page number
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Sida ${currentPage}`, pageWidth - margin, footerY + 12, { align: 'right' });
+    
+    // Powered by text
+    doc.setFontSize(FONT_SIZES.tiny - 0.5);
+    doc.setTextColor(140, 140, 140);
+    doc.text('Powered by Communitas Labs', pageWidth / 2, footerY + 28, { align: 'center' });
+    
+    // Reset colors
+    doc.setTextColor(0, 0, 0);
+  };
+
   // Helper function to check if we need a new page
   const checkNewPage = (requiredSpace = 40) => {
-    if (yPosition > pageHeight - requiredSpace) {
+    if (yPosition > pageHeight - bottomMargin - requiredSpace) {
+      addFooter(); // Add footer to current page before creating new one
       doc.addPage();
       yPosition = margin;
       return true;
@@ -104,6 +162,9 @@ export const generateIncidentProcessPDF = () => {
     doc.text(item, margin + 5, yPosition);
     yPosition += 6;
   });
+
+  // Add footer to cover page
+  addFooter();
 
   // === NEW PAGE - PROCESS OVERVIEW ===
   doc.addPage();
@@ -809,16 +870,8 @@ export const generateIncidentProcessPDF = () => {
     yPosition += 5;
   });
 
-  // === FOOTER ===
-  yPosition = pageHeight - 25;
-  doc.setFillColor(240, 240, 240);
-  doc.rect(0, yPosition, pageWidth, 25, 'F');
-  
-  doc.setFontSize(FONT_SIZES.small);
-  doc.setFont('helvetica', 'italic');
-  doc.setTextColor(100, 100, 100);
-  doc.text('Detta dokument är en mall och bör anpassas efter er verksamhetsspecifika behov.', margin, yPosition + 8);
-  doc.text('För frågor om incidenthantering enligt Cybersäkerhetslagen, kontakta MSB eller er juridiska rådgivare.', margin, yPosition + 13);
+  // Add footer to last page
+  addFooter();
 
   // Generate and download
   doc.save(`Incidenthantering_Processbeskrivning_${new Date().toISOString().split('T')[0]}.pdf`);

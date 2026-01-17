@@ -1097,9 +1097,9 @@ export default function AdminPanel() {
                 </div>
 
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     trackPDFDownload('Processbeskrivning');
-                    generateIncidentProcessPDF();
+                    await generateIncidentProcessPDF();
                   }}
                   className="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-sm shadow transition-colors flex items-center justify-center"
                 >
