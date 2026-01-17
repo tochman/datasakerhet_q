@@ -651,7 +651,11 @@ export default function QuestionnaireForm() {
         
         {assessment.result === 'omfattas' && (
           <div className="max-w-4xl mx-auto">
-            <SecurityMeasures assessment={assessment} answers={answers} />
+            <SecurityMeasures 
+              assessment={assessment} 
+              answers={answers}
+              surveyResponseId={surveyResponseId}
+            />
           </div>
         )}
 

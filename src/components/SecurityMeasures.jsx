@@ -5,17 +5,59 @@ import { generateSecurityPDF, getSecurityMeasures } from '../utils/generateSecur
  * SecurityMeasures component displays security measures and incident reporting procedures
  * for businesses covered by the Cybersecurity Law (2025:1506)
  */
-export default function SecurityMeasures({ assessment, answers }) {
+export default function SecurityMeasures({ assessment, answers, surveyResponseId }) {
   const [checklist, setChecklist] = useState({})
   const [expandedSections, setExpandedSections] = useState({
     security: true,
     incident: true
   })
 
-  // Handle PDF download
-  const handleDownloadPDF = () => {
+  // Handle PDF download with tracking
+  const handleDownloadPDF = async () => {
     const measures = getSecurityMeasures();
+    
+    // Track the download
+    await trackPDFDownload();
+    
+    // Generate and download the PDF
     generateSecurityPDF(assessment, measures, answers);
+  }
+
+  // Track PDF download
+  const trackPDFDownload = async () => {
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      // Collect browser/device information
+      const userAgent = navigator.userAgent;
+      const language = navigator.language;
+      const referrer = document.referrer || window.location.href;
+
+      // Call Edge Function to log download (Edge Function will capture IP)
+      const response = await fetch(`${supabaseUrl}/functions/v1/track-pdf-download`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+          'apikey': supabaseAnonKey
+        },
+        body: JSON.stringify({
+          surveyResponseId: surveyResponseId || null,
+          assessmentResult: assessment.result,
+          userAgent,
+          language,
+          referrer
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Failed to track PDF download:', await response.text());
+      }
+    } catch (error) {
+      // Fail silently - don't block PDF download if tracking fails
+      console.error('Error tracking PDF download:', error);
+    }
   }
 
   // Data för säkerhetsåtgärder (2 kap. 3-4 §§)

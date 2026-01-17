@@ -33,6 +33,8 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true)
   const [selectedResponse, setSelectedResponse] = useState(null)
   const [contactInfo, setContactInfo] = useState(null)
+  const [pdfDownloads, setPdfDownloads] = useState([])
+  const [showDownloads, setShowDownloads] = useState(false)
   const [filters, setFilters] = useState({
     wantsContact: 'all',
     result: 'all',
@@ -45,6 +47,7 @@ export default function AdminPanel() {
   // Hämta alla svar vid laddning
   useEffect(() => {
     fetchResponses()
+    fetchPDFDownloads()
   }, [])
 
   // Applicera filter när responses eller filters ändras
@@ -78,6 +81,21 @@ export default function AdminPanel() {
       alert('Kunde inte hämta svar')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchPDFDownloads = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('pdf_downloads')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
+
+      if (error) throw error
+      setPdfDownloads(data || [])
+    } catch (error) {
+      console.error('Fel vid hämtning av PDF-nedladdningar:', error)
     }
   }
 
@@ -169,7 +187,8 @@ export default function AdminPanel() {
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
     const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
+    link.setAttribute('href', url),
+    pdfDownloads: pdfDownloads.length
     link.setAttribute('download', `cybersakerhet_svar_${new Date().toISOString().split('T')[0]}.csv`)
     link.style.visibility = 'hidden'
     document.body.appendChild(link)
@@ -219,7 +238,7 @@ export default function AdminPanel() {
         </div>
 
         {/* Statistik */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
           <div className="bg-white rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
             <div className="text-sm text-gray-600">Totalt svar</div>
@@ -244,7 +263,86 @@ export default function AdminPanel() {
             <div className="text-2xl font-bold text-blue-900">{stats.wantsContact}</div>
             <div className="text-sm text-blue-700">Vill ha kontakt</div>
           </div>
+          <div className="bg-purple-50 rounded-sm shadow p-4 cursor-pointer hover:bg-purple-100 transition-colors"
+            onClick={() => setShowDownloads(!showDownloads)}>
+            <div className="text-2xl font-bold text-purple-900">{stats.pdfDownloads}</div>
+            <div className="text-sm text-purple-700">PDF-nedladdningar</div>
+          </div>
         </div>
+
+        {/* PDF Downloads Modal */}
+        {showDownloads && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setShowDownloads(false)}>
+            <div className="bg-white rounded-sm shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}>
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">PDF-nedladdningar</h2>
+                    <p className="text-sm text-gray-600">
+                      Totalt {pdfDownloads.length} nedladdningar
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowDownloads(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Datum</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Webbläsare</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">OS</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enhet</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Resultat</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {pdfDownloads.map((download) => (
+                        <tr key={download.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                            {new Date(download.created_at).toLocaleString('sv-SE')}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                            {download.browser_name} {download.browser_version}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                            {download.os_name}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                            {download.device_type}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 font-mono text-xs">
+                            {download.ip_address}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              download.assessment_result === 'omfattas' ? 'bg-red-100 text-red-800' :
+                              download.assessment_result === 'omfattas_ej' ? 'bg-green-100 text-green-800' :
+                              download.assessment_result === 'undantag' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {download.assessment_result}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Filter */}
         <div className="bg-white rounded-sm shadow p-6 mb-8">
