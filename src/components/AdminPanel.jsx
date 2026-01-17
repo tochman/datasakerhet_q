@@ -34,7 +34,13 @@ export default function AdminPanel() {
   const [selectedResponse, setSelectedResponse] = useState(null)
   const [contactInfo, setContactInfo] = useState(null)
   const [pdfDownloads, setPdfDownloads] = useState([])
-  const [showDownloads, setShowDownloads] = useState(false)
+  const [activeTab, setActiveTab] = useState('responses') // 'responses' or 'downloads'
+  const [downloadFilters, setDownloadFilters] = useState({
+    result: '',
+    deviceType: '',
+    dateFrom: '',
+    dateTo: ''
+  })
   const [filters, setFilters] = useState({
     wantsContact: 'all',
     result: 'all',
@@ -98,6 +104,33 @@ export default function AdminPanel() {
       console.error('Fel vid hämtning av PDF-nedladdningar:', error)
     }
   }
+
+  // Get download count for a specific survey response
+  const getDownloadCount = (surveyId) => {
+    return pdfDownloads.filter(d => d.survey_response_id === surveyId).length
+  }
+
+  // Filter downloads based on current filters
+  const filteredDownloads = pdfDownloads.filter(download => {
+    if (downloadFilters.result && download.assessment_result !== downloadFilters.result) {
+      return false
+    }
+    if (downloadFilters.deviceType && download.device_type !== downloadFilters.deviceType) {
+      return false
+    }
+    if (downloadFilters.dateFrom) {
+      const downloadDate = new Date(download.created_at)
+      const filterDate = new Date(downloadFilters.dateFrom)
+      if (downloadDate < filterDate) return false
+    }
+    if (downloadFilters.dateTo) {
+      const downloadDate = new Date(download.created_at)
+      const filterDate = new Date(downloadFilters.dateTo)
+      filterDate.setHours(23, 59, 59, 999) // Include entire day
+      if (downloadDate > filterDate) return false
+    }
+    return true
+  })
 
   const applyFilters = () => {
     let filtered = [...responses]
@@ -187,8 +220,7 @@ export default function AdminPanel() {
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
     const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url),
-    pdfDownloads: pdfDownloads.length
+    link.setAttribute('href', url)
     link.setAttribute('download', `cybersakerhet_svar_${new Date().toISOString().split('T')[0]}.csv`)
     link.style.visibility = 'hidden'
     document.body.appendChild(link)
@@ -203,7 +235,8 @@ export default function AdminPanel() {
     omfattasEj: responses.filter(r => r.assessment_result === 'omfattas_ej').length,
     undantag: responses.filter(r => r.assessment_result === 'undantag').length,
     osaker: responses.filter(r => r.assessment_result === 'osäker').length,
-    wantsContact: responses.filter(r => r.wants_contact).length
+    wantsContact: responses.filter(r => r.wants_contact).length,
+    pdfDownloads: pdfDownloads.length
   }
 
   if (loading) {
@@ -264,87 +297,42 @@ export default function AdminPanel() {
             <div className="text-sm text-blue-700">Vill ha kontakt</div>
           </div>
           <div className="bg-purple-50 rounded-sm shadow p-4 cursor-pointer hover:bg-purple-100 transition-colors"
-            onClick={() => setShowDownloads(!showDownloads)}>
+            onClick={() => setActiveTab('downloads')}>
             <div className="text-2xl font-bold text-purple-900">{stats.pdfDownloads}</div>
             <div className="text-sm text-purple-700">PDF-nedladdningar</div>
           </div>
         </div>
 
-        {/* PDF Downloads Modal */}
-        {showDownloads && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-            onClick={() => setShowDownloads(false)}>
-            <div className="bg-white rounded-sm shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}>
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">PDF-nedladdningar</h2>
-                    <p className="text-sm text-gray-600">
-                      Totalt {pdfDownloads.length} nedladdningar
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setShowDownloads(false)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
+        {/* Tabs Navigation */}
+        <div className="mb-6 border-b border-gray-200">
+          <nav className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab('responses')}
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'responses'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              📋 Undersökningssvar ({responses.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('downloads')}
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'downloads'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              📥 PDF-nedladdningar ({pdfDownloads.length})
+            </button>
+          </nav>
+        </div>
 
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Datum</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Webbläsare</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">OS</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enhet</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Resultat</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {pdfDownloads.map((download) => (
-                        <tr key={download.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                            {new Date(download.created_at).toLocaleString('sv-SE')}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                            {download.browser_name} {download.browser_version}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                            {download.os_name}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                            {download.device_type}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 font-mono text-xs">
-                            {download.ip_address}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                              download.assessment_result === 'omfattas' ? 'bg-red-100 text-red-800' :
-                              download.assessment_result === 'omfattas_ej' ? 'bg-green-100 text-green-800' :
-                              download.assessment_result === 'undantag' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {download.assessment_result}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Filter */}
+        {/* Responses Tab */}
+        {activeTab === 'responses' && (
+        <div>
+          {/* Filter */}
         <div className="bg-white rounded-sm shadow p-6 mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Filter</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -435,6 +423,9 @@ export default function AdminPanel() {
                     Vill ha kontakt
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    PDF-nedladdningar
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Åtgärd
                   </th>
                 </tr>
@@ -442,7 +433,7 @@ export default function AdminPanel() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredResponses.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                    <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
                       Inga svar att visa
                     </td>
                   </tr>
@@ -485,6 +476,18 @@ export default function AdminPanel() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {(() => {
+                          const count = getDownloadCount(response.id)
+                          return count > 0 ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                              {count}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">0</span>
+                          )
+                        })()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
                           onClick={() => viewDetails(response)}
                           className="text-primary hover:text-primary-dark font-medium"
@@ -499,7 +502,176 @@ export default function AdminPanel() {
             </table>
           </div>
         </div>
-      </div>
+        </div>
+        )}
+
+      {/* Downloads Tab */}
+      {activeTab === 'downloads' && (
+        <div className="space-y-6">
+          {/* Filters */}
+          <div className="bg-white border border-gray-200 rounded-sm p-6">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">Filter nedladdningar</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Resultat
+                </label>
+                <select
+                  value={downloadFilters.result}
+                  onChange={(e) => setDownloadFilters({...downloadFilters, result: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Alla resultat</option>
+                  <option value="omfattas">Omfattas</option>
+                  <option value="omfattas_ej">Omfattas ej</option>
+                  <option value="undantag">Undantag</option>
+                  <option value="osäker">Osäker</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Enhetstyp
+                </label>
+                <select
+                  value={downloadFilters.deviceType}
+                  onChange={(e) => setDownloadFilters({...downloadFilters, deviceType: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Alla enheter</option>
+                  <option value="desktop">Desktop</option>
+                  <option value="mobile">Mobil</option>
+                  <option value="tablet">Surfplatta</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Från datum
+                </label>
+                <input
+                  type="date"
+                  value={downloadFilters.dateFrom}
+                  onChange={(e) => setDownloadFilters({...downloadFilters, dateFrom: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Till datum
+                </label>
+                <input
+                  type="date"
+                  value={downloadFilters.dateTo}
+                  onChange={(e) => setDownloadFilters({...downloadFilters, dateTo: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            
+            {(downloadFilters.result || downloadFilters.deviceType || downloadFilters.dateFrom || downloadFilters.dateTo) && (
+              <button
+                onClick={() => setDownloadFilters({result: '', deviceType: '', dateFrom: '', dateTo: ''})}
+                className="mt-4 text-sm text-blue-600 hover:text-blue-800"
+              >
+                Rensa filter
+              </button>
+            )}
+          </div>
+
+          {/* Downloads Table */}
+          <div className="bg-white border border-gray-200 rounded-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Datum & Tid
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Webbläsare
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Operativsystem
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Enhet
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      IP-adress
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Resultat
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Undersöknings-ID
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredDownloads.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                        Inga nedladdningar hittades
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredDownloads.map((download) => (
+                      <tr key={download.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {new Date(download.created_at).toLocaleString('sv-SE', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {download.browser_name || 'Okänd'}
+                          {download.browser_version && (
+                            <span className="text-gray-500"> v{download.browser_version}</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {download.os_name || 'Okänt'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span className="inline-flex items-center">
+                            {download.device_type === 'mobile' && '📱'}
+                            {download.device_type === 'tablet' && '📱'}
+                            {download.device_type === 'desktop' && '💻'}
+                            <span className="ml-2 text-gray-900 capitalize">
+                              {download.device_type || 'Okänd'}
+                            </span>
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">
+                          {download.ip_address || 'N/A'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            ${download.assessment_result === 'omfattas' ? 'bg-red-100 text-red-800' : ''}
+                            ${download.assessment_result === 'omfattas_ej' ? 'bg-green-100 text-green-800' : ''}
+                            ${download.assessment_result === 'undantag' ? 'bg-yellow-100 text-yellow-800' : ''}
+                            ${download.assessment_result === 'osäker' ? 'bg-gray-100 text-gray-800' : ''}
+                          `}>
+                            {download.assessment_result || 'N/A'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                          {download.survey_response_id ? download.survey_response_id.substring(0, 8) : 'N/A'}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Detaljvy Modal */}
       {selectedResponse && (
@@ -635,6 +807,7 @@ export default function AdminPanel() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
