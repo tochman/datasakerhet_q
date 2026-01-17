@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { generateSecurityPDF, getSecurityMeasures } from '../utils/generateSecurityPDF'
 import { generateIncidentReportPDF } from '../utils/generateIncidentReportPDF'
 import { generateIncidentProcessPDF } from '../utils/generateIncidentProcessPDF'
+import TemplateDownloads from './TemplateDownloads'
+import ContactForm from './ContactForm'
 
 /**
  * SecurityMeasures component displays security measures and incident reporting procedures
@@ -223,67 +225,33 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
   const progressPercentage = totalItems > 0 ? (completedItems / totalItems) * 100 : 0
 
   return (
-    <div className="mt-8 bg-white rounded-sm shadow-lg p-6 security-measures-print">
-      {/* Header */}
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex-1">
+    <div className="mt-8 space-y-8">
+      {/* Template Downloads Section - Moved to top */}
+      <div className="no-print">
+        <TemplateDownloads 
+          assessment={assessment}
+          answers={answers}
+          handleDownloadPDF={handleDownloadPDF}
+          trackPDFDownload={trackPDFDownload}
+        />
+      </div>
+
+      {/* Security Measures Detail Section */}
+      <div className="bg-white rounded-sm shadow-lg p-6 security-measures-print">
+        {/* Header */}
+        <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
             <svg className="w-6 h-6 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Föreslagna Säkerhetsåtgärder och Rutiner
+            Detaljerade Säkerhetsåtgärder och Rutiner
           </h2>
           <p className="text-gray-600">
             Baserat på bedömningen rekommenderar vi följande åtgärder för att uppfylla kraven i lagen.
           </p>
         </div>
-        
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-3">
-          {/* PDF Download Button */}
-          {assessment && answers && (
-            <button
-              onClick={handleDownloadPDF}
-              className="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white font-semibold rounded-sm shadow transition-colors no-print"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Ladda ner rekommendationer
-            </button>
-          )}
-          
-          {/* Incident Report Template Button */}
-          <button
-            onClick={async () => {
-              trackPDFDownload('Händelserapport');
-              await generateIncidentReportPDF();
-            }}
-            className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-sm shadow transition-colors no-print"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Händelserapport (mall)
-          </button>
-          
-          {/* Incident Process Guide Button */}
-          <button
-            onClick={async () => {
-              trackPDFDownload('Processbeskrivning');
-              await generateIncidentProcessPDF();
-            }}
-            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-sm shadow transition-colors no-print"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-            Processbeskrivning
-          </button>
-        </div>
-      </div>
       
-      {/* Progress */}
+        {/* Progress */}
       <div className="mb-6">
         <div className="flex justify-between text-sm text-gray-600 mb-2">
           <span>Din framsteg</span>
@@ -463,33 +431,46 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
         </div>
       </div>
 
-      {/* Call-to-actions */}
-      <div className="flex gap-4 flex-wrap no-print">
-        <button 
-          onClick={() => window.print()}
-          className="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-sm shadow transition-colors"
-        >
-          <span className="mr-2">📄</span>
-          Skriv ut som checklista
-        </button>
-        <button 
-          onClick={() => {
-            const contactForm = document.querySelector('#contact-form')
-            if (contactForm) {
-              contactForm.scrollIntoView({ behavior: 'smooth' })
-            } else {
-              // If contact form is not visible, try to trigger it
-              const contactButton = document.querySelector('[data-contact-trigger]')
-              if (contactButton) {
-                contactButton.click()
+        {/* Call-to-actions */}
+        <div className="flex gap-4 flex-wrap no-print mt-6">
+          <button 
+            onClick={() => window.print()}
+            className="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-sm shadow transition-colors"
+          >
+            <span className="mr-2">📄</span>
+            Skriv ut som checklista
+          </button>
+          <button 
+            onClick={() => {
+              const contactForm = document.querySelector('#contact-form')
+              if (contactForm) {
+                contactForm.scrollIntoView({ behavior: 'smooth' })
               }
-            }
-          }}
-          className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-sm shadow transition-colors"
-        >
-          <span className="mr-2">📧</span>
-          Få hjälp med implementering
-        </button>
+            }}
+            className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-sm shadow transition-colors"
+          >
+            <span className="mr-2">📧</span>
+            Få hjälp med implementering
+          </button>
+        </div>
+      </div>
+
+      {/* Contact Form Section */}
+      <div id="contact-form" className="bg-white rounded-sm shadow-lg p-6">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+            Behöver ni hjälp med Cybersäkerhetslagen?
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Kontakta oss för skräddarsydd rådgivning, fler mallar, eller implementeringsstöd.
+          </p>
+        </div>
+        <ContactForm 
+          surveyResponseId={surveyResponseId}
+          onSuccess={() => {
+            alert('Tack för ditt meddelande! Vi återkommer inom kort.');
+          }} 
+        />
       </div>
     </div>
   )
