@@ -9,7 +9,7 @@ export const generateIncidentProcessPDF = async () => {
   // Load logo as base64
   const loadLogoAsBase64 = async () => {
     try {
-      const response = await fetch('/communitas_logo.png');
+      const response = await fetch('/communitas_logo_transparent.png');
       const blob = await response.blob();
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
