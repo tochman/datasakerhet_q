@@ -57,13 +57,13 @@ export const generateIncidentProcessPDF = async () => {
     doc.setLineWidth(0.5);
     doc.line(margin, footerY + 5, pageWidth - margin, footerY + 5);
     
-    // Add centered logo
+    // Add logo to bottom right
     if (logoData) {
       try {
-        const logoWidth = 40;
-        const logoHeight = 10;
-        const logoX = (pageWidth - logoWidth) / 2;
-        doc.addImage(logoData, 'PNG', logoX, footerY + 9, logoWidth, logoHeight);
+        const logoWidth = 35;
+        const logoHeight = 8.75;
+        const logoX = pageWidth - margin - logoWidth;
+        doc.addImage(logoData, 'PNG', logoX, footerY + 20, logoWidth, logoHeight);
       } catch (error) {
         console.error('Failed to add logo to PDF:', error);
       }
@@ -195,36 +195,35 @@ export const generateIncidentProcessPDF = async () => {
   ];
 
   flowSteps.forEach((step, index) => {
-    checkNewPage(20);
-    // Modern blå box med skugga-effekt
+    // Kompakt blå box
     doc.setFillColor(235, 242, 255);
     doc.setDrawColor(79, 130, 230);
-    doc.setLineWidth(0.8);
-    doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 15, 2, 2, 'FD');
+    doc.setLineWidth(0.6);
+    doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 11, 1.5, 1.5, 'FD');
     
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(FONT_SIZES.body);
+    doc.setFontSize(FONT_SIZES.small);
     doc.setTextColor(30, 64, 175);
-    doc.text(`${step.num}. ${step.title}`, margin + 5, yPosition + 6);
+    doc.text(`${step.num}. ${step.title}`, margin + 4, yPosition + 4.5);
     
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(FONT_SIZES.small);
+    doc.setFontSize(FONT_SIZES.tiny);
     doc.setTextColor(55, 65, 81);
-    doc.text(step.desc, margin + 5, yPosition + 11);
+    doc.text(step.desc, margin + 4, yPosition + 8.5);
     doc.setTextColor(0, 0, 0);
     
-    yPosition += 16;
+    yPosition += 12;
     
     if (index < flowSteps.length - 1) {
-      // Draw arrow
+      // Kompakt pil
       const centerX = pageWidth / 2;
       doc.setDrawColor(79, 130, 230);
-      doc.setLineWidth(1.2);
-      doc.line(centerX, yPosition + 2, centerX, yPosition + 8);
+      doc.setLineWidth(1);
+      doc.line(centerX, yPosition + 1, centerX, yPosition + 5);
       // Arrow head
       doc.setFillColor(79, 130, 230);
-      doc.triangle(centerX, yPosition + 10, centerX - 2, yPosition + 6, centerX + 2, yPosition + 6, 'F');
-      yPosition += 12;
+      doc.triangle(centerX, yPosition + 6.5, centerX - 1.5, yPosition + 3.5, centerX + 1.5, yPosition + 3.5, 'F');
+      yPosition += 8;
     }
   });
 

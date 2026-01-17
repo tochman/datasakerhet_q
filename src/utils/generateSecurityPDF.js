@@ -49,13 +49,13 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
     doc.setLineWidth(0.5);
     doc.line(20, footerY + 5, pageWidth - 20, footerY + 5);
     
-    // Add centered logo
+    // Add logo to bottom right
     if (logoData) {
       try {
-        const logoWidth = 40;
-        const logoHeight = 10;
-        const logoX = (pageWidth - logoWidth) / 2;
-        doc.addImage(logoData, 'PNG', logoX, footerY + 9, logoWidth, logoHeight);
+        const logoWidth = 35;
+        const logoHeight = 8.75;
+        const logoX = pageWidth - 20 - logoWidth;
+        doc.addImage(logoData, 'PNG', logoX, footerY + 20, logoWidth, logoHeight);
       } catch (error) {
         console.error('Failed to add logo to PDF:', error);
       }

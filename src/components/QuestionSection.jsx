@@ -56,7 +56,7 @@ export default function QuestionSection({
           {options.map((option) => (
             <label 
               key={option}
-              className={`flex items-start p-3 sm:p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-102 ${
+              className={`flex items-start p-3 sm:p-5 border-2 rounded-sm cursor-pointer transition-all transform hover:scale-102 ${
                 selectedServices.includes(option)
                   ? 'border-primary bg-blue-50 shadow-md'
                   : 'border-gray-300 hover:border-primary hover:bg-gray-50 bg-white'
@@ -95,7 +95,7 @@ export default function QuestionSection({
         {radioOptions.map((option) => (
           <label 
             key={option.value}
-            className={`flex items-center justify-center p-4 sm:p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-105 active:scale-95 ${
+            className={`flex items-center justify-center p-4 sm:p-5 border-2 rounded-sm cursor-pointer transition-all transform hover:scale-105 active:scale-95 ${
               value === option.value 
                 ? 'border-primary bg-gradient-to-br from-primary to-blue-600 text-white font-bold shadow-lg' 
                 : 'border-gray-300 hover:border-primary hover:bg-blue-50 hover:shadow-md bg-white'

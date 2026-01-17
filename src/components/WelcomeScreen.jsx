@@ -17,7 +17,7 @@ export default function WelcomeScreen({ onStart }) {
       <div className="max-w-4xl mx-auto">
         {/* Counter Section */}
         <div className="text-center mb-6 sm:mb-8 animate-fade-in">
-          <div className="inline-block bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 rounded-lg px-4 sm:px-8 py-4 sm:py-6 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+          <div className="inline-block bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 rounded-sm px-4 sm:px-8 py-4 sm:py-6 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
             <div className="text-5xl sm:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent mb-2 animate-bounce-once">
               {daysSinceLaw}
             </div>
