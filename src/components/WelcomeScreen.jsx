@@ -1,9 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function WelcomeScreen({ onStart }) {
+  const [daysSinceLaw, setDaysSinceLaw] = useState(0);
+
+  useEffect(() => {
+    // Calculate days since the law went into effect (2026-01-15)
+    const lawEffectiveDate = new Date('2026-01-15');
+    const today = new Date();
+    const diffTime = Math.abs(today - lawEffectiveDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    setDaysSinceLaw(diffDays);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
+        {/* Counter Section */}
+        <div className="text-center mb-8">
+          <div className="inline-block bg-red-50 border-2 border-red-200 rounded-sm px-8 py-6 shadow-md">
+            <div className="text-6xl font-bold text-red-600 mb-2">
+              {daysSinceLaw}
+            </div>
+            <div className="text-lg font-semibold text-red-900 mb-1">
+              dagar sedan Cybersäkerhetslagen började gälla i Sverige
+            </div>
+            <div className="text-2xl font-bold text-red-700 mt-3">
+              Är du beredd?
+            </div>
+          </div>
+        </div>
+
         {/* Hero Section */}
         <div className="text-center mb-12">
           <div className="inline-block p-3 bg-primary/10 rounded-full mb-6">
