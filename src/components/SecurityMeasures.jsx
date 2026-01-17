@@ -1,15 +1,22 @@
 import { useState, useEffect } from 'react'
+import { generateSecurityPDF, getSecurityMeasures } from '../utils/generateSecurityPDF'
 
 /**
  * SecurityMeasures component displays security measures and incident reporting procedures
  * for businesses covered by the Cybersecurity Law (2025:1506)
  */
-export default function SecurityMeasures() {
+export default function SecurityMeasures({ assessment, answers }) {
   const [checklist, setChecklist] = useState({})
   const [expandedSections, setExpandedSections] = useState({
     security: true,
     incident: true
   })
+
+  // Handle PDF download
+  const handleDownloadPDF = () => {
+    const measures = getSecurityMeasures();
+    generateSecurityPDF(assessment, measures, answers);
+  }
 
   // Data för säkerhetsåtgärder (2 kap. 3-4 §§)
   const securityMeasures = [
@@ -173,12 +180,32 @@ export default function SecurityMeasures() {
   return (
     <div className="mt-8 bg-white rounded-lg shadow-lg p-6 security-measures-print">
       {/* Header */}
-      <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-        <svg className="w-6 h-6 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-        Föreslagna Säkerhetsåtgärder och Rutiner
-      </h2>
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+            <svg className="w-6 h-6 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Föreslagna Säkerhetsåtgärder och Rutiner
+          </h2>
+          <p className="text-gray-600">
+            Baserat på bedömningen rekommenderar vi följande åtgärder för att uppfylla kraven i lagen.
+          </p>
+        </div>
+        
+        {/* PDF Download Button */}
+        {assessment && answers && (
+          <button
+            onClick={handleDownloadPDF}
+            className="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg shadow transition-colors no-print ml-4"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Ladda ner PDF
+          </button>
+        )}
+      </div>
       
       {/* Progress */}
       <div className="mb-6">
