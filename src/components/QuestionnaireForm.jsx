@@ -421,9 +421,20 @@ export default function QuestionnaireForm() {
        (answers.q0 === 'Offentlig' && isNo(answers.q1) && isNo(answers.q2))) && 
       isYes(answers.q3);
     
-    const uppfyllerKriterierDel3 = 
-      isYes(answers.q12) || // Betrodda tjänster (moved to Q12)
-      isYes(answers.q5) ||  // Medelstort/större företag
+    // Check if company is small (<50 employees AND <€10M)
+    const arLitetForetag = isNo(answers.q5); // Q5 asks if medium/large
+    
+    // Small companies need stronger criteria to be covered
+    // They must have critical services OR trusted services
+    const kritiskaKriterierForSmåFöretag = 
+      isYes(answers.q12) || // Betrodda tjänster (always covered)
+      isYes(answers.q9) ||  // Enda leverantör
+      isYes(answers.q10) || // Avbrott påverkar allvarligt
+      isYes(answers.q11);   // Extra viktig verksamhet
+    
+    // Medium/large companies are covered with broader criteria
+    const uppfyllerKriterierDel3ForStoraForetag = 
+      isYes(answers.q12) || // Betrodda tjänster
       hasSelections(answers.q4) ||  // NIS 2 branscher
       isYes(answers.q6) ||  // Privat utbildning
       isYes(answers.q7) ||  // Telenät
@@ -431,6 +442,11 @@ export default function QuestionnaireForm() {
       isYes(answers.q9) ||  // Enda leverantör
       isYes(answers.q10) || // Avbrott påverkar allvarligt
       isYes(answers.q11);   // Extra viktig verksamhet
+    
+    // Determine if criteria are met based on company size
+    const uppfyllerKriterierDel3 = arLitetForetag 
+      ? kritiskaKriterierForSmåFöretag 
+      : (isYes(answers.q5) && uppfyllerKriterierDel3ForStoraForetag);
     
     const arPotentielltOmfattadSomPrivat = harSvensktSate && uppfyllerKriterierDel3;
     
