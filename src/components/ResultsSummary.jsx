@@ -91,7 +91,7 @@ export default function ResultsSummary({ assessment, onShowContactForm }) {
       </div>
 
       {/* Kontakt-knapp */}
-      <div className="text-center">
+      <div className="text-center mb-8">
         <button
           onClick={onShowContactForm}
           data-contact-trigger
@@ -102,6 +102,22 @@ export default function ResultsSummary({ assessment, onShowContactForm }) {
           </svg>
           Vill ha mer information
         </button>
+      </div>
+
+      {/* Attribution */}
+      <div className="text-center">
+        <p className="text-sm text-gray-600">
+          Detta frågeformulär är byggt baserat på en initial bedömning av lagen gjord av{' '}
+          <a 
+            href="https://lexlegal.ai" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-primary hover:text-primary-dark underline font-medium"
+          >
+            lexlegal.ai
+          </a>
+          {' '}– en AI-driven juridisk tjänst
+        </p>
       </div>
     </div>
   )

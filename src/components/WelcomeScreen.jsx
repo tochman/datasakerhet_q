@@ -144,6 +144,22 @@ export default function WelcomeScreen({ onStart }) {
             </span>
           </p>
         </div>
+
+        {/* Attribution */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Detta frågeformulär är byggt baserat på en initial bedömning av lagen gjord av{' '}
+            <a 
+              href="https://lexlegal.ai" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary-dark underline font-medium"
+            >
+              lexlegal.ai
+            </a>
+            {' '}– en AI-driven juridisk tjänst
+          </p>
+        </div>
       </div>
     </div>
   );
