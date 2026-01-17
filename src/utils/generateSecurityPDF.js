@@ -7,7 +7,26 @@ import autoTable from 'jspdf-autotable';
  * @param {Array} measures - Array med säkerhetsåtgärder
  * @param {Object} answers - Användarens svar från formuläret
  */
-export const generateSecurityPDF = (assessment, measures, answers = {}) => {
+export const generateSecurityPDF = async (assessment, measures, answers = {}) => {
+  // Load logo as base64
+  const loadLogoAsBase64 = async () => {
+    try {
+      const response = await fetch('/communitas_logo.png');
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error('Failed to load logo:', error);
+      return null;
+    }
+  };
+
+  const logoData = await loadLogoAsBase64();
+
   // Skapa ny PDF (A4, portrait)
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -17,7 +36,45 @@ export const generateSecurityPDF = (assessment, measures, answers = {}) => {
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+  const bottomMargin = 35; // Marginal för footer med logga
   let yPosition = 20;
+
+  // Helper function to add footer to current page
+  const addFooter = () => {
+    const footerY = pageHeight - bottomMargin;
+    const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+    
+    // Light gray footer background
+    doc.setFillColor(248, 248, 248);
+    doc.rect(0, footerY, pageWidth, bottomMargin, 'F');
+    
+    // Add logo if available
+    if (logoData) {
+      try {
+        doc.addImage(logoData, 'PNG', 20, footerY + 4, 30, 7.5);
+      } catch (error) {
+        console.error('Failed to add logo to PDF:', error);
+      }
+    }
+    
+    // Footer text
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 120, 120);
+    doc.text('Säkerhetsåtgärder enligt Cybersäkerhetslagen (2025:1506)', 55, footerY + 12);
+    
+    // Page number
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Sida ${currentPage}`, pageWidth - 20, footerY + 12, { align: 'right' });
+    
+    // Powered by text
+    doc.setFontSize(7.5);
+    doc.setTextColor(140, 140, 140);
+    doc.text('Powered by Communitas Labs', pageWidth / 2, footerY + 28, { align: 'center' });
+    
+    // Reset colors
+    doc.setTextColor(0, 0, 0);
+  };
 
   // === HEADER ===
   // Blå header-box
@@ -99,7 +156,8 @@ export const generateSecurityPDF = (assessment, measures, answers = {}) => {
   // === MCFFS 2026:1 KLASSIFICERING ===
   if (assessment.category) {
     // Kontrollera om vi behöver ny sida
-    if (yPosition > pageHeight - 60) {
+    if (yPosition > pageHeight - bottomMargin - 60) {
+      addFooter();
       doc.addPage();
       yPosition = 20;
     }
@@ -144,7 +202,8 @@ export const generateSecurityPDF = (assessment, measures, answers = {}) => {
   // === SÄKERHETSÅTGÄRDER ===
   if (measures && measures.length > 0) {
     // Kontrollera om vi behöver ny sida
-    if (yPosition > pageHeight - 60) {
+    if (yPosition > pageHeight - bottomMargin - 60) {
+      addFooter();
       doc.addPage();
       yPosition = 20;
     }
@@ -172,7 +231,8 @@ export const generateSecurityPDF = (assessment, measures, answers = {}) => {
     // Rendera varje kategori
     Object.entries(groupedMeasures).forEach(([category, categoryMeasures]) => {
       // Kontrollera ny sida
-      if (yPosition > pageHeight - 40) {
+      if (yPosition > pageHeight - bottomMargin - 40) {
+        addFooter();
         doc.addPage();
         yPosition = 20;
       }
@@ -191,7 +251,8 @@ export const generateSecurityPDF = (assessment, measures, answers = {}) => {
       // Åtgärder i kategorin
       categoryMeasures.forEach((measure, index) => {
         // Kontrollera ny sida
-        if (yPosition > pageHeight - 30) {
+        if (yPosition > pageHeight - bottomMargin - 30) {
+          addFooter();
           doc.addPage();
           yPosition = 20;
         }
@@ -278,26 +339,16 @@ export const generateSecurityPDF = (assessment, measures, answers = {}) => {
     yPosition = doc.lastAutoTable.finalY + 10;
   }
 
-  // === FOOTER PÅ SISTA SIDAN ===
-  const finalPageCount = doc.internal.getNumberOfPages();
-  
-  for (let i = 1; i <= finalPageCount; i++) {
+  // Lägg till footer på alla sidor
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
-    
-    // Sidnummer
-    doc.setFontSize(8);
-    doc.setTextColor(156, 163, 175); // gray-400
-    doc.text(
-      `Sida ${i} av ${finalPageCount}`,
-      pageWidth / 2,
-      pageHeight - 10,
-      { align: 'center' }
-    );
+    addFooter();
   }
 
-  // Disclaimer på sista sidan
-  doc.setPage(finalPageCount);
-  yPosition = pageHeight - 35;
+  // Disclaimer på sista sidan (ovanför footer)
+  doc.setPage(totalPages);
+  yPosition = pageHeight - bottomMargin - 25;
 
   doc.setFontSize(8);
   doc.setTextColor(107, 114, 128); // gray-500

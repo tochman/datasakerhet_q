@@ -22,7 +22,7 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
     await trackPDFDownload('Säkerhetsrekommendationer');
     
     // Generate and download the PDF
-    generateSecurityPDF(assessment, measures, answers);
+    await generateSecurityPDF(assessment, measures, answers);
   }
 
   // Track PDF download
@@ -255,9 +255,9 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
           
           {/* Incident Report Template Button */}
           <button
-            onClick={() => {
+            onClick={async () => {
               trackPDFDownload('Händelserapport');
-              generateIncidentReportPDF();
+              await generateIncidentReportPDF();
             }}
             className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-sm shadow transition-colors no-print"
           >

@@ -4,7 +4,26 @@ import jsPDF from 'jspdf';
  * Genererar en ifyllbar händelserapport-PDF enligt Cybersäkerhetslagen
  * Användare kan skriva ut och fylla i manuellt eller redigera digitalt
  */
-export const generateIncidentReportPDF = () => {
+export const generateIncidentReportPDF = async () => {
+  // Load logo as base64
+  const loadLogoAsBase64 = async () => {
+    try {
+      const response = await fetch('/communitas_logo.png');
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error('Failed to load logo:', error);
+      return null;
+    }
+  };
+
+  const logoData = await loadLogoAsBase64();
+
   // Skapa ny PDF (A4, portrait)
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -15,8 +34,46 @@ export const generateIncidentReportPDF = () => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
+  const bottomMargin = 35; // Marginal för footer med logga
   const contentWidth = pageWidth - (2 * margin);
   let yPosition = margin;
+
+  // Helper function to add footer to current page
+  const addFooter = () => {
+    const footerY = pageHeight - bottomMargin;
+    const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+    
+    // Light gray footer background
+    doc.setFillColor(248, 248, 248);
+    doc.rect(0, footerY, pageWidth, bottomMargin, 'F');
+    
+    // Add logo if available
+    if (logoData) {
+      try {
+        doc.addImage(logoData, 'PNG', margin, footerY + 4, 30, 7.5);
+      } catch (error) {
+        console.error('Failed to add logo to PDF:', error);
+      }
+    }
+    
+    // Footer text
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 120, 120);
+    doc.text('Händelserapport - Cybersäkerhetslagen (2025:1506)', margin + 35, footerY + 12);
+    
+    // Page number
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Sida ${currentPage}`, pageWidth - margin, footerY + 12, { align: 'right' });
+    
+    // Powered by text
+    doc.setFontSize(7.5);
+    doc.setTextColor(140, 140, 140);
+    doc.text('Powered by Communitas Labs', pageWidth / 2, footerY + 28, { align: 'center' });
+    
+    // Reset colors
+    doc.setTextColor(0, 0, 0);
+  };
 
   // === HEADER ===
   doc.setFillColor(37, 99, 235); // primary blue
@@ -239,16 +296,16 @@ export const generateIncidentReportPDF = () => {
   doc.rect(margin, yPosition, contentWidth, 25, 'FD');
   yPosition += 30;
 
-  // === FOOTER MED VÄGLEDNING ===
-  yPosition = pageHeight - 30;
+  // === FOOTER MED VÄGLEDNING (ovanför standardfooter) ===
+  const instructionBoxY = pageHeight - bottomMargin - 30;
   doc.setFillColor(240, 240, 240);
-  doc.rect(0, yPosition - 5, pageWidth, 30, 'F');
+  doc.rect(0, instructionBoxY - 5, pageWidth, 30, 'F');
   
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(0, 0, 0);
-  doc.text('VIKTIGT - Rapporteringsfrister enligt Cybersäkerhetslagen:', margin, yPosition);
-  yPosition += 5;
+  doc.text('VIKTIGT - Rapporteringsfrister enligt Cybersäkerhetslagen:', margin, instructionBoxY);
+  yPosition = instructionBoxY + 5;
   
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
@@ -262,6 +319,9 @@ export const generateIncidentReportPDF = () => {
     doc.text(instr, margin, yPosition);
     yPosition += 4;
   });
+
+  // Lägg till footer
+  addFooter();
 
   // === GENERERA OCH LADDA NER ===
   const today = new Date().toISOString().split('T')[0];
