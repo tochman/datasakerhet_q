@@ -420,7 +420,7 @@ export default function AdminPanel() {
                     Resultat
                   </th>
                   <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Vill ha kontakt
+                    Plats
                   </th>
                   <th className="hidden lg:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     PDF-nedladdningar
@@ -475,10 +475,12 @@ export default function AdminPanel() {
                         </span>
                       </td>
                       <td className="hidden sm:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
-                        {response.wants_contact ? (
-                          <span className="text-green-600 font-semibold">Ja</span>
+                        {response.city && response.country ? (
+                          <span className="text-gray-900">🌍 {response.city}, {response.country}</span>
+                        ) : response.country ? (
+                          <span className="text-gray-900">🌍 {response.country}</span>
                         ) : (
-                          <span className="text-gray-400">Nej</span>
+                          <span className="text-gray-400">-</span>
                         )}
                       </td>
                       <td className="hidden lg:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
