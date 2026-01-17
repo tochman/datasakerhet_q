@@ -2,6 +2,28 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 
+// Question labels for displaying in admin panel
+const QUESTION_LABELS = {
+  q0: 'Typ av verksamhet',
+  q1: 'Statlig myndighet?',
+  q2: 'Kommunal/regional verksamhet?',
+  q3: 'Svenskt säte?',
+  q4: 'NIS2-omfattad sektor',
+  q5: 'Stort företag? (>50 anställda eller >10M€)',
+  q6: 'Utbildningsanordnare?',
+  q7: 'DNS-tjänst eller TLD-registrar?',
+  q8: 'Tillhandahåller betrodda tjänster?',
+  q9: 'Kritisk samhällsfunktion?',
+  q10: 'Viktig för samhället?',
+  q11: 'Allvarlig störning vid incident?',
+  q12: 'E-legitimation?',
+  q13: 'Domstols-/säkerhetstjänst eller utrikesrepresentation?',
+  q14: 'Underrättelseverksamhet eller försvarsmateriel?',
+  q15: 'Följer betrodda tjänster EU-förordningar?',
+  q16: 'Mikroföretag?',
+  q17: 'Internationellt eller regionalt organ?'
+}
+
 /**
  * Admin-panel för att hantera och visa formulärsvar
  */
@@ -413,22 +435,74 @@ export default function AdminPanel() {
               {/* Svar på frågor */}
               <div className="mb-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Svar på frågor</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17].map(num => {
-                    const key = `q${num}`
-                    let value = selectedResponse[key === 'q8' ? 'q8_services' : key]
-                    if (key === 'q8' && Array.isArray(value)) {
-                      value = value.join(', ') || 'Inga tjänster valda'
-                    }
-                    return (
-                      <div key={key} className="p-3 bg-white border border-gray-200 rounded">
-                        <div className="text-xs text-gray-500 mb-1">Fråga {num}</div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {value || 'Inget svar'}
-                        </div>
+                <div className="space-y-3">
+                  {/* Always show Q0 first if present */}
+                  {selectedResponse.q0 && (
+                    <div className="p-4 bg-blue-50 border border-blue-200 rounded">
+                      <div className="text-sm font-medium text-blue-900 mb-1">
+                        {QUESTION_LABELS.q0}
                       </div>
-                    )
-                  })}
+                      <div className="text-base font-semibold text-blue-950">
+                        {selectedResponse.q0}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Show all answered questions */}
+                  {Object.entries(selectedResponse)
+                    .filter(([key, value]) => {
+                      // Include questions q1-q17 that have answers
+                      if (key === 'q8_services') return value !== null && value !== undefined
+                      if (!key.match(/^q\d+$/)) return false
+                      if (key === 'q0') return false // Already shown above
+                      return value !== null && value !== undefined && value !== ''
+                    })
+                    .sort((a, b) => {
+                      // Sort by question number
+                      const numA = parseInt(a[0].replace('q', ''))
+                      const numB = parseInt(b[0].replace('q', ''))
+                      return numA - numB
+                    })
+                    .map(([key, value]) => {
+                      let displayValue = value
+                      
+                      // Handle Q4 which is stored as JSON string
+                      if (key === 'q4' && typeof value === 'string') {
+                        try {
+                          const parsed = JSON.parse(value)
+                          displayValue = Array.isArray(parsed) ? parsed.join(', ') : value
+                        } catch {
+                          displayValue = value
+                        }
+                      }
+                      
+                      // Handle Q8 services array
+                      if (key === 'q8_services' && Array.isArray(value)) {
+                        displayValue = value.join(', ')
+                        key = 'q8' // Display as q8
+                      }
+                      
+                      return (
+                        <div key={key} className="p-4 bg-white border border-gray-200 rounded hover:border-gray-300 transition-colors">
+                          <div className="text-sm font-medium text-gray-700 mb-1">
+                            {QUESTION_LABELS[key] || `Fråga ${key.replace('q', '')}`}
+                          </div>
+                          <div className="text-base text-gray-900">
+                            {displayValue}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  
+                  {/* Show message if no questions answered */}
+                  {!selectedResponse.q0 && 
+                   Object.keys(selectedResponse).filter(k => 
+                     k.match(/^q\d+$/) && selectedResponse[k]
+                   ).length === 0 && (
+                    <div className="text-center text-gray-500 py-8">
+                      Inga svar registrerade
+                    </div>
+                  )}
                 </div>
               </div>
 
