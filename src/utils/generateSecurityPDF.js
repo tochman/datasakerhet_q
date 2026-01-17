@@ -36,7 +36,8 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const bottomMargin = 40; // Ökad marginal för footer med logga
+  const bottomMargin = 40; // Marginal för footer med logga
+  const maxContentY = pageHeight - bottomMargin; // Max position för content
   let yPosition = 20;
 
   // Helper function to add footer to current page
@@ -74,6 +75,17 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
     
     // Reset colors
     doc.setTextColor(0, 0, 0);
+  };
+
+  // Helper function to check if new page is needed
+  const checkNewPage = (requiredSpace = 15) => {
+    if (yPosition + requiredSpace > maxContentY) {
+      addFooter();
+      doc.addPage();
+      yPosition = 20;
+      return true;
+    }
+    return false;
   };
 
   // === HEADER ===

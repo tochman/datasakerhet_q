@@ -34,7 +34,8 @@ export const generateIncidentProcessPDF = async () => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
-  const bottomMargin = 40; // Ökad marginal för footer med logga
+  const bottomMargin = 40; // Marginal för footer med logga
+  const maxContentY = pageHeight - bottomMargin; // Max position för content
   let yPosition = margin;
   
   // Standard font sizes för consistency
@@ -85,9 +86,9 @@ export const generateIncidentProcessPDF = async () => {
   };
 
   // Helper function to check if we need a new page
-  const checkNewPage = (requiredSpace = 40) => {
-    if (yPosition > pageHeight - bottomMargin - requiredSpace) {
-      addFooter(); // Add footer to current page before creating new one
+  const checkNewPage = (requiredSpace = 15) => {
+    if (yPosition + requiredSpace > maxContentY) {
+      addFooter();
       doc.addPage();
       yPosition = margin;
       return true;
@@ -97,7 +98,7 @@ export const generateIncidentProcessPDF = async () => {
 
   // Helper to add section header with consistent styling
   const addSectionHeader = (title) => {
-    checkNewPage(25);
+    checkNewPage(20);
     doc.setFillColor(37, 99, 235);
     doc.rect(margin, yPosition, pageWidth - 2 * margin, 12, 'F');
     doc.setTextColor(255, 255, 255);
