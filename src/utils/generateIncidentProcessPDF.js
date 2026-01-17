@@ -23,7 +23,7 @@ export const generateIncidentProcessPDF = () => {
     subtitle: 16,
     sectionHeader: 14,
     body: 10,
-    småll: 9,
+    small: 9,
     tiny: 8
   };
 
@@ -109,7 +109,7 @@ export const generateIncidentProcessPDF = () => {
   doc.addPage();
   yPosition = margin;
 
-  addSectionHeader('1. PROCESSOVERSIKT');
+  addSectionHeader('1. PROCESSÖVERSIKT');
 
   doc.setFontSize(FONT_SIZES.body);
   doc.setFont('helvetica', 'normal');
@@ -145,7 +145,7 @@ export const generateIncidentProcessPDF = () => {
     doc.text(`${step.num}. ${step.title}`, margin + 5, yPosition + 5);
     
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(FONT_SIZES.småll);
+    doc.setFontSize(FONT_SIZES.small);
     doc.setTextColor(60, 60, 60);
     doc.text(step.desc, margin + 5, yPosition + 10);
     doc.setTextColor(0, 0, 0);
@@ -166,11 +166,11 @@ export const generateIncidentProcessPDF = () => {
 
   yPosition += 10;
 
-  // === FAS 1: UPPTACKT ===
+  // === FAS 1: UPPTÄCKT ===
   doc.addPage();
   yPosition = margin;
   
-  addSectionHeader('2. FAS 1: UPPTACKT OCH RAPPORTERING');
+  addSectionHeader('2. FAS 1: UPPTÄCKT OCH RAPPORTERING');
 
   doc.setFontSize(FONT_SIZES.body);
   doc.setFont('helvetica', 'bold');
@@ -229,8 +229,8 @@ export const generateIncidentProcessPDF = () => {
   doc.setTextColor(0, 0, 0);
   yPosition += 15;
 
-  // === FAS 2: INITIAL BEDOMNING ===
-  addSectionHeader('3. FAS 2: INITIAL BEDOMNING');
+  // === FAS 2: INITIAL BEDÖMNING ===
+  addSectionHeader('3. FAS 2: INITIAL BEDÖMNING');
 
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
@@ -269,7 +269,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setTextColor(0, 0, 0);
   doc.text('INTE EN INCIDENT', margin + 5, yPosition + 6);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(FONT_SIZES.småll);
+  doc.setFontSize(FONT_SIZES.small);
   doc.text('- Dokumentera', margin + 5, yPosition + 12);
   doc.text('- Stäng ärende', margin + 5, yPosition + 17);
   doc.text('- Återkoppla', margin + 5, yPosition + 22);
@@ -283,7 +283,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setFontSize(FONT_SIZES.body);
   doc.text('ÄR EN INCIDENT', margin + boxWidth + 11, yPosition + 6);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(FONT_SIZES.småll);
+  doc.setFontSize(FONT_SIZES.small);
   doc.text('- Fortsatt till Fas 3', margin + boxWidth + 11, yPosition + 12);
   doc.text('- Klassificering', margin + boxWidth + 11, yPosition + 17);
 
@@ -332,11 +332,11 @@ export const generateIncidentProcessPDF = () => {
 
   // Severity table
   const severityData = [
-    ['Niva', 'Beskrivning', 'Responstid', 'Eskalering'],
+    ['Nivå', 'Beskrivning', 'Responstid', 'Eskalering'],
     ['KRITISK', 'Omfattande påverkan på verksamheten', '15 min', 'HELA teamet + VD'],
-    ['HOG', 'Betydande påverkan på säkerhet', '30 min', 'Incidentteam + Ledning'],
+    ['HÖG', 'Betydande påverkan på säkerhet', '30 min', 'Incidentteam + Ledning'],
     ['MEDEL', 'Begränsad påverkan', '1 timme', 'IT-säkerhet + IT-drift'],
-    ['LAG', 'Minimal påverkan', '4 timmar', 'IT-drift enligt rutin']
+    ['LÅG', 'Minimal påverkan', '4 timmar', 'IT-drift enligt rutin']
   ];
 
   autoTable(doc, {
@@ -346,7 +346,7 @@ export const generateIncidentProcessPDF = () => {
     theme: 'grid',
     margin: { left: margin, right: margin },
     styles: { 
-      fontSize: FONT_SIZES.småll, 
+      fontSize: FONT_SIZES.small, 
       cellPadding: 3, 
       lineColor: [200, 200, 200], 
       lineWidth: 0.1,
@@ -455,7 +455,9 @@ export const generateIncidentProcessPDF = () => {
 
   // Description
   const fas5Desc = [
-    'Containment-fasen fokuserar på att stoppa spridning och begränsa ytterligare skada från incidenten.',    'Bevara alltid forensisk information innan system stängs av eller kopplas från nätverk.',    'Målet är att isolera drabbåde system utan att förstöra bevis. Åtgärder måste vara snabba men genomtänkta.',
+    'Containment-fasen fokuserar på att stoppa spridning och begränsa ytterligare skada från incidenten.',
+    'Bevara alltid forensisk information innan system stängs av eller kopplas från nätverk.',
+    'Målet är att isolera drabbade system utan att förstöra bevis. Åtgärder måste vara snabba men genomtänkta.',
     'Dokumentera varje steg noggrant för senare analys och eventuell rättslig process.'
   ];
   fas5Desc.forEach(line => {
@@ -473,7 +475,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setFontSize(FONT_SIZES.body);
   doc.text('VIKTIGT - Bevara bevis INNAN containment', margin + 5, yPosition + 5);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(FONT_SIZES.småll);
+  doc.setFontSize(FONT_SIZES.small);
   doc.text('Ta minnesbilder, nätverksdumpar och systemloggar INNAN system stängs av eller isoleras', margin + 5, yPosition + 10);
   yPosition += 18;
   doc.setFontSize(FONT_SIZES.body);
@@ -484,10 +486,10 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'normal');
   const containmentData = [
     ['Incidenttyp', 'Containment-åtgärder'],
-    ['Malware/\nRansomware', '- Isolera drabbåde system från nätverk\n- Blockera skadliga IP-adresser\n- Inaktivera smittade användarkonton'],
-    ['Phishing', '- Blockera avsändar-adress\n- Ta bört e-post från alla brevlådor\n- Återställ komprometterade lösenord'],
-    ['Intrång', '- Inaktivera komprometterade konton\n- Andra alla privilegierade lösenord\n- Isolera påverkade segment'],
-    ['DDoS', '- Aktivera DDoS-skydd\n- Kontakta ISP/CDN-leverantor\n- Implementera rate limiting']
+    ['Malware/\nRansomware', '- Isolera drabbade system från nätverk\n- Blockera skadliga IP-adresser\n- Inaktivera smittade användarkonton'],
+    ['Phishing', '- Blockera avsändaradress\n- Ta bort e-post från alla brevlådor\n- Återställ komprometterade lösenord'],
+    ['Intrång', '- Inaktivera komprometterade konton\n- Ändra alla privilegierade lösenord\n- Isolera påverkade segment'],
+    ['DDoS', '- Aktivera DDoS-skydd\n- Kontakta ISP/CDN-leverantör\n- Implementera rate limiting']
   ];
 
   autoTable(doc, {
@@ -497,7 +499,7 @@ export const generateIncidentProcessPDF = () => {
     theme: 'grid',
     margin: { left: margin, right: margin },
     styles: { 
-      fontSize: FONT_SIZES.småll, 
+      fontSize: FONT_SIZES.small, 
       cellPadding: 3, 
       lineColor: [200, 200, 200], 
       lineWidth: 0.1,
@@ -533,7 +535,7 @@ export const generateIncidentProcessPDF = () => {
   // Description
   const fas6Desc = [
     'Efter att incidenten har isolerats ska grundorsaken identifieras och elimineras helt från miljön.',
-    'Detta inkluderar att ta bört malware, stänga sårbarheter och säkerställa att angriparen inte längre',
+    'Detta inkluderar att ta bort malware, stänga sårbarheter och säkerställa att angriparen inte längre',
     'har åtkomst. En grundlig utrotning förhindrar att samma incident inträffar igen.',
     'Verifiering att hotet är borta är kritisk innan återställning påbörjas.'
   ];
@@ -568,7 +570,7 @@ export const generateIncidentProcessPDF = () => {
 
   const verification = [
     '- Ingen skadlig aktivitet kvar',
-    '- Alla indicators of compromise (IoC) är börta',
+    '- Alla indicators of compromise (IoC) är borta',
     '- Inga obehöriga konton finns',
     '- Övervakning visar inga misstänkta aktiviteter'
   ];
@@ -580,7 +582,7 @@ export const generateIncidentProcessPDF = () => {
 
   // === FAS 7: RECOVERY ===
   yPosition += 10;
-  addSectionHeader('8. FAS 7: RECOVERY (ATERSTALLNING)');
+  addSectionHeader('8. FAS 7: RECOVERY (ÅTERSTÄLLNING)');
 
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
@@ -590,8 +592,10 @@ export const generateIncidentProcessPDF = () => {
 
   // Description
   const fas7Desc = [
-    'Recovery-fasen fokuserar på att sakert återställa system och tjänster till normal drift.',
-    'Återställning måste göras metodiskt och i ratt ordning för att undvika re-infektion.',    'System återställs stegvis med kontrollerad verifiering vid varje steg.',    'Förstärkt övervakning implementeras för att säkerställa att incidenten inte återkommer.'
+    'Recovery-fasen fokuserar på att säkert återställa system och tjänster till normal drift.',
+    'Återställning måste göras metodiskt och i rätt ordning för att undvika re-infektion.',
+    'System återställs stegvis med kontrollerad verifiering vid varje steg.',
+    'Förstärkt övervakning implementeras för att säkerställa att incidenten inte återkommer.'
   ];
   fas7Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -685,9 +689,9 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'normal');
   doc.text('- KRITISKA: Inom 1 vecka', margin + 3, yPosition);
   yPosition += 5;
-  doc.text('- HOGA: Inom 2 veckor', margin + 3, yPosition);
+  doc.text('- HÖGA: Inom 2 veckor', margin + 3, yPosition);
   yPosition += 5;
-  doc.text('- MEDEL/LAG: Kvartalsvis sammanställning', margin + 3, yPosition);
+  doc.text('- MEDEL/LÅG: Kvartalsvis sammanställning', margin + 3, yPosition);
   yPosition += 8;
 
   doc.setFont('helvetica', 'bold');
@@ -712,7 +716,7 @@ export const generateIncidentProcessPDF = () => {
   ];
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(FONT_SIZES.småll);
+  doc.setFontSize(FONT_SIZES.small);
   reviewAgenda.forEach(item => {
     doc.text(item, margin + 3, yPosition);
     yPosition += 4;
@@ -735,9 +739,9 @@ export const generateIncidentProcessPDF = () => {
   // Description
   const fas9Desc = [
     'Korrekt dokumentation är kritisk både för intern lärande och för lagkrav enligt NIS2-direktivet.',
-    'Dokumentationen ska vara komplett, tidsbestämd och strukt Enligt Cybersäkerhetslagen finns',
-    'specifika rapporteringsfrister som måste följas för att undvika sanktioner.urerad för att kunna användas vid',
-    'framtida incidenter samt vid granskning från myndigheter.'
+    'Dokumentationen ska vara komplett, tidsbestämd och strukturerad för att kunna användas vid',
+    'framtida incidenter samt vid granskning från myndigheter. Enligt Cybersäkerhetslagen finns',
+    'specifika rapporteringsfrister som måste följas för att undvika sanktioner.'
   ];
   fas9Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -763,7 +767,7 @@ export const generateIncidentProcessPDF = () => {
     theme: 'grid',
     margin: { left: margin, right: margin },
     styles: { 
-      fontSize: FONT_SIZES.småll, 
+      fontSize: FONT_SIZES.small, 
       cellPadding: 3, 
       lineColor: [200, 200, 200], 
       lineWidth: 0.1,
@@ -810,7 +814,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setFillColor(240, 240, 240);
   doc.rect(0, yPosition, pageWidth, 25, 'F');
   
-  doc.setFontSize(FONT_SIZES.småll);
+  doc.setFontSize(FONT_SIZES.small);
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(100, 100, 100);
   doc.text('Detta dokument är en mall och bör anpassas efter er verksamhets specifika behov.', margin, yPosition + 8);
