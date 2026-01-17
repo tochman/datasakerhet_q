@@ -289,7 +289,7 @@ export default function QuestionnaireForm() {
   // Debug logging (endast i development)
   useEffect(() => {
     if (import.meta.env.DEV) {
-      console.log('🔍 DEBUG INFO:');
+      console.log('DEBUG INFO:');
       console.log('  Current question:', visibleQuestions[currentQuestionIndex]?.id);
       console.log('  Answers so far:', answers);
       console.log('  Progress:', `${currentQuestionIndex + 1}/${visibleQuestions.length}`);
@@ -482,7 +482,7 @@ export default function QuestionnaireForm() {
       try {
         // Check if Supabase is properly configured
         if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-          console.warn('⚠️ Supabase environment variables not configured. Using localStorage only.');
+          console.warn('Supabase environment variables not configured. Using localStorage only.');
           throw new Error('Supabase not configured');
         }
 
@@ -520,7 +520,7 @@ export default function QuestionnaireForm() {
           .select();
 
         if (error) {
-          console.warn('⚠️ Kunde inte spara till databas:', error.message);
+          console.warn('Kunde inte spara till databas:', error.message);
           throw error; // Går till catch-blocket nedan
         } else if (data && data[0]) {
           surveyId = data[0].id;
@@ -597,7 +597,7 @@ export default function QuestionnaireForm() {
                   {import.meta.env.DEV && databaseErrorDetails && (
                     <details className="mt-2">
                       <summary className="text-xs text-yellow-600 cursor-pointer hover:text-yellow-800">
-                        🔍 Teknisk information (för utvecklare)
+                        Teknisk information (för utvecklare)
                       </summary>
                       <pre className="mt-2 text-xs bg-yellow-100 p-2 rounded overflow-auto">
                         {JSON.stringify(databaseErrorDetails, null, 2)}
@@ -736,7 +736,7 @@ export default function QuestionnaireForm() {
         {/* Debug panel - endast i development mode */}
         {import.meta.env.DEV && (
           <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg max-w-sm text-xs z-50">
-            <h3 className="font-bold mb-2">🔍 Debug Info</h3>
+            <h3 className="font-bold mb-2">Debug Info</h3>
             <div className="space-y-1">
               <p><strong>Current Q:</strong> {currentQuestion?.id}</p>
               <p><strong>Progress:</strong> {currentQuestionIndex + 1}/{visibleQuestions.length}</p>
