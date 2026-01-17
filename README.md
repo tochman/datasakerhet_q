@@ -164,6 +164,27 @@ utan att behöva ha djup kunskap om lagstiftningen.
 - ✅ **Detaljerad visning** av enskilda svar
 - ✅ **CSV-export** för vidare analys
 
+## Dokumentation
+
+Detaljerad dokumentation för frågeflöde och bedömningslogik finns i:
+- [docs/QUESTIONNAIRE_DOCUMENTATION.md](docs/QUESTIONNAIRE_DOCUMENTATION.md)
+
+## PDF-nedladdning
+
+Användare som bedöms omfattas av lagen kan ladda ner en professionell PDF med:
+- Bedömningsresultat med färgkodning
+- Rekommenderade säkerhetsåtgärder enligt 2 kap. 3-4 §§
+- Checklista för implementering
+- Tidsfrister för incidentrapportering
+
+## Dataflöde
+
+1. **Formulärinsamling** → Svar sparas till Supabase `survey_responses`
+2. **Bedömning** → Automatisk analys enligt lagtext
+3. **Kontakt** → Kontaktuppgifter sparas i `contact_info`
+4. **PDF** → Genereras lokalt med jsPDF
+5. **Backup** → localStorage används om Supabase inte är tillgängligt
+
 ## Teknisk Stack
 
 - **Frontend:** React 18+ med Vite
@@ -182,17 +203,24 @@ utan att behöva ha djup kunskap om lagstiftningen.
 │   │   ├── QuestionSection.jsx      # Återanvändbar frågekomponent
 │   │   ├── ContactForm.jsx          # Kontaktformulär
 │   │   ├── ResultsSummary.jsx       # Visar bedömningsresultat
+│   │   ├── SecurityMeasures.jsx     # Säkerhetsåtgärder och checklista
 │   │   ├── AdminPanel.jsx           # Admin-dashboard
 │   │   ├── AdminLogin.jsx           # Admin-inloggning
 │   │   └── PrivateRoute.jsx         # Route-skydd
 │   ├── lib/
 │   │   └── supabaseClient.js        # Supabase-konfiguration
+│   ├── utils/
+│   │   ├── generateSecurityPDF.js   # PDF-generering
+│   │   └── questionFlows.js         # Frågeflödeslogik
 │   ├── App.jsx                      # Routing
 │   ├── main.jsx                     # Entry point
 │   └── index.css                    # Tailwind CSS
 ├── supabase/
 │   └── migrations/
-│       └── 001_initial_schema.sql   # Databasschema
+│       ├── 001_initial_schema.sql   # Initialt databasschema
+│       └── 002_add_q0_column.sql    # Migration för q0-kolumn
+├── docs/
+│   └── QUESTIONNAIRE_DOCUMENTATION.md  # Detaljerad dokumentation
 ├── public/
 ├── index.html
 ├── package.json

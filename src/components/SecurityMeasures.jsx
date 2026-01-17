@@ -178,7 +178,7 @@ export default function SecurityMeasures({ assessment, answers }) {
   const progressPercentage = totalItems > 0 ? (completedItems / totalItems) * 100 : 0
 
   return (
-    <div className="mt-8 bg-white rounded-lg shadow-lg p-6 security-measures-print">
+    <div className="mt-8 bg-white rounded-sm shadow-lg p-6 security-measures-print">
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
@@ -197,7 +197,7 @@ export default function SecurityMeasures({ assessment, answers }) {
         {assessment && answers && (
           <button
             onClick={handleDownloadPDF}
-            className="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg shadow transition-colors no-print ml-4"
+            className="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white font-semibold rounded-sm shadow transition-colors no-print ml-4"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -254,14 +254,14 @@ export default function SecurityMeasures({ assessment, answers }) {
           id="security-content"
           className={`mt-4 space-y-4 ${expandedSections.security ? '' : 'hidden print-show'}`}
         >
-          <p className="text-sm text-gray-700 mb-4 bg-blue-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-700 mb-4 bg-blue-50 p-4 rounded-sm">
             Verksamhetsutövare ska vidta lämpliga och proportionella tekniska, driftsrelaterade och organisatoriska åtgärder för att skydda nätverks- och informationssystem som används för verksamheten eller för att tillhandahålla tjänster, samt systemens fysiska miljö mot incidenter. Dessa åtgärder ska utgå från ett allriskperspektiv och säkerställa en lämplig säkerhetsnivå i förhållande till risken.
           </p>
 
           {securityMeasures.map((measure) => (
             <div 
               key={measure.id} 
-              className="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-start p-4 bg-gray-50 rounded-sm hover:bg-gray-100 transition-colors"
             >
               <input
                 type="checkbox"
@@ -317,14 +317,14 @@ export default function SecurityMeasures({ assessment, answers }) {
           id="incident-content"
           className={`mt-4 space-y-4 ${expandedSections.incident ? '' : 'hidden print-show'}`}
         >
-          <p className="text-sm text-gray-700 mb-4 bg-orange-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-700 mb-4 bg-orange-50 p-4 rounded-sm">
             Verksamhetsutövare har en skyldighet att rapportera betydande incidenter och att informera berörda parter om sådana incidenter och betydande cyberhot.
           </p>
 
           {incidentProcedures.map((procedure) => (
             <div 
               key={procedure.id} 
-              className="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-start p-4 bg-gray-50 rounded-sm hover:bg-gray-100 transition-colors"
             >
               <input
                 type="checkbox"
@@ -391,7 +391,7 @@ export default function SecurityMeasures({ assessment, answers }) {
       <div className="flex gap-4 flex-wrap no-print">
         <button 
           onClick={() => window.print()}
-          className="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg shadow transition-colors"
+          className="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-sm shadow transition-colors"
         >
           <span className="mr-2">📄</span>
           Skriv ut som checklista
@@ -409,7 +409,7 @@ export default function SecurityMeasures({ assessment, answers }) {
               }
             }
           }}
-          className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg shadow transition-colors"
+          className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-sm shadow transition-colors"
         >
           <span className="mr-2">📧</span>
           Få hjälp med implementering

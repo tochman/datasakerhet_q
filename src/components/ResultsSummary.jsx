@@ -57,7 +57,7 @@ export default function ResultsSummary({ assessment, answers, onShowContactForm 
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className={`border-4 rounded-xl p-8 mb-8 ${getResultColor(assessment.result)}`}>
+      <div className={`border-4 rounded-sm p-8 mb-8 ${getResultColor(assessment.result)}`}>
         <div className="flex flex-col items-center text-center">
           <div className="mb-4">
             {getResultIcon(assessment.result)}
@@ -75,7 +75,7 @@ export default function ResultsSummary({ assessment, answers, onShowContactForm 
       </div>
 
       {/* Juridisk rekommendation */}
-      <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-8">
+      <div className="bg-blue-50 border-2 border-blue-200 rounded-sm p-6 mb-8">
         <div className="flex items-start">
           <svg className="w-6 h-6 text-blue-600 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -96,7 +96,7 @@ export default function ResultsSummary({ assessment, answers, onShowContactForm 
         <button
           onClick={onShowContactForm}
           data-contact-trigger
-          className="inline-flex items-center px-8 py-4 bg-primary hover:bg-primary-dark text-white text-lg font-semibold rounded-lg shadow-lg transition-colors"
+          className="inline-flex items-center px-8 py-4 bg-primary hover:bg-primary-dark text-white text-lg font-semibold rounded-sm shadow-lg transition-colors"
         >
           <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

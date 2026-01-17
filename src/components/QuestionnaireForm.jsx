@@ -673,7 +673,7 @@ export default function QuestionnaireForm() {
 
         {/* Formulärkort */}
         {currentQuestion && (
-          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+          <div className="bg-white rounded-sm shadow-lg p-6 sm:p-8 mb-6">
             {/* Section title om ny sektion */}
             {showSectionTitle && (
               <div className="mb-6">
@@ -701,7 +701,7 @@ export default function QuestionnaireForm() {
           <button
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0}
-            className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             ← Föregående
           </button>
@@ -709,7 +709,7 @@ export default function QuestionnaireForm() {
           <button
             onClick={handleNext}
             disabled={!isCurrentQuestionAnswered() || loading}
-            className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center">
@@ -736,7 +736,7 @@ export default function QuestionnaireForm() {
         
         {/* Debug panel - endast i development mode */}
         {import.meta.env.DEV && (
-          <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg max-w-sm text-xs z-50">
+          <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-sm shadow-lg max-w-sm text-xs z-50">
             <h3 className="font-bold mb-2">Debug Info</h3>
             <div className="space-y-1">
               <p><strong>Current Q:</strong> {currentQuestion?.id}</p>

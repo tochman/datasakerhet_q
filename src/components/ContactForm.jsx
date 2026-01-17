@@ -86,7 +86,7 @@ export default function ContactForm({ surveyResponseId }) {
 
   if (submitted) {
     return (
-      <div id="contact-form" className="max-w-2xl mx-auto bg-green-50 border-2 border-green-300 rounded-lg p-8 text-center">
+      <div id="contact-form" className="max-w-2xl mx-auto bg-green-50 border-2 border-green-300 rounded-sm p-8 text-center">
         <svg className="w-16 h-16 text-green-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -101,7 +101,7 @@ export default function ContactForm({ surveyResponseId }) {
   }
 
   return (
-    <div id="contact-form" className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+    <div id="contact-form" className="max-w-2xl mx-auto bg-white rounded-sm shadow-lg p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         Kontaktinformation
       </h2>
@@ -120,7 +120,7 @@ export default function ContactForm({ surveyResponseId }) {
             id="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+            className={`w-full px-4 py-3 border-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary ${
               errors.name ? 'border-red-500' : 'border-gray-300'
             }`}
             aria-required="true"
@@ -141,7 +141,7 @@ export default function ContactForm({ surveyResponseId }) {
             id="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+            className={`w-full px-4 py-3 border-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary ${
               errors.email ? 'border-red-500' : 'border-gray-300'
             }`}
             aria-required="true"
@@ -162,7 +162,7 @@ export default function ContactForm({ surveyResponseId }) {
             id="phone"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
@@ -176,7 +176,7 @@ export default function ContactForm({ surveyResponseId }) {
             id="organization"
             value={formData.organization}
             onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
@@ -190,7 +190,7 @@ export default function ContactForm({ surveyResponseId }) {
             rows={4}
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
@@ -212,7 +212,7 @@ export default function ContactForm({ surveyResponseId }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-4 px-6 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 px-6 bg-primary hover:bg-primary-dark text-white font-semibold rounded-sm shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <span className="flex items-center justify-center">

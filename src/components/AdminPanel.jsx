@@ -182,7 +182,7 @@ export default function AdminPanel() {
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-sm transition-colors"
           >
             Logga ut
           </button>
@@ -190,34 +190,34 @@ export default function AdminPanel() {
 
         {/* Statistik */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
             <div className="text-sm text-gray-600">Totalt svar</div>
           </div>
-          <div className="bg-red-50 rounded-lg shadow p-4">
+          <div className="bg-red-50 rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-red-900">{stats.omfattas}</div>
             <div className="text-sm text-red-700">Omfattas</div>
           </div>
-          <div className="bg-green-50 rounded-lg shadow p-4">
+          <div className="bg-green-50 rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-green-900">{stats.omfattasEj}</div>
             <div className="text-sm text-green-700">Omfattas ej</div>
           </div>
-          <div className="bg-yellow-50 rounded-lg shadow p-4">
+          <div className="bg-yellow-50 rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-yellow-900">{stats.undantag}</div>
             <div className="text-sm text-yellow-700">Undantag</div>
           </div>
-          <div className="bg-gray-50 rounded-lg shadow p-4">
+          <div className="bg-gray-50 rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-gray-900">{stats.osaker}</div>
             <div className="text-sm text-gray-700">Osäker</div>
           </div>
-          <div className="bg-blue-50 rounded-lg shadow p-4">
+          <div className="bg-blue-50 rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-blue-900">{stats.wantsContact}</div>
             <div className="text-sm text-blue-700">Vill ha kontakt</div>
           </div>
         </div>
 
         {/* Filter */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <div className="bg-white rounded-sm shadow p-6 mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Filter</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
@@ -227,7 +227,7 @@ export default function AdminPanel() {
               <select
                 value={filters.wantsContact}
                 onChange={(e) => setFilters({ ...filters, wantsContact: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="all">Alla</option>
                 <option value="yes">Ja</option>
@@ -242,7 +242,7 @@ export default function AdminPanel() {
               <select
                 value={filters.result}
                 onChange={(e) => setFilters({ ...filters, result: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="all">Alla</option>
                 <option value="omfattas">Omfattas</option>
@@ -260,7 +260,7 @@ export default function AdminPanel() {
                 type="date"
                 value={filters.dateFrom}
                 onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -272,7 +272,7 @@ export default function AdminPanel() {
                 type="date"
                 value={filters.dateTo}
                 onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -281,7 +281,7 @@ export default function AdminPanel() {
             <button
               onClick={exportToCSV}
               disabled={filteredResponses.length === 0}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Exportera till CSV ({filteredResponses.length} svar)
             </button>
@@ -289,7 +289,7 @@ export default function AdminPanel() {
         </div>
 
         {/* Tabell med svar */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-sm shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -358,7 +358,7 @@ export default function AdminPanel() {
       {/* Detaljvy Modal */}
       {selectedResponse && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-sm shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-start mb-6">
                 <div>
@@ -378,7 +378,7 @@ export default function AdminPanel() {
               </div>
 
               {/* Bedömning */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="mb-6 p-4 bg-gray-50 rounded-sm">
                 <h3 className="font-semibold text-gray-900 mb-2">Bedömning</h3>
                 <p className="text-lg font-medium text-gray-900">{selectedResponse.assessment_message}</p>
                 <p className="text-sm text-gray-600 mt-1">{selectedResponse.assessment_details}</p>
@@ -408,7 +408,7 @@ export default function AdminPanel() {
 
               {/* Kontaktinformation */}
               {contactInfo && (
-                <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                <div className="mb-6 p-4 bg-blue-50 rounded-sm">
                   <h3 className="font-semibold text-gray-900 mb-3">Kontaktinformation</h3>
                   <div className="space-y-2">
                     <p><strong>Namn:</strong> {contactInfo.name}</p>
@@ -428,7 +428,7 @@ export default function AdminPanel() {
               <div className="flex justify-end">
                 <button
                   onClick={closeDetails}
-                  className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-sm transition-colors"
                 >
                   Stäng
                 </button>

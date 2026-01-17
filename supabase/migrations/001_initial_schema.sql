@@ -2,14 +2,15 @@
 CREATE TABLE survey_responses (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  q0 TEXT,  -- Grundläggande verksamhetstyp (Offentlig/Privat/Vet ej)
   q1 TEXT,
   q2 TEXT,
   q3 TEXT,
-  q4 TEXT,
+  q4 TEXT,  -- Branscher (JSON-sträng)
   q5 TEXT,
   q6 TEXT,
   q7 TEXT,
-  q8_services JSONB,
+  q8_services JSONB,  -- Digitala tjänster
   q9 TEXT,
   q10 TEXT,
   q11 TEXT,

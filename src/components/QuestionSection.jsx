@@ -56,7 +56,7 @@ export default function QuestionSection({
           {options.map((option) => (
             <label 
               key={option}
-              className="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-light hover:bg-blue-50 transition-colors"
+              className="flex items-start p-4 border-2 border-gray-200 rounded-sm cursor-pointer hover:border-primary-light hover:bg-blue-50 transition-colors"
             >
               <input
                 type="checkbox"
@@ -91,7 +91,7 @@ export default function QuestionSection({
         {radioOptions.map((option) => (
           <label 
             key={option.value}
-            className={`flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+            className={`flex items-center justify-center p-4 border-2 rounded-sm cursor-pointer transition-all ${
               value === option.value 
                 ? 'border-primary bg-primary text-white font-semibold' 
                 : 'border-gray-200 hover:border-primary-light hover:bg-blue-50'
