@@ -23,7 +23,14 @@ export default function QuestionnaireForm() {
   const [databaseErrorDetails, setDatabaseErrorDetails] = useState(null)
   const [debugMode, setDebugMode] = useState(false)
 
-  // Definiera alla frågor i sekvens (alla frågor visas alltid)
+  // Helper functions for adaptive logic
+  const isPrivate = (answers) => answers.q0 === 'Privat';
+  const isPublic = (answers) => answers.q0 === 'Offentlig';
+  const isUncertain = (answers) => answers.q0 === 'Vet ej';
+  const hasSwedishSite = (answers) => answers.q3 === 'Ja';
+  const hasIndustries = (answers) => Array.isArray(answers.q4) && answers.q4.length > 0 && !answers.q4.includes('Ingen av ovanstående');
+  
+  // Definiera alla frågor med adaptiv logik
   const questions = [
     // DEL 1: Grundläggande verksamhetstyp
     {
@@ -33,10 +40,11 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet huvudsakligen offentlig eller privat?",
       helpText: "Offentliga verksamheter inkluderar statliga myndigheter, regioner, kommuner och kommunalförbund. Privata verksamheter är företag, organisationer och andra aktörer som inte är offentliga.",
       type: 'radio',
-      options: ['Offentlig', 'Privat', 'Vet ej']
+      options: ['Offentlig', 'Privat', 'Vet ej'],
+      showIf: () => true
     },
     
-    // DEL 2: Offentlig verksamhet
+    // DEL 2: Offentlig verksamhet - ENDAST för offentliga eller osäkra
     {
       id: 'q1',
       section: 2,
@@ -44,7 +52,8 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet en statlig myndighet som fattar viktiga beslut som påverkar människor eller företag över Sveriges gränser (t.ex. om man får resa, flytta varor eller pengar)?",
       helpText: "Statliga myndigheter med internationella beslut omfattas direkt av lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => isPublic(answers) || isUncertain(answers)
     },
     {
       id: 'q2',
@@ -53,7 +62,8 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet en region, en kommun eller ett kommunalförbund?",
       helpText: "Regionala och kommunala verksamheter omfattas direkt av lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => isPublic(answers) || isUncertain(answers)
     },
     
     // DEL 3: Etablering, storlek och generella kriterier
@@ -62,9 +72,10 @@ export default function QuestionnaireForm() {
       section: 3,
       sectionTitle: "Del 3: Etablering, storlek och generella kriterier",
       question: "Har din verksamhet sitt huvudsakliga säte eller etablering i Sverige?",
-      helpText: "Privata verksamheter måste ha sitt huvudsakliga säte eller etablering i Sverige för att omfattas av lagen (1 kap. 4 § 2, 1 kap. 5 §, 1 kap. 7 §).",
+      helpText: "Verksamheter måste ha sitt huvudsakliga säte eller etablering i Sverige för att omfattas av lagen (1 kap. 4 § 2, 1 kap. 5 §, 1 kap. 7 §).",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: () => true
     },
     {
       id: 'q12',
@@ -73,7 +84,8 @@ export default function QuestionnaireForm() {
       question: "Tillhandahåller din verksamhet \"betrodda tjänster\" (t.ex. e-legitimation eller elektronisk underskrift)?",
       helpText: "Leverantörer av betrodda tjänster omfattas alltid av lagen, även om de skulle vara undantagna på annat sätt.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: () => true
     },
     {
       id: 'q5',
@@ -82,14 +94,15 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet ett medelstort eller större företag?",
       helpText: "Ett medelstort företag har färre än 250 anställda OCH antingen en årsomsättning på högst 50 miljoner euro ELLER en balansomslutning på högst 43 miljoner euro. Är ni större än så, eller motsvarar ni dessa gränser, svarar du \"Ja\".",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => isPrivate(answers) || isUncertain(answers)
     },
     {
       id: 'q4',
       section: 3,
       sectionTitle: "Del 3: Etablering, storlek och generella kriterier",
-      question: "Omfattas er verksamhet av EU:s cybersäkerhetskrav (NIS 2-direktivet)?",
-      helpText: "Välj den eller de branscher som stämmer för er verksamhet. Dessa branscher omfattas ofta av NIS 2-direktivet (EU 2022/2555) om ert företag är medelstort eller större.",
+      question: "Inom vilka branscher är din organisation verksam?",
+      helpText: "Välj den eller de branscher som stämmer för er verksamhet. Detta hjälper oss att ställa relevanta följdfrågor.",
       type: 'checkbox',
       options: [
         "Energi (el, gas, fjärrvärme/kyla, olja, vätgas)",
@@ -102,8 +115,11 @@ export default function QuestionnaireForm() {
         "Tillverkning (medicinteknik, fordon, elektronik, maskiner, kemikalier, livsmedel)",
         "Digitala leverantörer (molntjänster, datacenter, sökmotorer)",
         "Forskning (universitet, forskningsorganisationer)",
+        "Utbildning",
+        "Telecom",
         "Ingen av ovanstående"
-      ]
+      ],
+      showIf: () => true
     },
     {
       id: 'q6',
@@ -112,7 +128,12 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet en privat utbildningsanordnare (t.ex. en privat högskola) som har tillstånd att utfärda examina?",
       helpText: "Privata utbildningsanordnare med rätt att utfärda examina omfattas av lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => {
+        // Visa endast om användaren har valt "Utbildning" i Q4 eller är privat/osäker
+        const hasEducationIndustry = Array.isArray(answers.q4) && answers.q4.includes('Utbildning');
+        return hasEducationIndustry || (isPrivate(answers) && !hasIndustries(answers));
+      }
     },
     {
       id: 'q7',
@@ -121,7 +142,12 @@ export default function QuestionnaireForm() {
       question: "Tillhandahåller din verksamhet allmänna telenät (t.ex. bredbandsnät) eller tjänster för elektronisk kommunikation som är tillgängliga för allmänheten i Sverige (t.ex. telefonitjänster eller internetleverantörer)?",
       helpText: "Leverantörer av telenät och elektronisk kommunikation omfattas av lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => {
+        // Visa endast om användaren har valt "Telecom" i Q4
+        const hasTelecomIndustry = Array.isArray(answers.q4) && answers.q4.includes('Telecom');
+        return hasTelecomIndustry || !hasIndustries(answers);
+      }
     },
     {
       id: 'q8',
@@ -143,7 +169,12 @@ export default function QuestionnaireForm() {
         "DNS-tjänster (domännamnssystemtjänster)",
         "Domännamnsregistreringstjänster",
         "Ingen av ovanstående"
-      ]
+      ],
+      showIf: (answers) => {
+        // Visa endast om användaren har valt "Digitala leverantörer" i Q4
+        const hasDigitalIndustry = Array.isArray(answers.q4) && answers.q4.includes('Digitala leverantörer (molntjänster, datacenter, sökmotorer)');
+        return hasDigitalIndustry || !hasIndustries(answers);
+      }
     },
     {
       id: 'q9',
@@ -152,7 +183,8 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet den enda leverantören i Sverige av en tjänst som är avgörande för att viktiga samhällsfunktioner eller ekonomisk verksamhet ska fungera?",
       helpText: "Verksamheter som är enda leverantörer av kritiska tjänster omfattas även om de är små.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => isPrivate(answers) || isUncertain(answers)
     },
     {
       id: 'q10',
@@ -161,7 +193,8 @@ export default function QuestionnaireForm() {
       question: "Skulle ett avbrott i er tjänst allvarligt kunna påverka människors liv och hälsa, samhällets säkerhet, folkhälsan eller orsaka stora problem i digitala system?",
       helpText: "Verksamheter vars avbrott skulle ha allvarliga konsekvenser omfattas av lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: () => true
     },
     {
       id: 'q11',
@@ -170,10 +203,11 @@ export default function QuestionnaireForm() {
       question: "Är er verksamhet extra viktig på nationell eller regional nivå för en viss bransch eller tjänst, eller för andra branscher som är beroende av er?",
       helpText: "Verksamheter med särskild betydelse för samhället omfattas av lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: () => true
     },
     
-    // DEL 4: Undantag
+    // DEL 4: Undantag - Visa för alla som kan omfattas
     {
       id: 'q13',
       section: 4,
@@ -181,7 +215,8 @@ export default function QuestionnaireForm() {
       question: "Bedriver din verksamhet huvudsakligen säkerhetskänslig verksamhet (som regleras av säkerhetsskyddslagen) eller brottsbekämpande verksamhet?",
       helpText: "Vissa verksamheter kan vara undantagna från lagen på grund av säkerhetskänslig eller brottsbekämpande verksamhet.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: () => true
     },
     {
       id: 'q14',
@@ -190,7 +225,8 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet enbart en privat aktör som sysslar med säkerhetskänslig verksamhet, eller som enbart levererar tjänster till statliga myndigheter som huvudsakligen bedriver säkerhetskänslig eller brottsbekämpande verksamhet?",
       helpText: "Privata aktörer som enbart arbetar med säkerhetskänslig verksamhet kan vara undantagna.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => isPrivate(answers) || isUncertain(answers)
     },
     {
       id: 'q15',
@@ -199,7 +235,8 @@ export default function QuestionnaireForm() {
       question: "Tillhandahåller din verksamhet \"betrodda tjänster\" (t.ex. e-legitimation), även om den annars skulle vara undantagen på grund av säkerhetskänslig eller brottsbekämpande verksamhet?",
       helpText: "Leverantörer av betrodda tjänster omfattas alltid, även om de annars skulle vara undantagna.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: () => true
     },
     {
       id: 'q16',
@@ -208,7 +245,8 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet någon av följande: Regeringen, Regeringskansliet, en svensk ambassad/konsulat, en kommitté/utredning, en myndighet som lyder under riksdagen, en domstol eller en nämnd som dömer i juridiska frågor?",
       helpText: "Vissa statliga organ är undantagna från lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => isPublic(answers) || isUncertain(answers)
     },
     {
       id: 'q17',
@@ -217,22 +255,15 @@ export default function QuestionnaireForm() {
       question: "Är din verksamhet en församling (fullmäktige) eller styrelse (direktion) i ett kommunalförbund, eller en kommun- eller regionfullmäktige?",
       helpText: "Vissa politiska församlingar är undantagna från lagen.",
       type: 'radio',
-      options: ['Ja', 'Nej', 'Vet ej']
+      options: ['Ja', 'Nej', 'Vet ej'],
+      showIf: (answers) => isPublic(answers) || isUncertain(answers)
     }
   ]
 
-  // Filter questions based on Q0 answer
+  // Filter questions adaptively based on answers
   const visibleQuestions = useMemo(() => {
-    const q0Answer = answers.q0;
-    
-    // If user selected "Privat", skip Q1 and Q2 (public sector questions)
-    if (q0Answer === 'Privat') {
-      return questions.filter(q => q.id !== 'q1' && q.id !== 'q2');
-    }
-    
-    // Otherwise show all questions (for "Offentlig", "Vet ej", or if Q0 not answered yet)
-    return questions;
-  }, [answers.q0]);
+    return questions.filter(q => q.showIf(answers));
+  }, [answers]);
 
   // Adjust current question index if visible questions change
   useEffect(() => {
