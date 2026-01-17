@@ -153,11 +153,14 @@ export const generateIncidentProcessPDF = () => {
     yPosition += 14;
     
     if (index < flowSteps.length - 1) {
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text('|', pageWidth / 2, yPosition + 2, { align: 'center' });
-      doc.text('v', pageWidth / 2, yPosition + 5, { align: 'center' });
-      yPosition += 7;
+      // Draw arrow
+      const centerX = pageWidth / 2;
+      doc.setDrawColor(100, 150, 220);
+      doc.setLineWidth(1.5);
+      doc.line(centerX, yPosition + 2, centerX, yPosition + 8);
+      // Arrow head
+      doc.triangle(centerX, yPosition + 10, centerX - 2, yPosition + 6, centerX + 2, yPosition + 6, 'F');
+      yPosition += 12;
     }
   });
 
@@ -338,13 +341,25 @@ export const generateIncidentProcessPDF = () => {
     head: [severityData[0]],
     body: severityData.slice(1),
     theme: 'grid',
-    styles: { fontSize: FONT_SIZES.tiny, cellPadding: 2.5, lineColor: [200, 200, 200], lineWidth: 0.1 },
-    headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' },
+    margin: { left: margin, right: margin },
+    styles: { 
+      fontSize: FONT_SIZES.small, 
+      cellPadding: 3, 
+      lineColor: [200, 200, 200], 
+      lineWidth: 0.1,
+      halign: 'left'
+    },
+    headStyles: { 
+      fillColor: [37, 99, 235], 
+      textColor: 255, 
+      fontStyle: 'bold',
+      halign: 'left'
+    },
     columnStyles: {
-      0: { cellWidth: 25, fontStyle: 'bold' },
-      1: { cellWidth: 60 },
-      2: { cellWidth: 25 },
-      3: { cellWidth: 50 }
+      0: { cellWidth: 28, fontStyle: 'bold' },
+      1: { cellWidth: 68 },
+      2: { cellWidth: 26 },
+      3: { cellWidth: 48 }
     }
   });
 
@@ -477,11 +492,24 @@ export const generateIncidentProcessPDF = () => {
     head: [containmentData[0]],
     body: containmentData.slice(1),
     theme: 'grid',
-    styles: { fontSize: FONT_SIZES.tiny, cellPadding: 2.5, lineColor: [200, 200, 200], lineWidth: 0.1 },
-    headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' },
+    margin: { left: margin, right: margin },
+    styles: { 
+      fontSize: FONT_SIZES.small, 
+      cellPadding: 3, 
+      lineColor: [200, 200, 200], 
+      lineWidth: 0.1,
+      halign: 'left',
+      valign: 'top'
+    },
+    headStyles: { 
+      fillColor: [37, 99, 235], 
+      textColor: 255, 
+      fontStyle: 'bold',
+      halign: 'left'
+    },
     columnStyles: {
-      0: { cellWidth: 40, fontStyle: 'bold' },
-      1: { cellWidth: 120 }
+      0: { cellWidth: 38, fontStyle: 'bold' },
+      1: { cellWidth: 132 }
     }
   });
 
@@ -589,10 +617,14 @@ export const generateIncidentProcessPDF = () => {
     doc.text(step, margin + 5, yPosition + 5);
     yPosition += 7;
     if (step !== recoverySteps[recoverySteps.length - 1]) {
-      doc.setFont('helvetica', 'bold');
-      doc.text('|', pageWidth / 2, yPosition + 1, { align: 'center' });
-      doc.text('v', pageWidth / 2, yPosition + 3, { align: 'center' });
-      yPosition += 5;
+      // Draw arrow
+      const centerX = pageWidth / 2;
+      doc.setDrawColor(150, 180, 230);
+      doc.setLineWidth(1);
+      doc.line(centerX, yPosition + 1, centerX, yPosition + 5);
+      // Arrow head
+      doc.triangle(centerX, yPosition + 7, centerX - 1.5, yPosition + 4, centerX + 1.5, yPosition + 4, 'F');
+      yPosition += 8;
     }
   });
 
@@ -718,12 +750,24 @@ export const generateIncidentProcessPDF = () => {
     head: [reportingData[0]],
     body: reportingData.slice(1),
     theme: 'grid',
-    styles: { fontSize: FONT_SIZES.small, cellPadding: 2.5, lineColor: [200, 200, 200], lineWidth: 0.1 },
-    headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' },
+    margin: { left: margin, right: margin },
+    styles: { 
+      fontSize: FONT_SIZES.small, 
+      cellPadding: 3, 
+      lineColor: [200, 200, 200], 
+      lineWidth: 0.1,
+      halign: 'left'
+    },
+    headStyles: { 
+      fillColor: [37, 99, 235], 
+      textColor: 255, 
+      fontStyle: 'bold',
+      halign: 'left'
+    },
     columnStyles: {
-      0: { cellWidth: 40, fontStyle: 'bold' },
-      1: { cellWidth: 40 },
-      2: { cellWidth: 80 }
+      0: { cellWidth: 42, fontStyle: 'bold' },
+      1: { cellWidth: 42 },
+      2: { cellWidth: 86 }
     }
   });
 
