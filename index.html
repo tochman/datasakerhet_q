@@ -2,6 +2,11 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
+    
+    <!-- Preconnect to improve performance (affects SEO rankings) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -9,27 +14,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary Meta Tags -->
-    <title>Cybersäkerhetslagen - Omfattas din verksamhet?</title>
-    <meta name="title" content="Cybersäkerhetslagen - Omfattas din verksamhet?" />
-    <meta name="description" content="Bedöm om din verksamhet omfattas av Cybersäkerhetslagen (2025:1506). Få omedelbart resultat och konkreta säkerhetsåtgärder." />
-    <meta name="keywords" content="Cybersäkerhetslagen, NIS2, cybersäkerhet, informationssäkerhet, Sverige, bedömning" />
+    <title>Cybersäkerhetslagen (2025:1506) - Omfattas din verksamhet? | NIS2 Bedömning Sverige</title>
+    <meta name="title" content="Cybersäkerhetslagen (2025:1506) - Omfattas din verksamhet? | NIS2 Bedömning" />
+    <meta name="description" content="Gratis bedömning av om din verksamhet omfattas av Cybersäkerhetslagen (2025:1506) och NIS2-direktivet. Få omedelbart resultat, säkerhetsrekommendationer och PDF-mallar för incidenthantering. MCFFS 2026:1 - Väsentliga och viktiga verksamhetsutövare." />
+    <meta name="keywords" content="Cybersäkerhetslagen, Cybersäkerhetslagen 2025:1506, NIS2, NIS2-direktivet, cybersäkerhet, informationssäkerhet, Sverige, bedömning, MCFFS 2026:1, MSB, väsentliga verksamhetsutövare, viktiga verksamhetsutövare, incidenthantering, säkerhetsåtgärder" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://cybersakerhet.netlify.app/" />
-    <meta property="og:title" content="Cybersäkerhetslagen - Omfattas din verksamhet?" />
-    <meta property="og:description" content="Bedöm om din verksamhet omfattas av Cybersäkerhetslagen (2025:1506). Få omedelbart resultat och konkreta säkerhetsåtgärder." />
+    <meta property="og:site_name" content="Cybersäkerhetslagen Sverige" />
+    <meta property="og:title" content="Cybersäkerhetslagen (2025:1506) - Omfattas din verksamhet? | NIS2 Bedömning" />
+    <meta property="og:description" content="Gratis bedömning av om din verksamhet omfattas av Cybersäkerhetslagen och NIS2-direktivet. Få omedelbart resultat och säkerhetsrekommendationer." />
     <meta property="og:image" content="https://cybersakerhet.netlify.app/og_image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="sv_SE" />
     
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://cybersakerhet.netlify.app/" />
-    <meta property="twitter:title" content="Cybersäkerhetslagen - Omfattas din verksamhet?" />
-    <meta property="twitter:description" content="Bedöm om din verksamhet omfattas av Cybersäkerhetslagen (2025:1506). Få omedelbart resultat och konkreta säkerhetsåtgärder." />
+    <!-- Twitter -->(2025:1506) - Omfattas din verksamhet?" />
+    <meta property="twitter:description" content="Gratis bedömning av om din verksamhet omfattas av Cybersäkerhetslagen och NIS2-direktivet. Få omedelbart resultat och säkerhetsrekommendationer." />
     <meta property="twitter:image" content="https://cybersakerhet.netlify.app/og_image.png" />
     
     <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#1e40af" />
+    <meta name="author" content="Communitas Labs" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://cybersakerhet.netlify.app/" />
+    
+    <!-- Structured Data (JSON-LD) for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Cybersäkerhetslagen Bedömning",
+      "description": "Bedöm om din verksamhet omfattas av Cybersäkerhetslagen (2025:1506) och NIS2-direktivet. Gratis online-bedömning med omedelbart resultat.",
+      "url": "https://cybersakerhet.netlify.app/",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "SEK"
+      },
+      "inLanguage": "sv-SE",
+      "author": {
+        "@type": "Organization",
+        "name": "Communitas Labs"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Svenska företag och organisationer"
+      },
+      "keywords": "Cybersäkerhetslagen, NIS2, cybersäkerhet, informationssäkerhet, MCFFS 2026:1"
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Vad är Cybersäkerhetslagen?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cybersäkerhetslagen (2025:1506) är en svensk lag som trädde i kraft 15 januari 2026 och genomför EU:s NIS2-direktiv. Lagen ställer krav på organisationer inom kritiska sektorer att implementera cybersäkerhetsåtgärder och rapportera incidenter."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Omfattas min verksamhet av Cybersäkerhetslagen?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Din verksamhet omfattas om ni är medelstora eller större och verkar inom kritiska sektorer som energi, transport, hälso- och sjukvård, finans, dricksvatten, digitala tjänster eller tillverkning. Använd vårt bedömningsformulär för att få ett omedelbart svar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Vad är skillnaden mellan väsentliga och viktiga verksamhetsutövare?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Enligt MCFFS 2026:1 har väsentliga verksamhetsutövare striktare krav på cybersäkerhet, omfattande incidenthantering och regelbunden tillsyn från MSB. Viktiga verksamhetsutövare har något lindrigare krav men måste fortfarande uppfylla grundläggande säkerhetskrav."
+          }
+        }
+      ]
+    }
+    </script>
+    
     <meta name="theme-color" content="#1e40af" />
     <meta name="author" content="Communitas Labs" />
     <link rel="canonical" href="https://cybersakerhet.netlify.app/" />
