@@ -91,7 +91,57 @@ export default function QuestionnaireForm() {
       section: 3,
       sectionTitle: "Del 3: Etablering, storlek och generella kriterier",
       question: "Är din verksamhet ett medelstort eller större företag?",
-      helpText: "Ett medelstort företag har färre än 250 anställda OCH antingen en årsomsättning på högst 50 miljoner euro ELLER en balansomslutning på högst 43 miljoner euro. Är ni större än så, eller motsvarar ni dessa gränser, svarar du \"Ja\".",
+      helpText: (
+        <div className="space-y-3">
+          <p className="italic text-gray-600">
+            Ett medelstort företag har färre än 250 anställda OCH antingen en årsomsättning på högst 50 miljoner euro ELLER en balansomslutning på högst 43 miljoner euro.
+          </p>
+          <details className="bg-blue-50 border border-blue-200 rounded-lg p-4 cursor-pointer">
+            <summary className="font-semibold text-blue-900 hover:text-blue-700 select-none">
+              📊 Detaljerad förklaring av företagsstorlekar enligt EU-definition
+            </summary>
+            <div className="mt-3 space-y-3 text-sm">
+              <div className="bg-white p-3 rounded border-l-4 border-green-500">
+                <h4 className="font-bold text-green-900 mb-1">Mikroföretag</h4>
+                <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <li>Färre än <strong>10 anställda</strong></li>
+                  <li>Årsomsättning eller balansomslutning högst <strong>2 miljoner euro</strong></li>
+                </ul>
+              </div>
+              
+              <div className="bg-white p-3 rounded border-l-4 border-blue-500">
+                <h4 className="font-bold text-blue-900 mb-1">Små företag</h4>
+                <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <li>Färre än <strong>50 anställda</strong></li>
+                  <li>Årsomsättning eller balansomslutning högst <strong>10 miljoner euro</strong></li>
+                </ul>
+              </div>
+              
+              <div className="bg-white p-3 rounded border-l-4 border-yellow-500">
+                <h4 className="font-bold text-yellow-900 mb-1">Medelstora företag</h4>
+                <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <li>Färre än <strong>250 anställda</strong></li>
+                  <li>Årsomsättning mellan 10-50 miljoner euro, <strong>ELLER</strong></li>
+                  <li>Balansomslutning mellan 10-43 miljoner euro</li>
+                </ul>
+              </div>
+              
+              <div className="bg-white p-3 rounded border-l-4 border-red-500">
+                <h4 className="font-bold text-red-900 mb-1">Stora företag</h4>
+                <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <li><strong>250 anställda eller fler</strong>, ELLER</li>
+                  <li>Årsomsättning över <strong>50 miljoner euro</strong>, ELLER</li>
+                  <li>Balansomslutning över <strong>43 miljoner euro</strong></li>
+                </ul>
+              </div>
+              
+              <p className="text-xs text-gray-500 italic mt-2">
+                Källa: Kommissionens rekommendation 2003/361/EG om definitionen av mikroföretag samt små och medelstora företag.
+              </p>
+            </div>
+          </details>
+        </div>
+      ),
       type: 'radio',
       options: ['Ja', 'Nej', 'Vet ej'],
       showIf: (answers) => isPrivate(answers) || isUncertain(answers)
