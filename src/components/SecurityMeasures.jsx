@@ -19,14 +19,14 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
     const measures = getSecurityMeasures();
     
     // Track the download
-    await trackPDFDownload();
+    await trackPDFDownload('Säkerhetsrekommendationer');
     
     // Generate and download the PDF
     generateSecurityPDF(assessment, measures, answers);
   }
 
   // Track PDF download
-  const trackPDFDownload = async () => {
+  const trackPDFDownload = async (templateTitle) => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -47,6 +47,7 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
         body: JSON.stringify({
           surveyResponseId: surveyResponseId || null,
           assessmentResult: assessment.result,
+          templateTitle,
           userAgent,
           language,
           referrer
@@ -254,7 +255,10 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
           
           {/* Incident Report Template Button */}
           <button
-            onClick={generateIncidentReportPDF}
+            onClick={() => {
+              trackPDFDownload('Händelserapport');
+              generateIncidentReportPDF();
+            }}
             className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-sm shadow transition-colors no-print"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,7 +269,10 @@ export default function SecurityMeasures({ assessment, answers, surveyResponseId
           
           {/* Incident Process Guide Button */}
           <button
-            onClick={generateIncidentProcessPDF}
+            onClick={() => {
+              trackPDFDownload('Processbeskrivning');
+              generateIncidentProcessPDF();
+            }}
             className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-sm shadow transition-colors no-print"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

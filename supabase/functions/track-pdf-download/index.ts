@@ -24,7 +24,8 @@ serve(async (req) => {
       assessmentResult,
       userAgent,
       language,
-      referrer
+      referrer,
+      templateTitle
     } = await req.json()
 
     // Get real IP address from request headers
@@ -60,6 +61,7 @@ serve(async (req) => {
       .insert({
         survey_response_id: surveyResponseId || null,
         assessment_result: assessmentResult,
+        template_title: templateTitle,
         user_agent: userAgent,
         browser_name: browserInfo.browserName,
         browser_version: browserInfo.browserVersion,

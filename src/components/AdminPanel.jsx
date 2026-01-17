@@ -107,6 +107,37 @@ export default function AdminPanel() {
     }
   }
 
+  // Track PDF download
+  const trackPDFDownload = async (templateTitle) => {
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const userAgent = navigator.userAgent;
+      const language = navigator.language;
+      const referrer = document.referrer || window.location.href;
+
+      await fetch(`${supabaseUrl}/functions/v1/track-pdf-download`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+          'apikey': supabaseAnonKey
+        },
+        body: JSON.stringify({
+          surveyResponseId: null,
+          assessmentResult: null,
+          templateTitle,
+          userAgent,
+          language,
+          referrer
+        })
+      });
+    } catch (error) {
+      console.error('Error tracking PDF download:', error);
+    }
+  }
+
   // Get download count for a specific survey response
   const getDownloadCount = (surveyId) => {
     return pdfDownloads.filter(d => d.survey_response_id === surveyId).length
@@ -943,7 +974,10 @@ export default function AdminPanel() {
                 </div>
 
                 <button
-                  onClick={generateIncidentReportPDF}
+                  onClick={() => {
+                    trackPDFDownload('Händelserapport');
+                    generateIncidentReportPDF();
+                  }}
                   className="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-sm shadow transition-colors flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1063,7 +1097,10 @@ export default function AdminPanel() {
                 </div>
 
                 <button
-                  onClick={generateIncidentProcessPDF}
+                  onClick={() => {
+                    trackPDFDownload('Processbeskrivning');
+                    generateIncidentProcessPDF();
+                  }}
                   className="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-sm shadow transition-colors flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
