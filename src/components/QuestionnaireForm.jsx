@@ -611,13 +611,14 @@ export default function QuestionnaireForm() {
         )}
         
         <ResultsSummary 
-          assessment={assessment} 
+          assessment={assessment}
+          answers={answers}
           onShowContactForm={() => setShowContactForm(true)} 
         />
         
         {assessment.result === 'omfattas' && (
           <div className="max-w-4xl mx-auto">
-            <SecurityMeasures />
+            <SecurityMeasures assessment={assessment} answers={answers} />
           </div>
         )}
       </div>

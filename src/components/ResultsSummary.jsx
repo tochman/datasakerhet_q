@@ -4,9 +4,10 @@ import React from 'react'
  * Komponent för att visa bedömningsresultat
  * @param {Object} props
  * @param {Object} props.assessment - Bedömningsresultat
+ * @param {Object} props.answers - Användarens svar från formuläret
  * @param {function} props.onShowContactForm - Callback för att visa kontaktformulär
  */
-export default function ResultsSummary({ assessment, onShowContactForm }) {
+export default function ResultsSummary({ assessment, answers, onShowContactForm }) {
   // Färgkodning baserat på resultat
   const getResultColor = (result) => {
     switch(result) {
