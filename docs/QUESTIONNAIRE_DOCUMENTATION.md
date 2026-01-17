@@ -85,9 +85,15 @@ Formuläret är indelat i **4 delar** med totalt **17 frågor**:
 |----------|-------|-----|-----------------|------------|
 | Q13 | Bedriver din verksamhet huvudsakligen säkerhetskänslig eller brottsbekämpande verksamhet? | Radio | Alla | Ja, Nej, Vet ej |
 | Q14 | Är din verksamhet en privat aktör som sysslar med säkerhetskänslig verksamhet? | Radio | Privat/Vet ej | Ja, Nej, Vet ej |
-| Q15 | Tillhandahåller din verksamhet "betrodda tjänster" trots undantag? | Radio | Alla | Ja, Nej, Vet ej |
+| Q15 | Även om ni bedriver säkerhetskänslig verksamhet: Tillhandahåller ni också "betrodda tjänster"? | Radio | Q13=Ja ELLER Q14=Ja | Ja, Nej, Vet ej |
 | Q16 | Är din verksamhet Regeringen, domstol eller liknande statligt organ? | Radio | Offentlig/Vet ej | Ja, Nej, Vet ej |
 | Q17 | Är din verksamhet en fullmäktigeförsamling eller kommunstyrelse? | Radio | Offentlig/Vet ej | Ja, Nej, Vet ej |
+
+**Viktigt om Q12 och Q15:**
+- **Q12** frågar om betrodda tjänster i Del 3 (för att avgöra om verksamheten omfattas)
+- **Q15** visas ENDAST om användaren svarat "Ja" på Q13 eller Q14 (undantagsfrågor)
+- Om Q12 = "Ja", omfattas verksamheten alltid, även om undantag annars skulle gälla
+- Q15 är en bekräftelse för dem som angett undantagsgrunder
 
 ---
 

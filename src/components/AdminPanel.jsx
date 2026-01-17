@@ -32,9 +32,21 @@ export default function AdminPanel() {
 
   const fetchResponses = async () => {
     try {
+      // Hämta survey_responses med relaterad contact_info
       const { data, error } = await supabase
         .from('survey_responses')
-        .select('*')
+        .select(`
+          *,
+          contact_info (
+            id,
+            name,
+            email,
+            phone,
+            organization,
+            message,
+            created_at
+          )
+        `)
         .order('created_at', { ascending: false })
 
       if (error) throw error
@@ -80,22 +92,9 @@ export default function AdminPanel() {
   // Visa detaljer för ett svar
   const viewDetails = async (response) => {
     setSelectedResponse(response)
-    
-    // Hämta kontaktinformation om det finns
-    if (response.wants_contact) {
-      try {
-        const { data, error } = await supabase
-          .from('contact_info')
-          .select('*')
-          .eq('survey_response_id', response.id)
-          .single()
-
-        if (error) throw error
-        setContactInfo(data)
-      } catch (error) {
-        console.error('Fel vid hämtning av kontaktinfo:', error)
-        setContactInfo(null)
-      }
+    // contact_info is already included in the response from the join query
+    if (response.contact_info && response.contact_info.length > 0) {
+      setContactInfo(response.contact_info[0])
     } else {
       setContactInfo(null)
     }
@@ -117,19 +116,28 @@ export default function AdminPanel() {
   const exportToCSV = () => {
     const headers = [
       'ID', 'Datum', 'Resultat', 
-      'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10', 'Q11', 'Q12', 'Q13', 'Q14', 'Q15', 'Q16', 'Q17',
+      'Kontaktnamn', 'E-post', 'Telefon', 'Organisation',
+      'Q0', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10', 'Q11', 'Q12', 'Q13', 'Q14', 'Q15', 'Q16', 'Q17',
       'Vill ha kontakt'
     ]
 
-    const csvData = filteredResponses.map(r => [
-      r.id,
-      new Date(r.created_at).toLocaleString('sv-SE'),
-      r.assessment_result,
-      r.q1 || '', r.q2 || '', r.q3 || '', r.q4 || '', r.q5 || '', r.q6 || '', r.q7 || '',
-      r.q8_services ? JSON.stringify(r.q8_services) : '',
-      r.q9 || '', r.q10 || '', r.q11 || '', r.q12 || '', r.q13 || '', r.q14 || '', r.q15 || '', r.q16 || '', r.q17 || '',
-      r.wants_contact ? 'Ja' : 'Nej'
-    ])
+    const csvData = filteredResponses.map(r => {
+      const contact = r.contact_info && r.contact_info[0];
+      return [
+        r.id,
+        new Date(r.created_at).toLocaleString('sv-SE'),
+        r.assessment_result,
+        contact?.name || '',
+        contact?.email || '',
+        contact?.phone || '',
+        contact?.organization || '',
+        r.q0 || '',
+        r.q1 || '', r.q2 || '', r.q3 || '', r.q4 || '', r.q5 || '', r.q6 || '', r.q7 || '',
+        r.q8_services ? JSON.stringify(r.q8_services) : '',
+        r.q9 || '', r.q10 || '', r.q11 || '', r.q12 || '', r.q13 || '', r.q14 || '', r.q15 || '', r.q16 || '', r.q17 || '',
+        r.wants_contact ? 'Ja' : 'Nej'
+      ]
+    })
 
     const csv = [
       headers.join(','),
@@ -298,6 +306,9 @@ export default function AdminPanel() {
                     Datum
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Kontaktperson
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Resultat
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -311,15 +322,30 @@ export default function AdminPanel() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredResponses.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
+                    <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
                       Inga svar att visa
                     </td>
                   </tr>
                 ) : (
-                  filteredResponses.map((response) => (
+                  filteredResponses.map((response) => {
+                    const contact = response.contact_info && response.contact_info[0];
+                    return (
                     <tr key={response.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {new Date(response.created_at).toLocaleString('sv-SE')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {contact ? (
+                          <div>
+                            <div className="font-medium text-gray-900">{contact.name}</div>
+                            <div className="text-gray-500 text-xs">{contact.email}</div>
+                            {contact.organization && (
+                              <div className="text-gray-400 text-xs">{contact.organization}</div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 italic">Ej angiven</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -347,7 +373,7 @@ export default function AdminPanel() {
                         </button>
                       </td>
                     </tr>
-                  ))
+                  )})
                 )}
               </tbody>
             </table>

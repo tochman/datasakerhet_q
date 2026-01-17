@@ -232,11 +232,11 @@ export default function QuestionnaireForm() {
       id: 'q15',
       section: 4,
       sectionTitle: "Del 4: Undantag",
-      question: "Tillhandahåller din verksamhet \"betrodda tjänster\" (t.ex. e-legitimation), även om den annars skulle vara undantagen på grund av säkerhetskänslig eller brottsbekämpande verksamhet?",
-      helpText: "Leverantörer av betrodda tjänster omfattas alltid, även om de annars skulle vara undantagna.",
+      question: "Även om ni bedriver säkerhetskänslig eller brottsbekämpande verksamhet: Tillhandahåller ni också \"betrodda tjänster\" (t.ex. e-legitimation)?",
+      helpText: "Leverantörer av betrodda tjänster omfattas alltid av lagen, även om de annars skulle vara undantagna på grund av säkerhetskänslig verksamhet.",
       type: 'radio',
       options: ['Ja', 'Nej', 'Vet ej'],
-      showIf: () => true
+      showIf: (answers) => answers.q13 === 'Ja' || answers.q14 === 'Ja'
     },
     {
       id: 'q16',
@@ -393,7 +393,8 @@ export default function QuestionnaireForm() {
       isYes(answers.q16) ||  // Regeringen, domstolar etc
       isYes(answers.q17);    // Fullmäktige/församlingar
     
-    const betroddaTjansterTrumfarUndantag = isYes(answers.q15);  // Q15 in exceptions
+    // Betrodda tjänster trumpfar alltid undantag (Q12 i Del 3, eller Q15 om de svarade Ja på undantagsfrågor)
+    const betroddaTjansterTrumfarUndantag = isYes(answers.q12) || isYes(answers.q15);
     
     // 3. Kontroll av "Vet ej"-svar som påverkar slutresultatet
     let harKritiskaVetEj = false;
@@ -420,10 +421,14 @@ export default function QuestionnaireForm() {
       }
     }
     
-    // Om undantag är osäkra
-    if (potentielltOmfattad && (isVetEj(answers.q13) || isVetEj(answers.q14) || 
-                                 isVetEj(answers.q15) || isVetEj(answers.q16) || isVetEj(answers.q17))) {
-      const undantagVetEjCount = ['q13', 'q14', 'q15', 'q16', 'q17'].filter(q => isVetEj(answers[q])).length;
+    // Om undantag är osäkra (Q15 räknas endast om den visas, dvs q13 eller q14 = Ja)
+    if (potentielltOmfattad) {
+      const undantagFragor = ['q13', 'q14', 'q16', 'q17'];
+      // Lägg till q15 endast om den var synlig
+      if (isYes(answers.q13) || isYes(answers.q14)) {
+        undantagFragor.push('q15');
+      }
+      const undantagVetEjCount = undantagFragor.filter(q => isVetEj(answers[q])).length;
       if (undantagVetEjCount >= 2) {
         harKritiskaVetEj = true;
       }

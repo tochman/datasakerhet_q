@@ -1,5 +1,12 @@
+-- =====================================================
+-- CYBERSÄKERHETSLAGEN FRÅGEFORMULÄR - DATABASSCHEMA
+-- =====================================================
+-- OBS: Kör denna fil ENDAST på en tom databas.
+-- För befintliga databaser, använd 002_add_q0_column.sql
+-- =====================================================
+
 -- Tabell för formulärsvar
-CREATE TABLE survey_responses (
+CREATE TABLE IF NOT EXISTS survey_responses (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   q0 TEXT,  -- Grundläggande verksamhetstyp (Offentlig/Privat/Vet ej)
@@ -27,7 +34,7 @@ CREATE TABLE survey_responses (
 );
 
 -- Tabell för kontaktinformation
-CREATE TABLE contact_info (
+CREATE TABLE IF NOT EXISTS contact_info (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   survey_response_id UUID REFERENCES survey_responses(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -39,24 +46,41 @@ CREATE TABLE contact_info (
 );
 
 -- Index för bättre prestanda
-CREATE INDEX idx_survey_responses_created_at ON survey_responses(created_at DESC);
-CREATE INDEX idx_survey_responses_wants_contact ON survey_responses(wants_contact);
-CREATE INDEX idx_contact_info_survey_response ON contact_info(survey_response_id);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_created_at ON survey_responses(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_survey_responses_wants_contact ON survey_responses(wants_contact);
+CREATE INDEX IF NOT EXISTS idx_contact_info_survey_response ON contact_info(survey_response_id);
 
 -- Row Level Security (RLS)
 ALTER TABLE survey_responses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_info ENABLE ROW LEVEL SECURITY;
 
--- Policy: Alla kan skapa
-CREATE POLICY "Enable insert for all users" ON survey_responses
-  FOR INSERT WITH CHECK (true);
+-- Ta bort gamla policies om de finns
+DROP POLICY IF EXISTS "Enable insert for all users" ON survey_responses;
+DROP POLICY IF EXISTS "Enable insert for all users" ON contact_info;
+DROP POLICY IF EXISTS "Enable read for authenticated users only" ON survey_responses;
+DROP POLICY IF EXISTS "Enable read for authenticated users only" ON contact_info;
+DROP POLICY IF EXISTS "Enable update for all users" ON survey_responses;
 
-CREATE POLICY "Enable insert for all users" ON contact_info
-  FOR INSERT WITH CHECK (true);
+-- Policy: Alla kan skapa (anon och authenticated)
+CREATE POLICY "Allow anonymous insert" ON survey_responses
+  FOR INSERT TO anon, authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Allow anonymous insert" ON contact_info
+  FOR INSERT TO anon, authenticated
+  WITH CHECK (true);
+
+-- Policy: Alla kan uppdatera sina egna svar (för wants_contact)
+CREATE POLICY "Allow anonymous update" ON survey_responses
+  FOR UPDATE TO anon, authenticated
+  USING (true)
+  WITH CHECK (true);
 
 -- Policy: Endast autentiserade användare kan läsa (för admin)
-CREATE POLICY "Enable read for authenticated users only" ON survey_responses
-  FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated read" ON survey_responses
+  FOR SELECT TO authenticated
+  USING (true);
 
-CREATE POLICY "Enable read for authenticated users only" ON contact_info
-  FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated read" ON contact_info
+  FOR SELECT TO authenticated
+  USING (true);
