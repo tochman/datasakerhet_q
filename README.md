@@ -33,6 +33,35 @@ NIS 2-direktivet (EU 2022/2555) omfattar verksamheter inom följande sektorer:
 
 **Viktigt:** Även företagets storlek (medelstort eller större) är avgörande för om lagen gäller.
 
+### MCFFS 2026:1 - Väsentliga vs Viktiga verksamhetsutövare
+
+**Myndigheten för civilt försvar (MCFFS 2026:1)** – beslutat 8 januari 2026, ikraftträtt 2 februari 2026 – gör en grundläggande åtskillnad mellan:
+
+#### ⚠️ Väsentliga verksamhetsutövare (Essential entities)
+Striktare krav på cybersäkerhet, omfattande incidenthantering och regelbunden tillsyn från MSB.
+
+**Transport:**
+- Beredskapsflygplatser (med avtal enligt 7 kap. 11 § luftfartslagen)
+- Flygkontrolltjänster
+- Karantänshamnar enligt smittskyddslagen
+- Skyddade platser enligt lagen om kommuners och regioners åtgärder inför och vid extraordinära händelser
+
+**Dricksvatten:**
+- Dricksvattenproducenter som levererar ≥20,000 personer
+- Dricksvattenproducenter som levererar till akutsjukhus
+
+#### ℹ️ Viktiga verksamhetsutövare (Important entities)
+Förhöjda cybersäkerhetskrav men inte lika strikta som för väsentliga verksamhetsutövare.
+
+**Kemikalier:**
+- Tillverkar, producerar eller distribuerar >1 ton/år av kemikalier som används för:
+  - Dricksvattenberedning
+  - Livsmedelsproduktion
+  - Hälso- och sjukvård
+  - Kritisk infrastruktur
+
+Formuläret ställer specifika frågor (Q18-Q20) för att identifiera dessa kategorier och ger en mer exakt bedömning av vilka krav som gäller.
+
 ## Funktioner
 
 ### För Användare
@@ -41,7 +70,11 @@ NIS 2-direktivet (EU 2022/2555) omfattar verksamheter inom följande sektorer:
   - **Offentliga verksamheter**: 6-7 frågor (från tidigare 17)
   - **Privata utan svenskt säte**: 3 frågor med omedelbart resultat
   - **Små privata verksamheter**: 6-12 frågor istället för alla 17
-  - **Större verksamheter**: 13-16 relevanta frågor
+  - **Större verksamheter**: 13-20 relevanta frågor
+- ✅ **MCFFS 2026:1 klassificering** – Identifierar väsentliga vs viktiga verksamhetsutövare
+  - **Q18**: Transport väsentliga (beredskapsflygplatser, flygkontroll, karantänshamnar)
+  - **Q19**: Dricksvatten väsentliga (≥20,000 personer eller akutsjukhus)
+  - **Q20**: Kemikalier viktiga (>1 ton/år för kritisk användning)
 - ✅ **Automatisk bedömning** enligt lagstiftningens kriterier
 - ✅ **Dynamisk progress-indikator** som visar faktiskt återstående frågor
 - ✅ **Early exit** för verksamheter som inte omfattas
@@ -153,15 +186,20 @@ utan att behöva ha djup kunskap om lagstiftningen.
 ### För Administratörer
 - ✅ **Admin-panel** med skyddad inloggning
 - ✅ **Översikt över alla svar** med tidsstämplar
+- ✅ **Responsiv dashboard** – mobilanpassad layout med kompakta kolumner
 - ✅ **Filter- och sökfunktioner**
   - Filtrera på bedömningsresultat
   - Visa endast användare som vill ha kontakt
   - Datumfilter
 - ✅ **Statistik-dashboard**
   - Totalt antal svar
-  - Fördelning per bedömningskategori
+  - Fördelning per bedömningskategori (omfattas/ej/undantag/osäker)
+  - **Väsentlig vs Viktig-fördelning** (MCFFS 2026:1)
   - Antal kontaktförfrågningar
+  - PDF-nedladdningar med geolokalisering
 - ✅ **Detaljerad visning** av enskilda svar
+- ✅ **Tab-baserad navigering** – Svar och PDF-nedladdningar
+- ✅ **IP-geolokalisering** – visa stad och land för både svar och nedladdningar
 - ✅ **CSV-export** för vidare analys
 
 ## Dokumentation
@@ -173,9 +211,11 @@ Detaljerad dokumentation för frågeflöde och bedömningslogik finns i:
 
 Användare som bedöms omfattas av lagen kan ladda ner en professionell PDF med:
 - Bedömningsresultat med färgkodning
+- **MCFFS 2026:1 klassificering** – väsentlig eller viktig verksamhetsutövare
 - Rekommenderade säkerhetsåtgärder enligt 2 kap. 3-4 §§
 - Checklista för implementering
 - Tidsfrister för incidentrapportering
+- **Spårning med geolokalisering** – PDF-nedladdningar loggas med IP, browser, device och plats
 
 ## Dataflöde
 
@@ -289,7 +329,13 @@ Användare som bedöms omfattas av lagen kan ladda ner en professionell PDF med:
 2. Kopiera innehållet från `supabase/migrations/001_initial_schema.sql`
 3. Kör SQL-koden för att skapa tabeller och policies
 
-**För befintliga databaser:** Om du redan har tabellerna, kör istället `supabase/migrations/002_add_q0_column.sql` för att uppdatera RLS-policies.
+**För befintliga databaser:**
+- **Migration 002**: `add_q0_column.sql` - Uppdatera RLS-policies
+- **Migration 003**: `add_pdf_downloads_table.sql` - Lägg till PDF-nedladdningsspårning
+- **Migration 004**: `add_location_to_surveys.sql` - Lägg till IP-geolokalisering till svar
+- **Migration 005**: `add_category_to_assessment.sql` - Lägg till MCFFS 2026:1 compliance (Q18-Q20 + väsentlig/viktig-klassificering)
+
+Kör migrationerna i ordning om du uppdaterar en befintlig databas.
 
 ### 3. Deploy Edge Functions
 
