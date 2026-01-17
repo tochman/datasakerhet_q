@@ -2,8 +2,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 /**
- * Genererar en professionell processbeskrivning för incidenthantering
- * Omfattande guide enligt best practice för cybersäkerhetsincidenter
+ * Genererar en professionell processbeskrivning for incidenthantering
+ * Omfattande guide enligt best practice for cybersakerhetsincidenter
  */
 export const generateIncidentProcessPDF = () => {
   const doc = new jsPDF({
@@ -17,7 +17,7 @@ export const generateIncidentProcessPDF = () => {
   const margin = 20;
   let yPosition = margin;
   
-  // Standard font sizes för consistency
+  // Standard font sizes for consistency
   const FONT_SIZES = {
     title: 28,
     subtitle: 16,
@@ -65,7 +65,7 @@ export const generateIncidentProcessPDF = () => {
   doc.text('Processbeskrivning och handbok', pageWidth / 2, 38, { align: 'center' });
   
   doc.setFontSize(12);
-  doc.text('Cybersäkerhetslagen (2025:1506)', pageWidth / 2, 50, { align: 'center' });
+  doc.text('Cybersakerhetslagen (2025:1506)', pageWidth / 2, 50, { align: 'center' });
 
   yPosition = 80;
   doc.setTextColor(0, 0, 0);
@@ -88,14 +88,14 @@ export const generateIncidentProcessPDF = () => {
   doc.setFontSize(FONT_SIZES.body);
   doc.setFont('helvetica', 'normal');
   const toc = [
-    '1. Processöversikt',
-    '2. Fas 1: Upptäckt och rapportering',
+    '1. Processoversikt',
+    '2. Fas 1: Upptackt och rapportering',
     '3. Fas 2: Initial bedomning',
     '4. Fas 3: Klassificering och prioritering',
     '5. Fas 4: Aktivera incidentresponsteam',
     '6. Fas 5: Containment (Inneslutning)',
     '7. Fas 6: Eradication (Utrotning)',
-    '8. Fas 7: Recovery (Återställning)',
+    '8. Fas 7: Recovery (Aterstallning)',
     '9. Fas 8: Post-Incident Review',
     '10. Fas 9: Dokumentation och rapportering'
   ];
@@ -113,21 +113,21 @@ export const generateIncidentProcessPDF = () => {
 
   doc.setFontSize(FONT_SIZES.body);
   doc.setFont('helvetica', 'normal');
-  doc.text('Incidenthanteringsprocessen bestar av nio faser som säkerställer systematisk', margin, yPosition);
+  doc.text('Incidenthanteringsprocessen bestar av nio faser som sakerstaller systematisk', margin, yPosition);
   yPosition += 5;
-  doc.text('hantering från upptäckt till avslut.', margin, yPosition);
+  doc.text('hantering fran upptackt till avslut.', margin, yPosition);
   yPosition += 10;
 
   // Process flow with descriptions
   const flowSteps = [
-    { num: '1', title: 'UPPTACKT & RAPPORTERING', desc: 'Handelse upptäcks och rapporteras omedelbart' },
+    { num: '1', title: 'UPPTACKT & RAPPORTERING', desc: 'Handelse upptacks och rapporteras omedelbart' },
     { num: '2', title: 'INITIAL BEDOMNING', desc: 'Verifiera om det ar en incident' },
-    { num: '3', title: 'KLASSIFICERING', desc: 'Bedom allvårlighetsgrad och prioritera' },
+    { num: '3', title: 'KLASSIFICERING', desc: 'Bedom allvarlighetsgrad och prioritera' },
     { num: '4', title: 'AKTIVERA TEAM', desc: 'Kalla in incidentresponsteam' },
     { num: '5', title: 'CONTAINMENT', desc: 'Stoppa spridning och begransa skada' },
-    { num: '6', title: 'ERADICATION', desc: 'Ta bort hotet från miljon' },
+    { num: '6', title: 'ERADICATION', desc: 'Ta bort hotet fran miljon' },
     { num: '7', title: 'RECOVERY', desc: 'Aterstall normal drift sakert' },
-    { num: '8', title: 'POST-INCIDENT REVIEW', desc: 'Lär av incidenten' },
+    { num: '8', title: 'POST-INCIDENT REVIEW', desc: 'Lar av incidenten' },
     { num: '9', title: 'DOKUMENTATION', desc: 'Rapportera enligt lagen' }
   ];
 
@@ -176,14 +176,14 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
   doc.setFont('helvetica', 'normal');
-  doc.text('Alla medarbetare + Övervakningssystem', margin + 25, yPosition);
+  doc.text('Alla medarbetare + Overvakningssystem', margin + 25, yPosition);
   yPosition += 8;
 
   // Description paragraph
   const fas1Desc = [
-    'Den första fasen i incidenthantering ar upptäckt och rapportering. Alla medarbetare har ett',
-    'ansvar att rapportera misstänkta säkerhetshändelser omedelbart. Upptäckt kan ske bade',
-    'manuellt (användare observerar något ovanligt) och automatiskt genom övervakningssystem.'
+    'Den forsta fasen i incidenthantering ar upptackt och rapportering. Alla medarbetare har ett',
+    'ansvar att rapportera misstankta sakerhetshandelser omedelbart. Upptackt kan ske bade',
+    'manuellt (anvandare observerar nagot ovanligt) och automatiskt genom overvakningssystem.'
   ];
   fas1Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -196,7 +196,7 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 6;
 
   const fas1Activities = [
-    '- Handelse upptäcks (manuellt eller automatiskt)',
+    '- Handelse upptacks (manuellt eller automatiskt)',
     '- Rapporteras via etablerade kanaler (telefon, e-post, incidentsystem)',
     '- Registreras i incidenthanteringssystem med unikt incidentnummer'
   ];
@@ -224,7 +224,7 @@ export const generateIncidentProcessPDF = () => {
   doc.rect(margin, yPosition, pageWidth - 2 * margin, 10, 'FD');
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(139, 0, 0);
-  doc.text('Tidsgräns: Omedelbart vid upptäckt', margin + 5, yPosition + 7);
+  doc.text('Tidsgrans: Omedelbart vid upptackt', margin + 5, yPosition + 7);
   doc.setTextColor(0, 0, 0);
   yPosition += 15;
 
@@ -234,12 +234,12 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
   doc.setFont('helvetica', 'normal');
-  doc.text('IT-säkerhetsansvarig eller Jourhavande IT', margin + 25, yPosition);
+  doc.text('IT-sakerhetsansvarig eller Jourhavande IT', margin + 25, yPosition);
   yPosition += 8;
 
   // Description
   const fas2Desc = [
-    'I denna fas verifieras om den rapporterade handelsen verkligen ar en säkerhetsincident.',
+    'I denna fas verifieras om den rapporterade handelsen verkligen ar en sakerhetsincident.',
     'En incident definieras som en handelse som hotar konfidentialitet, integritet eller tillganglighet',
     'i IT-system eller data. Beslutet om att klassificera som incident eller inte ar kritiskt.'
   ];
@@ -269,7 +269,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(FONT_SIZES.small);
   doc.text('- Dokumentera', margin + 5, yPosition + 12);
-  doc.text('- Stäng ärende', margin + 5, yPosition + 17);
+  doc.text('- Stang arende', margin + 5, yPosition + 17);
   doc.text('- Aterkoppla', margin + 5, yPosition + 22);
 
   // Red box - IS an incident
@@ -294,7 +294,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setLineWidth(0.3);
   doc.rect(margin, yPosition, pageWidth - 2 * margin, 14, 'FD');
   doc.setFont('helvetica', 'bold');
-  doc.text('Tidsgräns:', margin + 5, yPosition + 5);
+  doc.text('Tidsgrans:', margin + 5, yPosition + 5);
   doc.setFont('helvetica', 'normal');
   doc.text('Kritiska handelser: 15 minuter', margin + 5, yPosition + 10);
   doc.text('Andra handelser: 2 timmar', margin + 80, yPosition + 10);
@@ -312,9 +312,9 @@ export const generateIncidentProcessPDF = () => {
 
   // Description
   const fas3Desc = [
-    'Efter att en incident har bekräftats ska den klassificeras baserat pa påverkan och spridning.',
+    'Efter att en incident har bekraftats ska den klassificeras baserat pa paverkan och spridning.',
     'Klassificeringen avgor resurstilldelning, eskaleringsvagaroch rapporteringskrav enligt NIS2.',
-    'Använd matrisen nedan för att bestämma allvårlighetsgrad.'
+    'Anvand matrisen nedan for att bestamma allvarlighetsgrad.'
   ];
   fas3Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -330,10 +330,10 @@ export const generateIncidentProcessPDF = () => {
   // Severity table
   const severityData = [
     ['Niva', 'Beskrivning', 'Responstid', 'Eskalering'],
-    ['KRITISK', 'Omfattande påverkan pa verksamheten', '15 min', 'HELA teamet + VD'],
-    ['HOG', 'Betydande påverkan pa säkerhet', '30 min', 'Incidentteam + Ledning'],
-    ['MEDEL', 'Begränsad påverkan', '1 timme', 'IT-säkerhet + IT-drift'],
-    ['LAG', 'Minimal påverkan', '4 timmar', 'IT-drift enligt rutin']
+    ['KRITISK', 'Omfattande paverkan pa verksamheten', '15 min', 'HELA teamet + VD'],
+    ['HOG', 'Betydande paverkan pa sakerhet', '30 min', 'Incidentteam + Ledning'],
+    ['MEDEL', 'Begransad paverkan', '1 timme', 'IT-sakerhet + IT-drift'],
+    ['LAG', 'Minimal paverkan', '4 timmar', 'IT-drift enligt rutin']
   ];
 
   autoTable(doc, {
@@ -401,8 +401,8 @@ export const generateIncidentProcessPDF = () => {
   // Description
   const fas4Desc = [
     'For kritiska och hoga incidenter maste det fullstandiga incidentresponsteamet aktiveras omedelbart.',
-    'Ett war room etableras som fysisk eller virtuell mötesplats dar teamet samlas för samordning.',
-    'Kommunikation centraliseras och roller fördelas enligt RACI-modell för tydligt ansvar.'
+    'Ett war room etableras som fysisk eller virtuell motesplats dar teamet samlas for samordning.',
+    'Kommunikation centraliseras och roller fordelas enligt RACI-modell for tydligt ansvar.'
   ];
   fas4Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -411,15 +411,15 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 6;
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Första motet - Agenda (30 min):', margin, yPosition);
+  doc.text('Forsta motet - Agenda (30 min):', margin, yPosition);
   yPosition += 8;
   doc.setFont('helvetica', 'normal');
 
   const meetingAgenda = [
-    '1. Situationsöversikt (5 min)',
+    '1. Situationsoversikt (5 min)',
     '2. Bekrafta klassificering (5 min)',
     '3. Tilldela specifika uppgifter (10 min)',
-    '4. Beslut om omedelbara åtgärder (10 min)'
+    '4. Beslut om omedelbara atgarder (10 min)'
   ];
 
   doc.setFont('helvetica', 'normal');
@@ -446,14 +446,14 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
   doc.setFont('helvetica', 'normal');
-  doc.text('IT-drift i samrad med IT-säkerhet', margin + 25, yPosition);
+  doc.text('IT-drift i samrad med IT-sakerhet', margin + 25, yPosition);
   yPosition += 8;
 
   // Description
   const fas5Desc = [
-    'Containment-fasen fokuserar pa att stoppa spridning och begransa ytterligare skada från incidenten.',
-    'Malet ar att isolera drabbåde system utan att förstöra bevis. Åtgärder maste vara snabba men genomtänkta.',
-    'Dokumentera varje steg noggrant för senare analys och eventuell rattslig process.'
+    'Containment-fasen fokuserar pa att stoppa spridning och begransa ytterligare skada fran incidenten.',
+    'Malet ar att isolera drabbade system utan att forstora bevis. Atgarder maste vara snabba men genomtankta.',
+    'Dokumentera varje steg noggrant for senare analys och eventuell rattslig process.'
   ];
   fas5Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -476,13 +476,13 @@ export const generateIncidentProcessPDF = () => {
   doc.setFontSize(FONT_SIZES.body);
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Containment-åtgärder:', margin, yPosition);
+  doc.text('Containment-atgarder:', margin, yPosition);
   yPosition += 8;
   doc.setFont('helvetica', 'normal');
   const containmentData = [
-    ['Incidenttyp', 'Containment-åtgärder'],
-    ['Malware/\nRansomware', '- Isolera drabbåde system från natverk\n- Blockera skadliga IP-adresser\n- Inaktivera smittade anvandarkonton'],
-    ['Phishing', '- Blockera avsandar-adress\n- Ta bort e-post från alla brevlador\n- Aterstall komprometterade losenord'],
+    ['Incidenttyp', 'Containment-atgarder'],
+    ['Malware/\nRansomware', '- Isolera drabbade system fran natverk\n- Blockera skadliga IP-adresser\n- Inaktivera smittade anvandarkonton'],
+    ['Phishing', '- Blockera avsandar-adress\n- Ta bort e-post fran alla brevlador\n- Aterstall komprometterade losenord'],
     ['Intrang', '- Inaktivera komprometterade konton\n- Andra alla privilegierade losenord\n- Isolera paverkade segment'],
     ['DDoS', '- Aktivera DDoS-skydd\n- Kontakta ISP/CDN-leverantor\n- Implementera rate limiting']
   ];
@@ -524,14 +524,14 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
   doc.setFont('helvetica', 'normal');
-  doc.text('IT-säkerhet med stod från IT-drift', margin + 25, yPosition);
+  doc.text('IT-sakerhet med stod fran IT-drift', margin + 25, yPosition);
   yPosition += 8;
 
   // Description
   const fas6Desc = [
-    'Efter att incidenten har isolerats ska grundorsaken identifieras och elimineras helt från miljon.',
+    'Efter att incidenten har isolerats ska grundorsaken identifieras och elimineras helt fran miljon.',
     'Detta inkluderar att ta bort malware, stanga sarbarheter och sakerstalla att angriparen inte langre',
-    'har atkomst. Verifiering att hotet ar borta ar kritisk innan återställning paborjas.'
+    'har atkomst. Verifiering att hotet ar borta ar kritisk innan aterstallning paborjas.'
   ];
   fas6Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -566,7 +566,7 @@ export const generateIncidentProcessPDF = () => {
     '- Ingen skadlig aktivitet kvar',
     '- Alla indicators of compromise (IoC) ar borta',
     '- Inga obehoriga konton finns',
-    '- Overvakning visar inga misstänkta aktiviteter'
+    '- Overvakning visar inga misstankta aktiviteter'
   ];
 
   verification.forEach(item => {
@@ -581,14 +581,14 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
   doc.setFont('helvetica', 'normal');
-  doc.text('IT-drift med stod från IT-säkerhet', margin + 25, yPosition);
+  doc.text('IT-drift med stod fran IT-sakerhet', margin + 25, yPosition);
   yPosition += 8;
 
   // Description
   const fas7Desc = [
-    'Recovery-fasen fokuserar pa att sakert återställa system och tjänster till normal drift.',
-    'Återställning maste goras metodiskt och i ratt ordning för att undvika re-infektion.',
-    'Förstarkt övervakning implementeras för att sakerstalla att incidenten inte aterkommer.'
+    'Recovery-fasen fokuserar pa att sakert aterstalla system och tjanster till normal drift.',
+    'Aterstallning maste goras metodiskt och i ratt ordning for att undvika re-infektion.',
+    'Forstarkt overvakning implementeras for att sakerstalla att incidenten inte aterkommer.'
   ];
   fas7Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -597,19 +597,19 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 6;
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Återställningsordning:', margin, yPosition);
+  doc.text('Aterstallningsordning:', margin, yPosition);
   yPosition += 8;
   doc.setFont('helvetica', 'normal');
 
   const recoverySteps = [
-    '1. Kritiska infrastrukturtjänster (AD, DNS, natverk)',
+    '1. Kritiska infrastrukturtjanster (AD, DNS, natverk)',
     '2. Karnaffarssystem (ERP, produktionssystem)',
     '3. Stodsystem (e-post, filservrar)',
     '4. Mindre kritiska system'
   ];
 
   recoverySteps.forEach(step => {
-    // Set colors för each box
+    // Set colors for each box
     doc.setFillColor(230, 240, 255);
     doc.setDrawColor(150, 180, 230);
     doc.setLineWidth(0.3);
@@ -637,21 +637,21 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 8;
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Stegvis återställning:', margin, yPosition);
+  doc.text('Stegvis aterstallning:', margin, yPosition);
   yPosition += 6;
   doc.setFont('helvetica', 'normal');
   doc.text('STEG 1: Aterstall i isolerad miljo - Testa funktionalitet', margin + 3, yPosition);
   yPosition += 5;
   doc.text('STEG 2: Aterstall i produktion (begransat) - Pilot med sma grupper', margin + 3, yPosition);
   yPosition += 5;
-  doc.text('STEG 3: Fullstandig återställning - Oppna för alla användare', margin + 3, yPosition);
+  doc.text('STEG 3: Fullstandig aterstallning - Oppna for alla anvandare', margin + 3, yPosition);
   yPosition += 8;
 
   doc.setFillColor(240, 255, 240);
   doc.setDrawColor(150, 200, 150);
   doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, 'FD');
   doc.setFont('helvetica', 'bold');
-  doc.text('Förstarkt övervakning: 2-4 veckor efter återställning', margin + 5, yPosition + 6);
+  doc.text('Forstarkt overvakning: 2-4 veckor efter aterstallning', margin + 5, yPosition + 6);
   yPosition += 13;
 
   // === FAS 8: POST-INCIDENT REVIEW ===
@@ -665,8 +665,8 @@ export const generateIncidentProcessPDF = () => {
 
   // Description
   const fas8Desc = [
-    'Post-incident review ar en strukturerad genomgang av hela incidenthanteringen för att identifiera',
-    'lärdomar och forbattringsomraden. Detta ar en blamefree process fokuserad pa att starka organisationens',
+    'Post-incident review ar en strukturerad genomgang av hela incidenthanteringen for att identifiera',
+    'lardomar och forbattringsomraden. Detta ar en blamefree process fokuserad pa att starka organisationens',
     'sakerhet och incident response-formaga infor framtiden.'
   ];
   fas8Desc.forEach(line => {
@@ -676,7 +676,7 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 6;
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Tidpunkt för review:', margin, yPosition);
+  doc.text('Tidpunkt for review:', margin, yPosition);
   yPosition += 8;
   doc.setFont('helvetica', 'normal');
   doc.text('- KRITISKA: Inom 1 vecka', margin + 3, yPosition);
@@ -687,13 +687,13 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 8;
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Agenda för review-mote (2-3 timmar):', margin, yPosition);
+  doc.text('Agenda for review-mote (2-3 timmar):', margin, yPosition);
   yPosition += 6;
 
   const reviewAgenda = [
     'Del 1: Faktainsamling (30 min)',
     '  - Vad hande? (tidslinje)',
-    '  - Hur upptäcktes det?',
+    '  - Hur upptacktes det?',
     '  - Hur hanterades det?',
     '',
     'Del 2: Grundorsaksanalys (45 min)',
@@ -704,7 +704,7 @@ export const generateIncidentProcessPDF = () => {
     'Del 3: Forbattringsforslag (45 min)',
     '  - Vad fungerade bra?',
     '  - Vad kan forbattras?',
-    '  - Konkreta åtgärder'
+    '  - Konkreta atgarder'
   ];
 
   doc.setFont('helvetica', 'normal');
@@ -741,14 +741,14 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 8;
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Rapporteringsfrister enligt Cybersäkerhetslagen:', margin, yPosition);
+  doc.text('Rapporteringsfrister enligt Cybersakerhetslagen:', margin, yPosition);
   yPosition += 8;
 
   const reportingData = [
     ['Typ', 'Tidsfrist', 'Innehall'],
     ['Tidig varning', 'Inom 24 timmar', 'Kort beskrivning av incident'],
     ['Incidentrapport', 'Inom 72 timmar', 'Detaljerad rapport om handelse'],
-    ['Slutrapport', 'Inom 1 manad', 'Fullstandig analys och åtgärder']
+    ['Slutrapport', 'Inom 1 manad', 'Fullstandig analys och atgarder']
   ];
 
   autoTable(doc, {
@@ -786,11 +786,11 @@ export const generateIncidentProcessPDF = () => {
   const docContent = [
     '- Komplett tidslinje',
     '- Klassificering och bedomning',
-    '- Vidtagna åtgärder',
+    '- Vidtagna atgarder',
     '- Grundorsaksanalys',
     '- Paverkan pa verksamheten',
     '- Kostnader (om tillampligt)',
-    '- Forbattringsåtgärder',
+    '- Forbattringsatgarder',
     '- Lessons learned'
   ];
 
@@ -809,7 +809,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(100, 100, 100);
   doc.text('Detta dokument ar en mall och bor anpassas efter er verksamhets specifika behov.', margin, yPosition + 8);
-  doc.text('For fragor om incidenthantering enligt Cybersäkerhetslagen, kontakta MSB eller er juridiska radgivare.', margin, yPosition + 13);
+  doc.text('For fragor om incidenthantering enligt Cybersakerhetslagen, kontakta MSB eller er juridiska radgivare.', margin, yPosition + 13);
 
   // Generate and download
   doc.save(`Incidenthantering_Processbeskrivning_${new Date().toISOString().split('T')[0]}.pdf`);
