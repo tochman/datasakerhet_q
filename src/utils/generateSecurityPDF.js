@@ -36,7 +36,7 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const bottomMargin = 35; // Marginal för footer med logga
+  const bottomMargin = 40; // Ökad marginal för footer med logga
   let yPosition = 20;
 
   // Helper function to add footer to current page

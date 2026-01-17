@@ -34,7 +34,7 @@ export const generateIncidentReportPDF = async () => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
-  const bottomMargin = 35; // Marginal för footer med logga
+  const bottomMargin = 40; // Ökad marginal för footer med logga
   const contentWidth = pageWidth - (2 * margin);
   let yPosition = margin;
 

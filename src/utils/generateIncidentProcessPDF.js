@@ -34,7 +34,7 @@ export const generateIncidentProcessPDF = async () => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
-  const bottomMargin = 35; // Marginal för footer med logga
+  const bottomMargin = 40; // Ökad marginal för footer med logga
   let yPosition = margin;
   
   // Standard font sizes för consistency
@@ -626,6 +626,7 @@ export const generateIncidentProcessPDF = async () => {
   });
 
   yPosition += 6;
+  checkNewPage(30); // Ensure space for verification
   doc.setFont('helvetica', 'bold');
   doc.text('Verifiera utrotning:', margin, yPosition);
   yPosition += 6;
@@ -666,6 +667,7 @@ export const generateIncidentProcessPDF = async () => {
   });
   yPosition += 6;
 
+  checkNewPage(60); // Ensure space for recovery steps
   doc.setFont('helvetica', 'bold');
   doc.text('Återställningsordning:', margin, yPosition);
   yPosition += 8;
@@ -705,6 +707,7 @@ export const generateIncidentProcessPDF = async () => {
   });
 
   yPosition += 8;
+  checkNewPage(35); // Ensure space for the remaining content
 
   doc.setFont('helvetica', 'bold');
   doc.text('Stegvis återställning:', margin, yPosition);
@@ -717,6 +720,7 @@ export const generateIncidentProcessPDF = async () => {
   doc.text('STEG 3: Fullständig återställning - Öppna för alla användare', margin + 3, yPosition);
   yPosition += 8;
 
+  checkNewPage(15); // Ensure space for the green box
   doc.setFillColor(240, 255, 240);
   doc.setDrawColor(150, 200, 150);
   doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, 'FD');
