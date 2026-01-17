@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react'
  * Kontaktformulär för att samla in information från användare
  * @param {Object} props
  * @param {string} props.surveyResponseId - ID för det associerade formulärsvaret (optional, will use localStorage if not provided)
+ * @param {function} props.onSuccess - Callback when form is successfully submitted
  */
-export default function ContactForm({ surveyResponseId: propSurveyId }) {
+export default function ContactForm({ surveyResponseId: propSurveyId, onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -77,15 +78,18 @@ export default function ContactForm({ surveyResponseId: propSurveyId }) {
     
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
       
-      if (!supabaseUrl) {
-        throw new Error('Supabase URL not configured')
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error('Supabase not configured')
       }
 
       const response = await fetch(`${supabaseUrl}/functions/v1/save-contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseKey}`,
+          'apikey': supabaseKey
         },
         body: JSON.stringify({
           surveyResponseId: surveyResponseId,
@@ -107,6 +111,7 @@ export default function ContactForm({ surveyResponseId: propSurveyId }) {
       localStorage.removeItem('current_survey_id')
       
       setSubmitted(true)
+      if (onSuccess) onSuccess()
       console.log('✅ Kontaktinformation sparad')
 
     } catch (error) {
@@ -120,6 +125,7 @@ export default function ContactForm({ surveyResponseId: propSurveyId }) {
       localStorage.setItem('contact_backup', JSON.stringify(localContact))
       // Visa ändå framgångsmeddelande till användaren
       setSubmitted(true)
+      if (onSuccess) onSuccess()
     } finally {
       setLoading(false)
     }

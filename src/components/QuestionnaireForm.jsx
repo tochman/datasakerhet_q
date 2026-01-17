@@ -485,15 +485,18 @@ export default function QuestionnaireForm() {
       let surveyId = null;
       try {
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
         
-        if (!supabaseUrl) {
-          throw new Error('Supabase URL not configured');
+        if (!supabaseUrl || !supabaseKey) {
+          throw new Error('Supabase not configured');
         }
 
         const response = await fetch(`${supabaseUrl}/functions/v1/save-survey`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseKey}`,
+            'apikey': supabaseKey
           },
           body: JSON.stringify({
             answers: finalAnswers,
@@ -545,15 +548,6 @@ export default function QuestionnaireForm() {
       setLoading(false);
     }
   };
-
-  // Om bedömning är klar och kontaktformulär ska visas
-  if (assessment && showContactForm) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-        <ContactForm surveyResponseId={surveyResponseId} />
-      </div>
-    );
-  }
 
   // Om bedömning är klar
   if (assessment && showResults) {
@@ -608,6 +602,33 @@ export default function QuestionnaireForm() {
         {assessment.result === 'omfattas' && (
           <div className="max-w-4xl mx-auto">
             <SecurityMeasures assessment={assessment} answers={answers} />
+          </div>
+        )}
+
+        {/* Contact Form Modal */}
+        {showContactForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-900">Kontaktinformation</h2>
+                <button
+                  onClick={() => setShowContactForm(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6">
+                <ContactForm 
+                  surveyResponseId={surveyResponseId}
+                  onSuccess={() => {
+                    setShowContactForm(false);
+                  }}
+                />
+              </div>
+            </div>
           </div>
         )}
       </div>
