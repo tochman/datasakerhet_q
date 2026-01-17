@@ -197,25 +197,29 @@ export const generateIncidentReportPDF = () => {
 
   // Allvarlighetsgrader med färgkodning
   const severity = [
-    { level: '🔴 KRITISK', desc: 'Omedelbar åtgärd krävs! Omfattande påverkan på verksamheten.', color: [220, 38, 38] },
-    { level: '🟠 HÖG', desc: 'Brådskande åtgärd. Betydande påverkan på säkerhet eller verksamhet.', color: [249, 115, 22] },
-    { level: '🟡 MEDEL', desc: 'Åtgärd inom kort. Begränsad påverkan.', color: [234, 179, 8] },
-    { level: '🟢 LÅG', desc: 'Kan hanteras i normal ordning.', color: [34, 197, 94] }
+    { level: 'KRITISK', desc: 'Omedelbar åtgärd krävs! Omfattande påverkan på verksamheten.', color: [220, 38, 38] },
+    { level: 'HÖG', desc: 'Brådskande åtgärd. Betydande påverkan på säkerhet eller verksamhet.', color: [249, 115, 22] },
+    { level: 'MEDEL', desc: 'Åtgärd inom kort. Begränsad påverkan.', color: [234, 179, 8] },
+    { level: 'LÅG', desc: 'Kan hanteras i normal ordning.', color: [34, 197, 94] }
   ];
 
   severity.forEach(sev => {
     // Checkbox
     doc.rect(margin, yPosition - 3, 4, 4, 'D');
     
+    // Colored square indicator
+    doc.setFillColor(sev.color[0], sev.color[1], sev.color[2]);
+    doc.rect(margin + 7, yPosition - 2.5, 3, 3, 'F');
+    
     // Level text
     doc.setFont('helvetica', 'bold');
-    doc.text(sev.level, margin + 7, yPosition);
+    doc.text(sev.level, margin + 12, yPosition);
     
     // Description
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
-    doc.text(sev.desc, margin + 7, yPosition + 4);
+    doc.text(sev.desc, margin + 12, yPosition + 4);
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
     
