@@ -92,7 +92,7 @@ export const generateIncidentProcessPDF = () => {
     '2. Fas 1: Upptäckt och rapportering',
     '3. Fas 2: Initial bedömning',
     '4. Fas 3: Klassificering och prioritering',
-    '5. Fas 4: Aktivera incidentresponsteam',
+    '5. Fas 4: Aktivera incidentresponsteamet',
     '6. Fas 5: Containment (Inneslutning)',
     '7. Fas 6: Eradication (Utrotning)',
     '8. Fas 7: Recovery (Återställning)',
@@ -122,10 +122,10 @@ export const generateIncidentProcessPDF = () => {
   const flowSteps = [
     { num: '1', title: 'UPPTÄCKT & RAPPORTERING', desc: 'Händelse upptäcks och rapporteras omedelbart' },
     { num: '2', title: 'INITIAL BEDÖMNING', desc: 'Verifiera om det är en incident' },
-    { num: '3', title: 'KLASSIFICERING', desc: 'Bedöm allvårlighetsgrad och prioritera' },
-    { num: '4', title: 'AKTIVERA TEAM', desc: 'Kalla in incidentresponsteam' },
+    { num: '3', title: 'KLASSIFICERING', desc: 'Bedöm allvarlighetsgrad och prioritera' },
+    { num: '4', title: 'AKTIVERA TEAM', desc: 'Kalla in incidentresponsteamet' },
     { num: '5', title: 'CONTAINMENT', desc: 'Stoppa spridning och begränsa skada' },
-    { num: '6', title: 'ERADICATION', desc: 'Ta bört hotet från miljön' },
+    { num: '6', title: 'ERADICATION', desc: 'Ta bort hotet från miljön' },
     { num: '7', title: 'RECOVERY', desc: 'Återställ normal drift säkert' },
     { num: '8', title: 'POST-INCIDENT REVIEW', desc: 'Lär av incidenten' },
     { num: '9', title: 'DOKUMENTATION', desc: 'Rapportera enligt lagen' }
@@ -309,15 +309,15 @@ export const generateIncidentProcessPDF = () => {
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
   doc.setFont('helvetica', 'normal');
-  doc.text('Incidenthanteringsteam', margin + 25, yPosition);
+  doc.text('Incidentresponsteamet', margin + 25, yPosition);
   yPosition += 8;
 
   // Description
   const fas3Desc = [
     'Efter att en incident har bekräftats ska den klassificeras baserat på påverkan och spridning.',
     'En korrekt klassificering säkerställer att rätt resurser sätts in vid rätt tidpunkt.',
-    'Klassificeringen avgör resurstilldelning, eskaleringvägar och rapporteringskrav enligt NIS2.',
-    'Använd matrisen nedan för att bestämma allvårlighetsgrad.'
+    'Klassificeringen avgör resurstilldelning, eskaleringsvägar och rapporteringskrav enligt NIS2.',
+    'Använd matrisen nedan för att bestämma allvarlighetsgrad.'
   ];
   fas3Desc.forEach(line => {
     doc.text(line, margin, yPosition);
@@ -326,7 +326,7 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 6;
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Klassificeringsmåtris:', margin, yPosition);
+  doc.text('Klassificeringsmatris:', margin, yPosition);
   yPosition += 8;
   doc.setFont('helvetica', 'normal');
 
@@ -376,7 +376,7 @@ export const generateIncidentProcessPDF = () => {
   const incidentTypes = [
     '- Malware/Ransomware',
     '- Phishing och social engineering',
-    '- Intrång och obehorig åtkomst',
+    '- Intrång och obehörig åtkomst',
     '- DDoS-attacker',
     '- Dataläckage',
     '- Insiderhot',
@@ -393,7 +393,7 @@ export const generateIncidentProcessPDF = () => {
   doc.addPage();
   yPosition = margin;
   
-  addSectionHeader('5. FAS 4: AKTIVERA INCIDENTRESPONSTEAM');
+  addSectionHeader('5. FAS 4: AKTIVERA INCIDENTRESPONSTEAMET');
 
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
@@ -674,7 +674,7 @@ export const generateIncidentProcessPDF = () => {
   const fas8Desc = [
     'Post-incident review är en strukturerad genomgång av hela incidenthanteringen för att identifiera',
     'lärdomar och förbättringsområden. Detta är en blamefree process fokuserad på att stärka organisationens',
-    'säkerhet och incident response-förmåga inför framtiden. Målet är kontinuerlig förbättring,',
+    'säkerhet och incidentresponsförmåga inför framtiden. Målet är kontinuerlig förbättring,',
     'inte att peka finger. Alla erfarenheter - både positiva och negativa - är värdefulla för lärande.'
   ];
   fas8Desc.forEach(line => {
@@ -709,7 +709,7 @@ export const generateIncidentProcessPDF = () => {
     '  - Vilka sårbarheter utnyttjades?',
     '  - Vilka kontroller misslyckades?',
     '',
-    'Del 3: Förbättringsforslag (45 min)',
+    'Del 3: Förbättringsförslag (45 min)',
     '  - Vad fungerade bra?',
     '  - Vad kan förbättras?',
     '  - Konkreta åtgärder'
@@ -754,7 +754,7 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 8;
 
   const reportingData = [
-    ['Typ', 'Tidsfrist', 'Innehall'],
+    ['Typ', 'Tidsfrist', 'Innehåll'],
     ['Tidig varning', 'Inom 24 timmar', 'Kort beskrivning av incident'],
     ['Incidentrapport', 'Inom 72 timmar', 'Detaljerad rapport om händelse'],
     ['Slutrapport', 'Inom 1 månad', 'Fullständig analys och åtgärder']
@@ -817,7 +817,7 @@ export const generateIncidentProcessPDF = () => {
   doc.setFontSize(FONT_SIZES.small);
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(100, 100, 100);
-  doc.text('Detta dokument är en mall och bör anpassas efter er verksamhets specifika behov.', margin, yPosition + 8);
+  doc.text('Detta dokument är en mall och bör anpassas efter er verksamhetsspecifika behov.', margin, yPosition + 8);
   doc.text('För frågor om incidenthantering enligt Cybersäkerhetslagen, kontakta MSB eller er juridiska rådgivare.', margin, yPosition + 13);
 
   // Generate and download
