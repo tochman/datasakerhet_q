@@ -32,6 +32,25 @@ serve(async (req) => {
                      req.headers.get('x-real-ip') || 
                      'unknown'
 
+    // Get geolocation from IP address using ip-api.com (free, no API key needed)
+    let country = null
+    let city = null
+    if (ipAddress && ipAddress !== 'unknown') {
+      try {
+        const geoResponse = await fetch(`http://ip-api.com/json/${ipAddress}?fields=status,country,city`)
+        if (geoResponse.ok) {
+          const geoData = await geoResponse.json()
+          if (geoData.status === 'success') {
+            country = geoData.country
+            city = geoData.city
+          }
+        }
+      } catch (error) {
+        console.warn('Geolocation lookup failed:', error)
+        // Continue without geolocation data
+      }
+    }
+
     // Parse user agent to extract browser/device info
     const browserInfo = parseUserAgent(userAgent || '')
 
@@ -47,6 +66,8 @@ serve(async (req) => {
         os_name: browserInfo.osName,
         device_type: browserInfo.deviceType,
         ip_address: ipAddress,
+        country: country,
+        city: city,
         language: language,
         referrer: referrer
       })

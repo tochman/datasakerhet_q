@@ -271,10 +271,10 @@ export default function AdminPanel() {
         </div>
 
         {/* Statistik */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
-          <div className="bg-white rounded-sm shadow p-4">
-            <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
-            <div className="text-sm text-gray-600">Totalt svar</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="bg-white rounded-sm shadow p-3 sm:p-4">
+            <div className="text-xl sm:text-2xl font-bold text-gray-900">{stats.total}</div>
+            <div className="text-xs sm:text-sm text-gray-600">Totalt svar</div>
           </div>
           <div className="bg-red-50 rounded-sm shadow p-4">
             <div className="text-2xl font-bold text-red-900">{stats.omfattas}</div>
@@ -304,27 +304,27 @@ export default function AdminPanel() {
         </div>
 
         {/* Tabs Navigation */}
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="flex space-x-8">
+        <div className="mb-6 border-b border-gray-200 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <nav className="flex space-x-4 sm:space-x-8 overflow-x-auto scrollbar-hide">
             <button
               onClick={() => setActiveTab('responses')}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`pb-3 sm:pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
                 activeTab === 'responses'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              📋 Undersökningssvar ({responses.length})
+              📋 <span className="hidden xs:inline">Undersökningssvar</span><span className="xs:hidden">Svar</span> ({responses.length})
             </button>
             <button
               onClick={() => setActiveTab('downloads')}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`pb-3 sm:pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
                 activeTab === 'downloads'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              📥 PDF-nedladdningar ({pdfDownloads.length})
+              📥 <span className="hidden xs:inline">PDF-nedladdningar</span><span className="xs:hidden">PDFs</span> ({pdfDownloads.length})
             </button>
           </nav>
         </div>
@@ -410,22 +410,22 @@ export default function AdminPanel() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Datum
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Kontaktperson
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Resultat
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Vill ha kontakt
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden lg:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     PDF-nedladdningar
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Åtgärd
                   </th>
                 </tr>
@@ -442,10 +442,11 @@ export default function AdminPanel() {
                     const contact = response.contact_info && response.contact_info[0];
                     return (
                     <tr key={response.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(response.created_at).toLocaleString('sv-SE')}
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
+                        <div className="hidden sm:block">{new Date(response.created_at).toLocaleString('sv-SE')}</div>
+                        <div className="sm:hidden">{new Date(response.created_at).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                         {contact ? (
                           <div>
                             <div className="font-medium text-gray-900">{contact.name}</div>
@@ -458,24 +459,29 @@ export default function AdminPanel() {
                           <span className="text-gray-400 italic">Ej angiven</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${
                           response.assessment_result === 'omfattas' ? 'bg-red-100 text-red-800' :
                           response.assessment_result === 'omfattas_ej' ? 'bg-green-100 text-green-800' :
                           response.assessment_result === 'undantag' ? 'bg-yellow-100 text-yellow-800' :
                           'bg-gray-100 text-gray-800'
                         }`}>
-                          {response.assessment_result}
+                          <span className="hidden sm:inline">{response.assessment_result}</span>
+                          <span className="sm:hidden">
+                            {response.assessment_result === 'omfattas' ? '✓' :
+                             response.assessment_result === 'omfattas_ej' ? '✗' :
+                             response.assessment_result === 'undantag' ? '!' : '?'}
+                          </span>
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="hidden sm:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                         {response.wants_contact ? (
                           <span className="text-green-600 font-semibold">Ja</span>
                         ) : (
                           <span className="text-gray-400">Nej</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="hidden lg:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                         {(() => {
                           const count = getDownloadCount(response.id)
                           return count > 0 ? (
@@ -487,12 +493,13 @@ export default function AdminPanel() {
                           )
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                         <button
                           onClick={() => viewDetails(response)}
                           className="text-primary hover:text-primary-dark font-medium"
                         >
-                          Visa detaljer
+                          <span className="hidden sm:inline">Visa detaljer</span>
+                          <span className="sm:hidden">Visa</span>
                         </button>
                       </td>
                     </tr>
@@ -586,25 +593,28 @@ export default function AdminPanel() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Datum & Tid
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Webbläsare
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Operativsystem
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Enhet
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden xl:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Plats
+                    </th>
+                    <th className="hidden lg:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       IP-adress
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Resultat
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Undersöknings-ID
                     </th>
                   </tr>
@@ -612,55 +622,79 @@ export default function AdminPanel() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredDownloads.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                      <td colSpan="8" className="px-6 py-8 text-center text-gray-500">
                         Inga nedladdningar hittades
                       </td>
                     </tr>
                   ) : (
                     filteredDownloads.map((download) => (
                       <tr key={download.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {new Date(download.created_at).toLocaleString('sv-SE', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
+                          <div className="hidden sm:block">
+                            {new Date(download.created_at).toLocaleString('sv-SE', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
+                          <div className="sm:hidden">
+                            {new Date(download.created_at).toLocaleDateString('sv-SE', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
                           {download.browser_name || 'Okänd'}
                           {download.browser_version && (
                             <span className="text-gray-500"> v{download.browser_version}</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="hidden lg:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
                           {download.os_name || 'Okänt'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <td className="hidden sm:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                           <span className="inline-flex items-center">
                             {download.device_type === 'mobile' && '📱'}
                             {download.device_type === 'tablet' && '📱'}
                             {download.device_type === 'desktop' && '💻'}
-                            <span className="ml-2 text-gray-900 capitalize">
+                            <span className="ml-2 text-gray-900 capitalize hidden lg:inline">
                               {download.device_type || 'Okänd'}
                             </span>
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">
+                        <td className="hidden xl:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
+                          {download.city && download.country ? (
+                            <span>🌍 {download.city}, {download.country}</span>
+                          ) : download.country ? (
+                            <span>🌍 {download.country}</span>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="hidden lg:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600 font-mono">
                           {download.ip_address || 'N/A'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
+                          <span className={`inline-flex items-center px-1.5 sm:px-2.5 py-0.5 rounded-full text-xs font-medium
                             ${download.assessment_result === 'omfattas' ? 'bg-red-100 text-red-800' : ''}
                             ${download.assessment_result === 'omfattas_ej' ? 'bg-green-100 text-green-800' : ''}
                             ${download.assessment_result === 'undantag' ? 'bg-yellow-100 text-yellow-800' : ''}
                             ${download.assessment_result === 'osäker' ? 'bg-gray-100 text-gray-800' : ''}
                           `}>
-                            {download.assessment_result || 'N/A'}
+                            <span className="hidden sm:inline">{download.assessment_result || 'N/A'}</span>
+                            <span className="sm:hidden">
+                              {download.assessment_result === 'omfattas' ? '✓' :
+                               download.assessment_result === 'omfattas_ej' ? '✗' :
+                               download.assessment_result === 'undantag' ? '!' : '?'}
+                            </span>
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                        <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-500 font-mono">
                           {download.survey_response_id ? download.survey_response_id.substring(0, 8) : 'N/A'}
                         </td>
                       </tr>
