@@ -601,9 +601,6 @@ export const generateIncidentProcessPDF = () => {
   yPosition += 8;
   doc.setFont('helvetica', 'normal');
 
-  doc.setFillColor(230, 240, 255);
-  doc.setDrawColor(150, 180, 230);
-  doc.setLineWidth(0.3);
   const recoverySteps = [
     '1. Kritiska infrastrukturtjanster (AD, DNS, natverk)',
     '2. Karnaffarssystem (ERP, produktionssystem)',
@@ -612,14 +609,23 @@ export const generateIncidentProcessPDF = () => {
   ];
 
   recoverySteps.forEach(step => {
+    // Set colors for each box
+    doc.setFillColor(230, 240, 255);
+    doc.setDrawColor(150, 180, 230);
+    doc.setLineWidth(0.3);
     doc.rect(margin, yPosition, pageWidth - 2 * margin, 7, 'FD');
+    
+    // Draw text
+    doc.setTextColor(0, 0, 0);
     doc.setFont('helvetica', 'normal');
     doc.text(step, margin + 5, yPosition + 5);
     yPosition += 7;
+    
     if (step !== recoverySteps[recoverySteps.length - 1]) {
       // Draw arrow
       const centerX = pageWidth / 2;
       doc.setDrawColor(150, 180, 230);
+      doc.setFillColor(150, 180, 230);
       doc.setLineWidth(1);
       doc.line(centerX, yPosition + 1, centerX, yPosition + 5);
       // Arrow head
