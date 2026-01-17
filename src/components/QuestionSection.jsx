@@ -47,8 +47,8 @@ export default function QuestionSection({
     }
     
     return (
-      <div className="mb-8">
-        <label className="block text-lg font-semibold text-gray-800 mb-4">
+      <div className="mb-8 animate-scale-in">
+        <label className="block text-xl sm:text-2xl font-bold text-gray-900 mb-4">
           {question}
         </label>
         {renderHelpContent()}
@@ -56,15 +56,19 @@ export default function QuestionSection({
           {options.map((option) => (
             <label 
               key={option}
-              className="flex items-start p-4 border-2 border-gray-200 rounded-sm cursor-pointer hover:border-primary-light hover:bg-blue-50 transition-colors"
+              className={`flex items-start p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-102 ${
+                selectedServices.includes(option)
+                  ? 'border-primary bg-blue-50 shadow-md'
+                  : 'border-gray-300 hover:border-primary hover:bg-gray-50 bg-white'
+              }`}
             >
               <input
                 type="checkbox"
                 checked={selectedServices.includes(option)}
                 onChange={() => handleCheckboxChange(option)}
-                className="mt-1 h-5 w-5 text-primary focus:ring-primary"
+                className="mt-1 h-5 w-5 text-primary focus:ring-2 focus:ring-primary rounded"
               />
-              <span className="ml-3 text-gray-700">{option}</span>
+              <span className={`ml-4 text-base ${selectedServices.includes(option) ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>{option}</span>
             </label>
           ))}
         </div>
@@ -82,19 +86,19 @@ export default function QuestionSection({
       ]
   
   return (
-    <div className="mb-8">
-      <label className="block text-lg font-semibold text-gray-800 mb-4">
+    <div className="mb-8 animate-scale-in">
+      <label className="block text-xl sm:text-2xl font-bold text-gray-900 mb-4">
         {question}
       </label>
       {renderHelpContent()}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {radioOptions.map((option) => (
           <label 
             key={option.value}
-            className={`flex items-center justify-center p-4 border-2 rounded-sm cursor-pointer transition-all ${
+            className={`flex items-center justify-center p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-105 active:scale-95 ${
               value === option.value 
-                ? 'border-primary bg-primary text-white font-semibold' 
-                : 'border-gray-200 hover:border-primary-light hover:bg-blue-50'
+                ? 'border-primary bg-gradient-to-br from-primary to-blue-600 text-white font-bold shadow-lg' 
+                : 'border-gray-300 hover:border-primary hover:bg-blue-50 hover:shadow-md bg-white'
             }`}
           >
             <input

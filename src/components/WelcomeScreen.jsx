@@ -16,15 +16,15 @@ export default function WelcomeScreen({ onStart }) {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Counter Section */}
-        <div className="text-center mb-8">
-          <div className="inline-block bg-red-50 border-2 border-red-200 rounded-sm px-8 py-6 shadow-md">
-            <div className="text-6xl font-bold text-red-600 mb-2">
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-block bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 rounded-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+            <div className="text-7xl sm:text-8xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent mb-2 animate-bounce-once">
               {daysSinceLaw}
             </div>
-            <div className="text-lg font-semibold text-red-900 mb-1">
+            <div className="text-base sm:text-lg font-semibold text-red-900 mb-1 max-w-md">
               dagar sedan Cybersäkerhetslagen började gälla i Sverige
             </div>
-            <div className="text-2xl font-bold text-red-700 mt-3">
+            <div className="text-3xl sm:text-4xl font-bold text-red-700 mt-4 tracking-wide">
               Är du beredd?
             </div>
           </div>
@@ -142,18 +142,19 @@ export default function WelcomeScreen({ onStart }) {
         </div>
 
         {/* CTA Button */}
-        <div className="text-center">
+        <div className="text-center animate-fade-in">
           <button
             onClick={onStart}
-            className="inline-flex items-center px-8 py-4 bg-primary hover:bg-primary-dark text-white text-lg font-semibold rounded-sm shadow-lg transition-all transform hover:scale-105"
+            className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dark hover:to-blue-700 text-white text-xl font-bold rounded-sm shadow-2xl transition-all transform hover:scale-110 active:scale-95 hover:shadow-3xl"
+            aria-label="Starta bedömning av Cybersäkerhetslagen"
           >
             Starta bedömning
-            <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </button>
-          <p className="mt-4 text-sm text-gray-500">
-            Tar ca 3-5 minuter • Anonymt • Helt gratis
+          <p className="mt-5 text-sm text-gray-600 font-medium">
+            ⏱️ Tar ca 3-5 minuter • 🔒 Anonymt • ✨ Helt gratis
           </p>
         </div>
 

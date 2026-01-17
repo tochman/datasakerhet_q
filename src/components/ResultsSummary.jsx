@@ -56,19 +56,19 @@ export default function ResultsSummary({ assessment, answers, onShowContactForm 
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className={`border-4 rounded-sm p-8 mb-8 ${getResultColor(assessment.result)}`}>
+    <div className="max-w-4xl mx-auto animate-fade-in">
+      <div className={`border-4 rounded-sm p-8 mb-8 transition-all duration-300 ${getResultColor(assessment.result)}`}>
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4">
+          <div className="mb-4 animate-bounce-once">
             {getResultIcon(assessment.result)}
           </div>
-          <h2 className="text-3xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
             Bedömning av er verksamhet
           </h2>
-          <p className="text-xl font-semibold mb-2">
+          <p className="text-xl sm:text-2xl font-semibold mb-3">
             {assessment.message}
           </p>
-          <p className="text-lg">
+          <p className="text-base sm:text-lg text-gray-700">
             {assessment.details}
           </p>
         </div>
@@ -96,7 +96,7 @@ export default function ResultsSummary({ assessment, answers, onShowContactForm 
         <button
           onClick={onShowContactForm}
           data-contact-trigger
-          className="inline-flex items-center px-8 py-4 bg-primary hover:bg-primary-dark text-white text-lg font-semibold rounded-sm shadow-lg transition-colors"
+          className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dark hover:to-blue-700 text-white text-lg font-semibold rounded-sm shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95"
         >
           <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
