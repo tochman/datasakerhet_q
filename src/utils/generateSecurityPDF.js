@@ -44,54 +44,54 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
     const footerY = pageHeight - bottomMargin;
     const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
     
-    // Light gray footer background
-    doc.setFillColor(248, 248, 248);
-    doc.rect(0, footerY, pageWidth, bottomMargin, 'F');
+    // Thin separator line
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.line(20, footerY + 5, pageWidth - 20, footerY + 5);
     
-    // Add logo if available
+    // Add centered logo
     if (logoData) {
       try {
-        doc.addImage(logoData, 'PNG', 20, footerY + 4, 30, 7.5);
+        const logoWidth = 40;
+        const logoHeight = 10;
+        const logoX = (pageWidth - logoWidth) / 2;
+        doc.addImage(logoData, 'PNG', logoX, footerY + 9, logoWidth, logoHeight);
       } catch (error) {
         console.error('Failed to add logo to PDF:', error);
       }
     }
     
-    // Footer text
-    doc.setFontSize(8);
+    // Page number (top right)
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(120, 120, 120);
-    doc.text('Säkerhetsåtgärder enligt Cybersäkerhetslagen (2025:1506)', 55, footerY + 12);
-    
-    // Page number
     doc.setTextColor(100, 100, 100);
     doc.text(`Sida ${currentPage}`, pageWidth - 20, footerY + 12, { align: 'right' });
     
-    // Powered by text
-    doc.setFontSize(7.5);
-    doc.setTextColor(140, 140, 140);
-    doc.text('Powered by Communitas Labs', pageWidth / 2, footerY + 28, { align: 'center' });
+    // Document title (top left)
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    doc.text('Säkerhetsåtgärder enligt Cybersäkerhetslagen (2025:1506)', 20, footerY + 12);
     
     // Reset colors
     doc.setTextColor(0, 0, 0);
   };
 
   // === HEADER ===
-  // Blå header-box
-  doc.setFillColor(37, 99, 235); // primary blue
-  doc.rect(0, 0, pageWidth, 40, 'F');
+  // Modern gradient-effekt med blå header
+  doc.setFillColor(30, 64, 175); // Mörkare primary blue
+  doc.rect(0, 0, pageWidth, 45, 'F');
   
   // Titel
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(24);
+  doc.setFontSize(26);
   doc.setFont('helvetica', 'bold');
-  doc.text('Cybersäkerhetslagen (2025:1506)', pageWidth / 2, 20, { align: 'center' });
+  doc.text('Cybersäkerhetslagen (2025:1506)', pageWidth / 2, 22, { align: 'center' });
   
-  doc.setFontSize(14);
+  doc.setFontSize(13);
   doc.setFont('helvetica', 'normal');
-  doc.text('Säkerhetsåtgärder för din verksamhet', pageWidth / 2, 30, { align: 'center' });
+  doc.text('Säkerhetsåtgärder för din verksamhet', pageWidth / 2, 34, { align: 'center' });
 
-  yPosition = 55;
+  yPosition = 60;
 
   // === METADATA ===
   doc.setTextColor(0, 0, 0);
@@ -105,7 +105,7 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
   });
   
   doc.text(`Genererad: ${today}`, 20, yPosition);
-  yPosition += 6;
+  yPosition += 7;
   
   // Verksamhetstyp (baserat på svar)
   let businessType = 'Inte specificerad';
@@ -115,7 +115,7 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
   else if (answers.q0 === 'Privat') businessType = 'Privat verksamhet';
   
   doc.text(`Verksamhetstyp: ${businessType}`, 20, yPosition);
-  yPosition += 10;
+  yPosition += 12;
 
   // === BEDÖMNING ===
   doc.setFontSize(16);

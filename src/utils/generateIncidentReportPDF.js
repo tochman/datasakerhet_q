@@ -43,93 +43,95 @@ export const generateIncidentReportPDF = async () => {
     const footerY = pageHeight - bottomMargin;
     const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
     
-    // Light gray footer background
-    doc.setFillColor(248, 248, 248);
-    doc.rect(0, footerY, pageWidth, bottomMargin, 'F');
+    // Thin separator line
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.line(margin, footerY + 5, pageWidth - margin, footerY + 5);
     
-    // Add logo if available
+    // Add centered logo
     if (logoData) {
       try {
-        doc.addImage(logoData, 'PNG', margin, footerY + 4, 30, 7.5);
+        const logoWidth = 40;
+        const logoHeight = 10;
+        const logoX = (pageWidth - logoWidth) / 2;
+        doc.addImage(logoData, 'PNG', logoX, footerY + 9, logoWidth, logoHeight);
       } catch (error) {
         console.error('Failed to add logo to PDF:', error);
       }
     }
     
-    // Footer text
-    doc.setFontSize(8);
+    // Page number (top right)
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(120, 120, 120);
-    doc.text('Händelserapport - Cybersäkerhetslagen (2025:1506)', margin + 35, footerY + 12);
-    
-    // Page number
     doc.setTextColor(100, 100, 100);
     doc.text(`Sida ${currentPage}`, pageWidth - margin, footerY + 12, { align: 'right' });
     
-    // Powered by text
-    doc.setFontSize(7.5);
-    doc.setTextColor(140, 140, 140);
-    doc.text('Powered by Communitas Labs', pageWidth / 2, footerY + 28, { align: 'center' });
+    // Document title (top left)
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    doc.text('Händelserapport - Cybersäkerhetslagen (2025:1506)', margin, footerY + 12);
     
     // Reset colors
     doc.setTextColor(0, 0, 0);
   };
 
   // === HEADER ===
-  doc.setFillColor(37, 99, 235); // primary blue
-  doc.rect(0, 0, pageWidth, 35, 'F');
+  doc.setFillColor(30, 64, 175); // Mörkare primary blue
+  doc.rect(0, 0, pageWidth, 40, 'F');
   
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
+  doc.setFontSize(24);
   doc.setFont('helvetica', 'bold');
-  doc.text('HÄNDELSERAPPORT', pageWidth / 2, 15, { align: 'center' });
+  doc.text('HÄNDELSERAPPORT', pageWidth / 2, 17, { align: 'center' });
   
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  doc.text('Cybersäkerhetsincident - Rapportmall', pageWidth / 2, 25, { align: 'center' });
+  doc.text('Cybersäkerhetsincident - Rapportmall', pageWidth / 2, 28, { align: 'center' });
 
-  yPosition = 50;
+  yPosition = 52;
   doc.setTextColor(0, 0, 0);
 
   // === INSTRUKTIONER ===
   doc.setFontSize(9);
   doc.setFont('helvetica', 'italic');
-  doc.setTextColor(100, 100, 100);
+  doc.setTextColor(75, 85, 99);
   doc.text('Fyll i denna rapport så snart en cybersäkerhetsincident upptäcks. Spara eller skriv ut för dokumentation.', margin, yPosition);
-  yPosition += 10;
+  yPosition += 12;
   doc.setTextColor(0, 0, 0);
 
   // === GRUNDLÄGGANDE INFORMATION ===
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
+  doc.setTextColor(30, 64, 175);
   doc.text('GRUNDLÄGGANDE INFORMATION', margin, yPosition);
-  yPosition += 8;
+  yPosition += 10;
+  doc.setTextColor(0, 0, 0);
 
   // Datum/Tid
   doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
   doc.text('Datum/Tid för upptäckt:', margin, yPosition);
-  yPosition += 2;
+  yPosition += 3;
   doc.setFont('helvetica', 'normal');
   doc.setDrawColor(200, 200, 200);
   doc.line(margin, yPosition, pageWidth - margin, yPosition);
-  yPosition += 8;
+  yPosition += 10;
 
   // Rapporterad av
   doc.setFont('helvetica', 'bold');
   doc.text('Rapporterad av:', margin, yPosition);
-  yPosition += 2;
+  yPosition += 3;
   doc.setFont('helvetica', 'normal');
   doc.line(margin, yPosition, pageWidth - margin, yPosition);
-  yPosition += 8;
+  yPosition += 10;
 
   // Kontaktuppgifter
   doc.setFont('helvetica', 'bold');
   doc.text('Kontaktuppgifter (telefon/e-post):', margin, yPosition);
-  yPosition += 2;
+  yPosition += 3;
   doc.setFont('helvetica', 'normal');
   doc.line(margin, yPosition, pageWidth - margin, yPosition);
-  yPosition += 12;
+  yPosition += 14;
 
   // === BESKRIVNING ===
   doc.setFontSize(14);

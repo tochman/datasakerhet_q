@@ -52,33 +52,33 @@ export const generateIncidentProcessPDF = async () => {
     const footerY = pageHeight - bottomMargin;
     const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
     
-    // Light gray footer background
-    doc.setFillColor(248, 248, 248);
-    doc.rect(0, footerY, pageWidth, bottomMargin, 'F');
+    // Thin separator line
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.line(margin, footerY + 5, pageWidth - margin, footerY + 5);
     
-    // Add logo if available
+    // Add centered logo
     if (logoData) {
       try {
-        doc.addImage(logoData, 'PNG', margin, footerY + 4, 30, 7.5);
+        const logoWidth = 40;
+        const logoHeight = 10;
+        const logoX = (pageWidth - logoWidth) / 2;
+        doc.addImage(logoData, 'PNG', logoX, footerY + 9, logoWidth, logoHeight);
       } catch (error) {
         console.error('Failed to add logo to PDF:', error);
       }
     }
     
-    // Footer text
-    doc.setFontSize(FONT_SIZES.tiny);
+    // Page number (top right)
+    doc.setFontSize(FONT_SIZES.small);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(120, 120, 120);
-    doc.text('Incidenthantering enligt Cybersäkerhetslagen (2025:1506)', margin + 35, footerY + 12);
-    
-    // Page number
     doc.setTextColor(100, 100, 100);
     doc.text(`Sida ${currentPage}`, pageWidth - margin, footerY + 12, { align: 'right' });
     
-    // Powered by text
-    doc.setFontSize(FONT_SIZES.tiny - 0.5);
-    doc.setTextColor(140, 140, 140);
-    doc.text('Powered by Communitas Labs', pageWidth / 2, footerY + 28, { align: 'center' });
+    // Document title (top left)
+    doc.setFontSize(FONT_SIZES.tiny);
+    doc.setTextColor(120, 120, 120);
+    doc.text('Incidenthantering enligt Cybersäkerhetslagen (2025:1506)', margin, footerY + 12);
     
     // Reset colors
     doc.setTextColor(0, 0, 0);
@@ -111,21 +111,21 @@ export const generateIncidentProcessPDF = async () => {
 
   // === COVER PAGE ===
   doc.setFillColor(37, 99, 235);
-  doc.rect(0, 0, pageWidth, 60, 'F');
+  doc.rect(0, 0, pageWidth, 70, 'F');
   
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(FONT_SIZES.title);
   doc.setFont('helvetica', 'bold');
-  doc.text('INCIDENTHANTERING', pageWidth / 2, 25, { align: 'center' });
+  doc.text('INCIDENTHANTERING', pageWidth / 2, 30, { align: 'center' });
   
   doc.setFontSize(FONT_SIZES.subtitle);
   doc.setFont('helvetica', 'normal');
-  doc.text('Processbeskrivning och handbok', pageWidth / 2, 38, { align: 'center' });
+  doc.text('Processbeskrivning och handbok', pageWidth / 2, 45, { align: 'center' });
   
-  doc.setFontSize(12);
-  doc.text('Cybersäkerhetslagen (2025:1506)', pageWidth / 2, 50, { align: 'center' });
+  doc.setFontSize(11);
+  doc.text('Cybersäkerhetslagen (2025:1506)', pageWidth / 2, 58, { align: 'center' });
 
-  yPosition = 80;
+  yPosition = 90;
   doc.setTextColor(0, 0, 0);
 
   // Document info
@@ -133,9 +133,9 @@ export const generateIncidentProcessPDF = async () => {
   doc.setFont('helvetica', 'normal');
   const today = new Date().toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' });
   doc.text(`Genererad: ${today}`, margin, yPosition);
-  yPosition += 6;
+  yPosition += 7;
   doc.text('Version: 1.0', margin, yPosition);
-  yPosition += 20;
+  yPosition += 15;
 
   // Table of contents
   doc.setFontSize(FONT_SIZES.sectionHeader);
@@ -160,7 +160,7 @@ export const generateIncidentProcessPDF = async () => {
 
   toc.forEach(item => {
     doc.text(item, margin + 5, yPosition);
-    yPosition += 6;
+    yPosition += 7;
   });
 
   // Add footer to cover page
@@ -175,9 +175,11 @@ export const generateIncidentProcessPDF = async () => {
   doc.setFontSize(FONT_SIZES.body);
   doc.setFont('helvetica', 'normal');
   doc.text('Incidenthanteringsprocessen består av nio faser som säkerställer systematisk', margin, yPosition);
-  yPosition += 5;
-  doc.text('hantering från upptäckt till avslut.', margin, yPosition);
-  yPosition += 10;
+  yPosition += 6;
+  doc.text('hantering från upptäckt till avslut. Varje fas har definierade ansvariga, aktiviteter', margin, yPosition);
+  yPosition += 6;
+  doc.text('och tidsgränser för att möta kraven i Cybersäkerhetslagen.', margin, yPosition);
+  yPosition += 12;
 
   // Process flow with descriptions
   const flowSteps = [
@@ -194,32 +196,33 @@ export const generateIncidentProcessPDF = async () => {
 
   flowSteps.forEach((step, index) => {
     checkNewPage(20);
-    // Light blue box
-    doc.setFillColor(225, 235, 250);
-    doc.setDrawColor(100, 150, 220);
-    doc.setLineWidth(0.5);
-    doc.rect(margin, yPosition, pageWidth - 2 * margin, 14, 'FD');
+    // Modern blå box med skugga-effekt
+    doc.setFillColor(235, 242, 255);
+    doc.setDrawColor(79, 130, 230);
+    doc.setLineWidth(0.8);
+    doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 15, 2, 2, 'FD');
     
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(FONT_SIZES.body);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${step.num}. ${step.title}`, margin + 5, yPosition + 5);
+    doc.setTextColor(30, 64, 175);
+    doc.text(`${step.num}. ${step.title}`, margin + 5, yPosition + 6);
     
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(FONT_SIZES.small);
-    doc.setTextColor(60, 60, 60);
-    doc.text(step.desc, margin + 5, yPosition + 10);
+    doc.setTextColor(55, 65, 81);
+    doc.text(step.desc, margin + 5, yPosition + 11);
     doc.setTextColor(0, 0, 0);
     
-    yPosition += 14;
+    yPosition += 16;
     
     if (index < flowSteps.length - 1) {
       // Draw arrow
       const centerX = pageWidth / 2;
-      doc.setDrawColor(100, 150, 220);
-      doc.setLineWidth(1.5);
+      doc.setDrawColor(79, 130, 230);
+      doc.setLineWidth(1.2);
       doc.line(centerX, yPosition + 2, centerX, yPosition + 8);
       // Arrow head
+      doc.setFillColor(79, 130, 230);
       doc.triangle(centerX, yPosition + 10, centerX - 2, yPosition + 6, centerX + 2, yPosition + 6, 'F');
       yPosition += 12;
     }
@@ -237,25 +240,25 @@ export const generateIncidentProcessPDF = async () => {
   doc.setFont('helvetica', 'bold');
   doc.text('Ansvarig:', margin, yPosition);
   doc.setFont('helvetica', 'normal');
-  doc.text('Alla medarbetare + Övervakningssystem', margin + 25, yPosition);
-  yPosition += 8;
+  doc.text('Alla medarbetare samt övervakningssystem', margin + 25, yPosition);
+  yPosition += 10;
 
   // Description paragraph
   const fas1Desc = [
-    'Den första fasen i incidenthantering är upptäckt och rapportering. Alla medarbetare har ett',
-    'ansvar att rapportera misstänkta säkerhetshändelser omedelbart. Upptäckt kan ske både',
-    'manuellt (användare observerar något ovanligt) och automatiskt genom övervakningssystem.',
-    'Ju snabbare en incident rapporteras, desto mindre skada kan den orsaka.'
+    'Den första fasen är upptäckt och rapportering. Alla medarbetare har ett ansvar att',
+    'rapportera misstänkta säkerhetshändelser omedelbart. Upptäckt kan ske både manuellt',
+    '(användare observerar avvikelser) och automatiskt genom övervakningssystem.',
+    'Snabb rapportering minimerar potentiell skada och möjliggör effektiv hantering.'
   ];
   fas1Desc.forEach(line => {
     doc.text(line, margin, yPosition);
-    yPosition += 5;
+    yPosition += 6;
   });
-  yPosition += 6;
+  yPosition += 8;
 
   doc.setFont('helvetica', 'bold');
   doc.text('Aktiviteter:', margin, yPosition);
-  yPosition += 6;
+  yPosition += 7;
 
   const fas1Activities = [
     '- Händelse upptäcks (manuellt eller automatiskt)',
@@ -266,29 +269,29 @@ export const generateIncidentProcessPDF = async () => {
   doc.setFont('helvetica', 'normal');
   fas1Activities.forEach(act => {
     doc.text(act, margin + 3, yPosition);
-    yPosition += 5;
+    yPosition += 6;
   });
 
-  yPosition += 6;
+  yPosition += 8;
   doc.setFont('helvetica', 'bold');
   doc.text('Utdata:', margin, yPosition);
-  yPosition += 6;
+  yPosition += 7;
   doc.setFont('helvetica', 'normal');
   doc.text('- Händelserapport skapad', margin + 3, yPosition);
-  yPosition += 5;
+  yPosition += 6;
   doc.text('- Incidentnummer tilldelas automatiskt', margin + 3, yPosition);
-  yPosition += 8;
+  yPosition += 10;
 
-  // Time constraint box
-  doc.setFillColor(255, 240, 240);
-  doc.setDrawColor(220, 38, 38);
-  doc.setLineWidth(0.5);
-  doc.rect(margin, yPosition, pageWidth - 2 * margin, 10, 'FD');
+  // Time constraint box - modernare design
+  doc.setFillColor(254, 242, 242);
+  doc.setDrawColor(239, 68, 68);
+  doc.setLineWidth(0.8);
+  doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 11, 2, 2, 'FD');
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(139, 0, 0);
-  doc.text('Tidsgräns: Omedelbart vid upptäckt', margin + 5, yPosition + 7);
+  doc.setTextColor(185, 28, 28);
+  doc.text('⏱ Tidsgräns: Omedelbart vid upptäckt', margin + 5, yPosition + 7);
   doc.setTextColor(0, 0, 0);
-  yPosition += 15;
+  yPosition += 16;
 
   // === FAS 2: INITIAL BEDÖMNING ===
   addSectionHeader('3. FAS 2: INITIAL BEDÖMNING');
