@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
+import { generateIncidentReportPDF } from '../utils/generateIncidentReportPDF'
 
 // Question labels for displaying in admin panel
 const QUESTION_LABELS = {
@@ -335,6 +336,16 @@ export default function AdminPanel() {
               }`}
             >
               📥 <span className="hidden xs:inline">PDF-nedladdningar</span><span className="xs:hidden">PDFs</span> ({pdfDownloads.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('templates')}
+              className={`pb-3 sm:pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
+                activeTab === 'templates'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              📄 <span className="hidden xs:inline">Tillgängliga PDF-mallar</span><span className="xs:hidden">Mallar</span>
             </button>
           </nav>
         </div>
@@ -869,6 +880,185 @@ export default function AdminPanel() {
           </div>
         </div>
       )}
+
+      {/* Templates Tab */}
+      {activeTab === 'templates' && (
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="bg-white rounded-sm shadow p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Tillgängliga PDF-mallar</h2>
+            <p className="text-gray-600">
+              Här hittar du alla PDF-dokument som systemet erbjuder för nedladdning. 
+              Dessa mallar hjälper användare att dokumentera och hantera cybersäkerhet enligt lagen.
+            </p>
+          </div>
+
+          {/* PDF Templates Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Incident Report Template */}
+            <div className="bg-white rounded-sm shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="bg-gradient-to-r from-red-600 to-red-700 p-6 text-white">
+                <div className="flex items-center mb-3">
+                  <svg className="w-12 h-12 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <div>
+                    <h3 className="text-xl font-bold">Händelserapport</h3>
+                    <p className="text-red-100 text-sm">Incidentdokumentation</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Beskrivning</h4>
+                  <p className="text-gray-600 text-sm">
+                    Standardiserad mall för att dokumentera cybersäkerhetsincidenter. 
+                    Innehåller alla nödvändiga fält för rapportering enligt Cybersäkerhetslagen.
+                  </p>
+                </div>
+
+                <div className="mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Innehåller</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>✓ Grundläggande information (datum, rapportör)</li>
+                    <li>✓ Beskrivning av händelsen</li>
+                    <li>✓ Påverkade system (checkboxar)</li>
+                    <li>✓ Bevis och dokumentation</li>
+                    <li>✓ Vidtagna åtgärder</li>
+                    <li>✓ Allvarlighetsgrad (kritisk/hög/medel/låg)</li>
+                    <li>✓ Rapporteringsfrister enligt lagen</li>
+                  </ul>
+                </div>
+
+                <div className="mb-4 p-3 bg-red-50 rounded border border-red-200">
+                  <p className="text-xs text-red-800">
+                    <strong>Rapporteringsfrister:</strong><br/>
+                    • Tidig varning: 24 timmar<br/>
+                    • Incidentrapport: 72 timmar<br/>
+                    • Slutrapport: Inom 1 månad
+                  </p>
+                </div>
+
+                <button
+                  onClick={generateIncidentReportPDF}
+                  className="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-sm shadow transition-colors flex items-center justify-center"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Ladda ner händelserapport
+                </button>
+
+                <div className="mt-3 text-xs text-gray-500 text-center">
+                  Filnamn: Händelserapport_ÅÅÅÅ-MM-DD.pdf
+                </div>
+              </div>
+            </div>
+
+            {/* Security Recommendations - Info Card */}
+            <div className="bg-white rounded-sm shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+                <div className="flex items-center mb-3">
+                  <svg className="w-12 h-12 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <div>
+                    <h3 className="text-xl font-bold">Säkerhetsrekommendationer</h3>
+                    <p className="text-blue-100 text-sm">Personaliserad bedömning</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Beskrivning</h4>
+                  <p className="text-gray-600 text-sm">
+                    Skräddarsydd PDF baserad på användarens bedömning. 
+                    Genereras automatiskt efter att formuläret har fyllts i.
+                  </p>
+                </div>
+
+                <div className="mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Innehåller</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>✓ Bedömningsresultat med färgkodning</li>
+                    <li>✓ MCFFS 2026:1 klassificering (väsentlig/viktig)</li>
+                    <li>✓ Rekommenderade säkerhetsåtgärder</li>
+                    <li>✓ Checklista för implementering</li>
+                    <li>✓ Tidsfrister för incidentrapportering</li>
+                    <li>✓ Verksamhetstyp och metadata</li>
+                  </ul>
+                </div>
+
+                <div className="mb-4 p-3 bg-blue-50 rounded border border-blue-200">
+                  <p className="text-xs text-blue-800">
+                    <strong>Automatiskt genererad:</strong><br/>
+                    Denna PDF skapas unikt för varje användare baserat på deras svar 
+                    och bedömning. Tillgänglig efter slutförd undersökning.
+                  </p>
+                </div>
+
+                <button
+                  disabled
+                  className="w-full px-4 py-3 bg-gray-300 text-gray-500 font-semibold rounded-sm cursor-not-allowed flex items-center justify-center"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Genereras per användare
+                </button>
+
+                <div className="mt-3 text-xs text-gray-500 text-center">
+                  Tillgänglig efter slutförd bedömning
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Statistics */}
+          <div className="bg-white rounded-sm shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Användningsstatistik</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-blue-50 rounded-sm">
+                <div className="text-2xl font-bold text-blue-900">{stats.total}</div>
+                <div className="text-sm text-blue-700">Totala undersökningar</div>
+              </div>
+              <div className="p-4 bg-purple-50 rounded-sm">
+                <div className="text-2xl font-bold text-purple-900">{stats.pdfDownloads}</div>
+                <div className="text-sm text-purple-700">Säkerhetsrekommendationer nedladdade</div>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-sm">
+                <div className="text-2xl font-bold text-gray-900">∞</div>
+                <div className="text-sm text-gray-700">Händelserapporter (öppen mall)</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Info Box */}
+          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-sm p-6">
+            <div className="flex items-start">
+              <svg className="w-6 h-6 text-indigo-600 mt-1 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h4 className="font-semibold text-indigo-900 mb-2">Om PDF-mallarna</h4>
+                <p className="text-indigo-800 text-sm mb-2">
+                  Alla PDF-dokument genereras lokalt i användarens webbläsare med hjälp av jsPDF. 
+                  Ingen data skickas till externa servrar vid PDF-generering.
+                </p>
+                <p className="text-indigo-800 text-sm">
+                  <strong>Händelserapport:</strong> Kan laddas ner oberoende av bedömning och användas som mall vid incidenter.<br/>
+                  <strong>Säkerhetsrekommendationer:</strong> Genereras endast efter slutförd bedömning med personaliserat innehåll.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       </div>
     </div>
   )
