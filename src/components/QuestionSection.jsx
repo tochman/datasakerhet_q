@@ -47,16 +47,16 @@ export default function QuestionSection({
     }
     
     return (
-      <div className="mb-8 animate-scale-in">
-        <label className="block text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+      <div className="mb-6 sm:mb-8 animate-scale-in">
+        <label className="block text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
           {question}
         </label>
         {renderHelpContent()}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           {options.map((option) => (
             <label 
               key={option}
-              className={`flex items-start p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-102 ${
+              className={`flex items-start p-3 sm:p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-102 ${
                 selectedServices.includes(option)
                   ? 'border-primary bg-blue-50 shadow-md'
                   : 'border-gray-300 hover:border-primary hover:bg-gray-50 bg-white'
@@ -66,9 +66,9 @@ export default function QuestionSection({
                 type="checkbox"
                 checked={selectedServices.includes(option)}
                 onChange={() => handleCheckboxChange(option)}
-                className="mt-1 h-5 w-5 text-primary focus:ring-2 focus:ring-primary rounded"
+                className="mt-1 h-4 w-4 sm:h-5 sm:w-5 text-primary focus:ring-2 focus:ring-primary rounded flex-shrink-0"
               />
-              <span className={`ml-4 text-base ${selectedServices.includes(option) ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>{option}</span>
+              <span className={`ml-3 sm:ml-4 text-sm sm:text-base ${selectedServices.includes(option) ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>{option}</span>
             </label>
           ))}
         </div>
@@ -86,16 +86,16 @@ export default function QuestionSection({
       ]
   
   return (
-    <div className="mb-8 animate-scale-in">
-      <label className="block text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+    <div className="mb-6 sm:mb-8 animate-scale-in">
+      <label className="block text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
         {question}
       </label>
       {renderHelpContent()}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {radioOptions.map((option) => (
           <label 
             key={option.value}
-            className={`flex items-center justify-center p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-105 active:scale-95 ${
+            className={`flex items-center justify-center p-4 sm:p-5 border-2 rounded-lg cursor-pointer transition-all transform hover:scale-105 active:scale-95 ${
               value === option.value 
                 ? 'border-primary bg-gradient-to-br from-primary to-blue-600 text-white font-bold shadow-lg' 
                 : 'border-gray-300 hover:border-primary hover:bg-blue-50 hover:shadow-md bg-white'

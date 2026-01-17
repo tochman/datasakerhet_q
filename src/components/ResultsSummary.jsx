@@ -56,19 +56,19 @@ export default function ResultsSummary({ assessment, answers, onShowContactForm 
   }
 
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-      <div className={`border-4 rounded-sm p-8 mb-8 transition-all duration-300 ${getResultColor(assessment.result)}`}>
+    <div className="max-w-4xl mx-auto animate-fade-in px-3 sm:px-0">
+      <div className={`border-4 rounded-sm p-6 sm:p-8 mb-6 sm:mb-8 transition-all duration-300 ${getResultColor(assessment.result)}`}>
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4 animate-bounce-once">
+          <div className="mb-3 sm:mb-4 animate-bounce-once">
             {getResultIcon(assessment.result)}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
             Bedömning av er verksamhet
           </h2>
-          <p className="text-xl sm:text-2xl font-semibold mb-3">
+          <p className="text-lg sm:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3">
             {assessment.message}
           </p>
-          <p className="text-base sm:text-lg text-gray-700">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-700">
             {assessment.details}
           </p>
         </div>

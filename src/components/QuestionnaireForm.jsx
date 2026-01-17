@@ -647,14 +647,14 @@ export default function QuestionnaireForm() {
   const showSectionTitle = !previousQuestion || previousQuestion.section !== currentSection;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-3 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
             Cybersäkerhetslagen (2025:1506)
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600">
             Bedömning av din verksamhet
           </p>
         </div>
@@ -682,18 +682,18 @@ export default function QuestionnaireForm() {
         </div>
 
         {/* Progress indicator */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
               Fråga {currentQuestionIndex + 1} av {visibleQuestions.length}
             </span>
-            <span className="text-sm font-medium text-primary">
+            <span className="text-xs sm:text-sm font-medium text-primary">
               {Math.round(((currentQuestionIndex + 1) / visibleQuestions.length) * 100)}% klart
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+          <div className="w-full bg-gray-200 rounded-full h-2 sm:h-2.5 overflow-hidden">
             <div 
-              className="bg-gradient-to-r from-primary to-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out"
+              className="bg-gradient-to-r from-primary to-blue-600 h-2 sm:h-2.5 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${((currentQuestionIndex + 1) / visibleQuestions.length) * 100}%` }}
             ></div>
           </div>
@@ -701,7 +701,7 @@ export default function QuestionnaireForm() {
 
         {/* Formulärkort */}
         {currentQuestion && (
-          <div className="bg-white rounded-sm shadow-lg p-6 sm:p-8 mb-6 transition-all duration-300 transform hover:shadow-xl"
+          <div className="bg-white rounded-sm shadow-lg p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 transition-all duration-300 transform hover:shadow-xl"
             key={currentQuestion.id}
           >
             {/* Section title om ny sektion */}
@@ -727,23 +727,24 @@ export default function QuestionnaireForm() {
         )}
 
         {/* Navigeringsknappar */}
-        <div className="flex justify-between items-center gap-4">
+        <div className="flex justify-between items-center gap-2 sm:gap-4">
           <button
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm sm:text-base font-semibold rounded-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
             aria-label="Föregående fråga"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Föregående
+            <span className="hidden sm:inline">Föregående</span>
+            <span className="sm:hidden">Förra</span>
           </button>
 
           <button
             onClick={handleNext}
             disabled={!isCurrentQuestionAnswered() || loading}
-            className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dark hover:to-blue-700 text-white font-semibold rounded-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+            className="flex items-center gap-1 sm:gap-2 px-4 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dark hover:to-blue-700 text-white text-sm sm:text-base font-semibold rounded-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg flex-1 sm:flex-initial justify-center"
             aria-label={currentQuestionIndex === visibleQuestions.length - 1 ? "Slutför bedömning" : "Nästa fråga"}
           >
             {loading ? (

@@ -13,34 +13,34 @@ export default function WelcomeScreen({ onStart }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-6 sm:py-12 px-3 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Counter Section */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-block bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 rounded-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-            <div className="text-7xl sm:text-8xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent mb-2 animate-bounce-once">
+        <div className="text-center mb-6 sm:mb-8 animate-fade-in">
+          <div className="inline-block bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 rounded-lg px-4 sm:px-8 py-4 sm:py-6 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+            <div className="text-5xl sm:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent mb-2 animate-bounce-once">
               {daysSinceLaw}
             </div>
-            <div className="text-base sm:text-lg font-semibold text-red-900 mb-1 max-w-md">
+            <div className="text-sm sm:text-base lg:text-lg font-semibold text-red-900 mb-1 max-w-md px-2">
               dagar sedan Cybersäkerhetslagen började gälla i Sverige
             </div>
-            <div className="text-3xl sm:text-4xl font-bold text-red-700 mt-4 tracking-wide">
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-700 mt-3 sm:mt-4 tracking-wide">
               Är du beredd?
             </div>
           </div>
         </div>
 
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="inline-block p-3 bg-primary/10 rounded-full mb-6">
-            <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="inline-block p-2 sm:p-3 bg-primary/10 rounded-full mb-4 sm:mb-6">
+            <svg className="w-12 h-12 sm:w-16 sm:h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Omfattas din verksamhet av<br />Cybersäkerhetslagen?
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
+            Omfattas din verksamhet av<br className="hidden sm:inline" /><span className="sm:hidden"> </span>Cybersäkerhetslagen?
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
             Få en snabb bedömning om din verksamhet omfattas av Cybersäkerhetslagen (2025:1506)
           </p>
         </div>
@@ -145,15 +145,15 @@ export default function WelcomeScreen({ onStart }) {
         <div className="text-center animate-fade-in">
           <button
             onClick={onStart}
-            className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dark hover:to-blue-700 text-white text-xl font-bold rounded-sm shadow-2xl transition-all transform hover:scale-110 active:scale-95 hover:shadow-3xl"
+            className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dark hover:to-blue-700 text-white text-lg sm:text-xl font-bold rounded-sm shadow-2xl transition-all transform hover:scale-110 active:scale-95 hover:shadow-3xl w-full sm:w-auto justify-center"
             aria-label="Starta bedömning av Cybersäkerhetslagen"
           >
             Starta bedömning
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </button>
-          <p className="mt-5 text-sm text-gray-600 font-medium">
+          <p className="mt-4 sm:mt-5 text-xs sm:text-sm text-gray-600 font-medium px-2">
             ⏱️ Tar ca 3-5 minuter • 🔒 Anonymt • ✨ Helt gratis
           </p>
         </div>
