@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { supabase } from '../lib/supabaseClient'
 import QuestionSection from './QuestionSection'
 import ResultsSummary from './ResultsSummary'
 import ContactForm from './ContactForm'
@@ -482,59 +481,43 @@ export default function QuestionnaireForm() {
       // Beräkna bedömning
       const result = assessCoverage(finalAnswers);
       
-      // Försök spara till Supabase med graceful fallback
+      // Försök spara via Edge Function
       let surveyId = null;
       try {
-        // Check if Supabase is properly configured
-        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-          console.warn('Supabase environment variables not configured. Using localStorage only.');
-          throw new Error('Supabase not configured');
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        
+        if (!supabaseUrl) {
+          throw new Error('Supabase URL not configured');
         }
 
-        // Check if Supabase client is configured
-        if (!supabase) {
-          throw new Error('Supabase client not initialized - check environment variables');
+        const response = await fetch(`${supabaseUrl}/functions/v1/save-survey`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            answers: finalAnswers,
+            assessment: result
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to save survey');
         }
 
-        const { data, error } = await supabase
-          .from('survey_responses')
-          .insert([{
-            q0: finalAnswers.q0 || null,
-            q1: finalAnswers.q1 || null,
-            q2: finalAnswers.q2 || null,
-            q3: finalAnswers.q3 || null,
-            q4: finalAnswers.q4 ? JSON.stringify(finalAnswers.q4) : null,
-            q5: finalAnswers.q5 || null,
-            q6: finalAnswers.q6 || null,
-            q7: finalAnswers.q7 || null,
-            q8_services: finalAnswers.q8 || null,
-            q9: finalAnswers.q9 || null,
-            q10: finalAnswers.q10 || null,
-            q11: finalAnswers.q11 || null,
-            q12: finalAnswers.q12 || null,
-            q13: finalAnswers.q13 || null,
-            q14: finalAnswers.q14 || null,
-            q15: finalAnswers.q15 || null,
-            q16: finalAnswers.q16 || null,
-            q17: finalAnswers.q17 || null,
-            assessment_result: result.result,
-            assessment_message: result.message,
-            assessment_details: result.details,
-            wants_contact: false
-          }])
-          .select();
+        surveyId = data.id;
+        
+        // Spara survey ID i localStorage för kontaktformuläret
+        localStorage.setItem('current_survey_id', surveyId);
+        
+        setDatabaseError(false);
+        setDatabaseErrorDetails(null);
+        console.log('✅ Svar sparade i databas, ID:', surveyId);
 
-        if (error) {
-          console.warn('Kunde inte spara till databas:', error.message);
-          throw error; // Går till catch-blocket nedan
-        } else if (data && data[0]) {
-          surveyId = data[0].id;
-          setDatabaseError(false);
-          setDatabaseErrorDetails(null);
-          console.log('✅ Svar sparade i databas');
-        }
       } catch (dbErr) {
-        // Spara till localStorage istället
+        // Spara till localStorage som backup
         const localBackup = {
           id: `local_${Date.now()}`,
           answers: finalAnswers,
@@ -542,13 +525,14 @@ export default function QuestionnaireForm() {
           timestamp: new Date().toISOString()
         };
         localStorage.setItem('survey_backup', JSON.stringify(localBackup));
+        localStorage.setItem('current_survey_id', localBackup.id);
         surveyId = localBackup.id;
         setDatabaseError(true);
         setDatabaseErrorDetails({
           message: dbErr.message || 'Kunde inte ansluta till databas',
           timestamp: new Date().toISOString()
         });
-        console.log('💾 Svar sparade lokalt (localStorage)');
+        console.log('💾 Svar sparade lokalt (localStorage):', dbErr.message);
       }
 
       setSurveyResponseId(surveyId);

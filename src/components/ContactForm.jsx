@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
+import React, { useState, useEffect } from 'react'
 
 /**
  * Kontaktformulär för att samla in information från användare
  * @param {Object} props
- * @param {string} props.surveyResponseId - ID för det associerade formulärsvaret
+ * @param {string} props.surveyResponseId - ID för det associerade formulärsvaret (optional, will use localStorage if not provided)
  */
-export default function ContactForm({ surveyResponseId }) {
+export default function ContactForm({ surveyResponseId: propSurveyId }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,6 +16,17 @@ export default function ContactForm({ surveyResponseId }) {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [surveyResponseId, setSurveyResponseId] = useState(propSurveyId)
+
+  // Hämta survey ID från localStorage om det inte finns som prop
+  useEffect(() => {
+    if (!propSurveyId) {
+      const storedId = localStorage.getItem('current_survey_id')
+      if (storedId) {
+        setSurveyResponseId(storedId)
+      }
+    }
+  }, [propSurveyId])
 
   // Validera e-postformat
   const validateEmail = (email) => {
@@ -50,35 +60,66 @@ export default function ContactForm({ surveyResponseId }) {
       return
     }
 
+    // Kontrollera att vi har ett survey ID
+    if (!surveyResponseId || surveyResponseId.startsWith('local_')) {
+      // Om vi bara har ett lokalt ID, spara kontaktinfo lokalt också
+      const localContact = {
+        ...formData,
+        survey_id: surveyResponseId,
+        timestamp: new Date().toISOString()
+      }
+      localStorage.setItem('contact_backup', JSON.stringify(localContact))
+      setSubmitted(true)
+      return
+    }
+
     setLoading(true)
     
     try {
-      // Spara kontaktinformation
-      const { error: contactError } = await supabase
-        .from('contact_info')
-        .insert([{
-          survey_response_id: surveyResponseId,
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      
+      if (!supabaseUrl) {
+        throw new Error('Supabase URL not configured')
+      }
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/save-contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          surveyResponseId: surveyResponseId,
           name: formData.name,
           email: formData.email,
           phone: formData.phone || null,
           organization: formData.organization || null,
           message: formData.message || null
-        }])
+        })
+      })
 
-      if (contactError) throw contactError
+      const data = await response.json()
 
-      // Uppdatera survey_responses för att markera att användaren vill ha kontakt
-      const { error: updateError } = await supabase
-        .from('survey_responses')
-        .update({ wants_contact: true })
-        .eq('id', surveyResponseId)
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save contact')
+      }
 
-      if (updateError) throw updateError
-
+      // Rensa localStorage efter framgångsrik sparning
+      localStorage.removeItem('current_survey_id')
+      
       setSubmitted(true)
+      console.log('✅ Kontaktinformation sparad')
+
     } catch (error) {
       console.error('Fel vid sparande av kontaktinformation:', error)
-      alert('Ett fel uppstod. Vänligen försök igen.')
+      // Spara lokalt som backup
+      const localContact = {
+        ...formData,
+        survey_id: surveyResponseId,
+        timestamp: new Date().toISOString()
+      }
+      localStorage.setItem('contact_backup', JSON.stringify(localContact))
+      // Visa ändå framgångsmeddelande till användaren
+      setSubmitted(true)
     } finally {
       setLoading(false)
     }

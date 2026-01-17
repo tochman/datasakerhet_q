@@ -216,9 +216,14 @@ Användare som bedöms omfattas av lagen kan ladda ner en professionell PDF med:
 │   ├── main.jsx                     # Entry point
 │   └── index.css                    # Tailwind CSS
 ├── supabase/
+│   ├── functions/
+│   │   ├── save-survey/
+│   │   │   └── index.ts             # Edge Function: Spara formulärsvar
+│   │   └── save-contact/
+│   │       └── index.ts             # Edge Function: Spara kontaktinfo
 │   └── migrations/
 │       ├── 001_initial_schema.sql   # Initialt databasschema
-│       └── 002_add_q0_column.sql    # Migration för q0-kolumn
+│       └── 002_add_q0_column.sql    # Migration för RLS-fix
 ├── docs/
 │   └── QUESTIONNAIRE_DOCUMENTATION.md  # Detaljerad dokumentation
 ├── public/
@@ -284,14 +289,41 @@ Användare som bedöms omfattas av lagen kan ladda ner en professionell PDF med:
 2. Kopiera innehållet från `supabase/migrations/001_initial_schema.sql`
 3. Kör SQL-koden för att skapa tabeller och policies
 
-### 3. Skapa admin-användare
+**För befintliga databaser:** Om du redan har tabellerna, kör istället `supabase/migrations/002_add_q0_column.sql` för att uppdatera RLS-policies.
+
+### 3. Deploy Edge Functions
+
+Edge Functions krävs för att spara formulärsvar och kontaktinformation:
+
+```bash
+# Installera Supabase CLI (om du inte har det)
+npm install -g supabase
+
+# Logga in på Supabase
+supabase login
+
+# Länka till ditt projekt
+supabase link --project-ref <ditt-projekt-ref>
+
+# Deploy Edge Functions
+supabase functions deploy save-survey
+supabase functions deploy save-contact
+```
+
+**Alternativt via Supabase Dashboard:**
+1. Gå till "Edge Functions" i Supabase Dashboard
+2. Klicka "New Function"
+3. Skapa `save-survey` och klistra in koden från `supabase/functions/save-survey/index.ts`
+4. Upprepa för `save-contact`
+
+### 4. Skapa admin-användare
 
 1. Gå till "Authentication" > "Users" i Supabase Dashboard
 2. Klicka på "Add user" > "Create new user"
 3. Ange email och lösenord för admin
 4. Användaren kan nu logga in på `/admin/login`
 
-### 4. Hämta API-nycklar
+### 5. Hämta API-nycklar
 
 1. Gå till "Settings" > "API" i Supabase Dashboard
 2. Kopiera "Project URL" och "anon public" key
