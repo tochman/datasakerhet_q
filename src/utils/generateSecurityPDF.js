@@ -40,10 +40,16 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
   const maxContentY = pageHeight - bottomMargin; // Max position för content
   let yPosition = 20;
 
+  // Track which pages have footers
+  const pagesWithFooter = new Set();
+
   // Helper function to add footer to current page
   const addFooter = () => {
-    const footerY = pageHeight - bottomMargin;
     const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+    if (pagesWithFooter.has(currentPage)) return; // Already has footer
+    pagesWithFooter.add(currentPage);
+    
+    const footerY = pageHeight - bottomMargin;
     
     // Thin separator line
     doc.setDrawColor(200, 200, 200);
@@ -345,7 +351,9 @@ export const generateSecurityPDF = async (assessment, measures, answers = {}) =>
         2: { cellWidth: 110 },
         3: { cellWidth: 40 }
       },
-      margin: { left: 20, right: 20 }
+      margin: { left: 20, right: 20, bottom: bottomMargin },
+      pageBreak: 'auto',
+      showHead: 'everyPage'
     });
 
     yPosition = doc.lastAutoTable.finalY + 10;

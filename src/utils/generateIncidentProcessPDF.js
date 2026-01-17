@@ -48,10 +48,16 @@ export const generateIncidentProcessPDF = async () => {
     tiny: 8
   };
 
+  // Track which pages have footers
+  const pagesWithFooter = new Set();
+
   // Helper function to add footer to current page
   const addFooter = () => {
-    const footerY = pageHeight - bottomMargin;
     const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+    if (pagesWithFooter.has(currentPage)) return; // Already has footer
+    pagesWithFooter.add(currentPage);
+    
+    const footerY = pageHeight - bottomMargin;
     
     // Thin separator line
     doc.setDrawColor(200, 200, 200);
@@ -95,6 +101,17 @@ export const generateIncidentProcessPDF = async () => {
     }
     return false;
   };
+
+  // Table options for autoTable with footer support
+  const getTableOptions = (extraOptions = {}) => ({
+    margin: { left: margin, right: margin, bottom: bottomMargin },
+    pageBreak: 'auto',
+    showHead: 'everyPage',
+    didDrawPage: () => {
+      addFooter();
+    },
+    ...extraOptions
+  });
 
   // Helper to add section header with consistent styling
   const addSectionHeader = (title) => {
@@ -231,6 +248,7 @@ export const generateIncidentProcessPDF = async () => {
   yPosition += 10;
 
   // === FAS 1: UPPTÄCKT ===
+  addFooter();
   doc.addPage();
   yPosition = margin;
   
@@ -408,7 +426,7 @@ export const generateIncidentProcessPDF = async () => {
     head: [severityData[0]],
     body: severityData.slice(1),
     theme: 'grid',
-    margin: { left: margin, right: margin },
+    ...getTableOptions(),
     styles: { 
       fontSize: FONT_SIZES.small, 
       cellPadding: 3, 
@@ -454,6 +472,7 @@ export const generateIncidentProcessPDF = async () => {
   });
 
   // === FAS 4: AKTIVERA TEAM ===
+  addFooter();
   doc.addPage();
   yPosition = margin;
   
@@ -561,7 +580,7 @@ export const generateIncidentProcessPDF = async () => {
     head: [containmentData[0]],
     body: containmentData.slice(1),
     theme: 'grid',
-    margin: { left: margin, right: margin },
+    ...getTableOptions(),
     styles: { 
       fontSize: FONT_SIZES.small, 
       cellPadding: 3, 
@@ -585,6 +604,7 @@ export const generateIncidentProcessPDF = async () => {
   yPosition = doc.lastAutoTable.finalY + 10;
 
   // === FAS 6: ERADICATION ===
+  addFooter();
   doc.addPage();
   yPosition = margin;
   
@@ -793,6 +813,7 @@ export const generateIncidentProcessPDF = async () => {
   doc.setFontSize(FONT_SIZES.body);
 
   // === FAS 9: DOKUMENTATION ===
+  addFooter();
   doc.addPage();
   yPosition = margin;
   
@@ -833,7 +854,7 @@ export const generateIncidentProcessPDF = async () => {
     head: [reportingData[0]],
     body: reportingData.slice(1),
     theme: 'grid',
-    margin: { left: margin, right: margin },
+    ...getTableOptions(),
     styles: { 
       fontSize: FONT_SIZES.small, 
       cellPadding: 3, 
@@ -877,8 +898,12 @@ export const generateIncidentProcessPDF = async () => {
     yPosition += 5;
   });
 
-  // Add footer to last page
-  addFooter();
+  // Lägg till footer på ALLA sidor - viktig fix
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    addFooter();
+  }
 
   // Generate and download
   doc.save(`Incidenthantering_Processbeskrivning_${new Date().toISOString().split('T')[0]}.pdf`);

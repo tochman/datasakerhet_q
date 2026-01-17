@@ -39,10 +39,16 @@ export const generateIncidentReportPDF = async () => {
   const contentWidth = pageWidth - (2 * margin);
   let yPosition = margin;
 
+  // Track which pages have footers
+  const pagesWithFooter = new Set();
+
   // Helper function to add footer to current page
   const addFooter = () => {
-    const footerY = pageHeight - bottomMargin;
     const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+    if (pagesWithFooter.has(currentPage)) return; // Already has footer
+    pagesWithFooter.add(currentPage);
+    
+    const footerY = pageHeight - bottomMargin;
     
     // Thin separator line
     doc.setDrawColor(200, 200, 200);
@@ -334,8 +340,12 @@ export const generateIncidentReportPDF = async () => {
     yPosition += 4;
   });
 
-  // Lägg till footer
-  addFooter();
+  // Lägg till footer på alla sidor
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    addFooter();
+  }
 
   // === GENERERA OCH LADDA NER ===
   const today = new Date().toISOString().split('T')[0];
