@@ -541,6 +541,10 @@ export default function QuestionnaireForm() {
       // Kemikalier: >1 ton/år för kritiska områden
       (hasSelections(answers.q20));
     
+    // VIKTIGT: Väsentliga och viktiga verksamhetsutövare omfattas ALLTID
+    // oavsett storlek eller andra kriterier
+    const omfattasPgaVasentligEllerViktig = arVasentlig || arViktig;
+    
     // 2. Analys av "Potentiella Undantag"
     const undantagGaller = 
       isYes(answers.q13) ||  // Säkerhetskänslig/brottsbekämpande
@@ -602,7 +606,7 @@ export default function QuestionnaireForm() {
     }
     
     // 🔴 OMFATTAS - med väsentlig/viktig klassificering
-    if (potentielltOmfattad && (!undantagGaller || betroddaTjansterTrumfarUndantag)) {
+    if ((potentielltOmfattad || omfattasPgaVasentligEllerViktig) && (!undantagGaller || betroddaTjansterTrumfarUndantag)) {
       // Avgör om väsentlig eller viktig
       let category = null;
       let categoryMessage = "";
@@ -624,7 +628,7 @@ export default function QuestionnaireForm() {
     }
     
     // 🟡 UNDANTAG
-    if (potentielltOmfattad && undantagGaller && !betroddaTjansterTrumfarUndantag) {
+    if ((potentielltOmfattad || omfattasPgaVasentligEllerViktig) && undantagGaller && !betroddaTjansterTrumfarUndantag) {
       return {
         result: "undantag",
         message: "Din verksamhet kan vara undantagen trots att den annars skulle omfattas.",
