@@ -40,6 +40,7 @@ export default function AdminPanel() {
   const [downloadFilters, setDownloadFilters] = useState({
     result: '',
     deviceType: '',
+    templateTitle: '',
     dateFrom: '',
     dateTo: ''
   })
@@ -149,6 +150,9 @@ export default function AdminPanel() {
       return false
     }
     if (downloadFilters.deviceType && download.device_type !== downloadFilters.deviceType) {
+      return false
+    }
+    if (downloadFilters.templateTitle && download.template_title !== downloadFilters.templateTitle) {
       return false
     }
     if (downloadFilters.dateFrom) {
@@ -609,6 +613,22 @@ export default function AdminPanel() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mall
+                </label>
+                <select
+                  value={downloadFilters.templateTitle}
+                  onChange={(e) => setDownloadFilters({...downloadFilters, templateTitle: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Alla mallar</option>
+                  <option value="Säkerhetsrekommendationer">📋 Säkerhetsrekommendationer</option>
+                  <option value="Händelserapport">📄 Händelserapport</option>
+                  <option value="Processbeskrivning">📑 Processbeskrivning</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Enhetstyp
                 </label>
                 <select
@@ -648,9 +668,9 @@ export default function AdminPanel() {
               </div>
             </div>
             
-            {(downloadFilters.result || downloadFilters.deviceType || downloadFilters.dateFrom || downloadFilters.dateTo) && (
+            {(downloadFilters.result || downloadFilters.deviceType || downloadFilters.templateTitle || downloadFilters.dateFrom || downloadFilters.dateTo) && (
               <button
-                onClick={() => setDownloadFilters({result: '', deviceType: '', dateFrom: '', dateTo: ''})}
+                onClick={() => setDownloadFilters({result: '', deviceType: '', templateTitle: '', dateFrom: '', dateTo: ''})}
                 className="mt-4 text-sm text-blue-600 hover:text-blue-800"
               >
                 Rensa filter
@@ -666,6 +686,9 @@ export default function AdminPanel() {
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Datum & Tid
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Mall
                     </th>
                     <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Webbläsare
@@ -693,7 +716,7 @@ export default function AdminPanel() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredDownloads.length === 0 ? (
                     <tr>
-                      <td colSpan="8" className="px-6 py-8 text-center text-gray-500">
+                      <td colSpan="9" className="px-6 py-8 text-center text-gray-500">
                         Inga nedladdningar hittades
                       </td>
                     </tr>
@@ -718,6 +741,22 @@ export default function AdminPanel() {
                               minute: '2-digit'
                             })}
                           </div>
+                        </td>
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
+                          <span className="inline-flex items-center">
+                            {download.template_title === 'Säkerhetsrekommendationer' && (
+                              <span className="font-medium text-blue-900">📋 <span className="hidden sm:inline">Säkerhetsrekommendationer</span><span className="sm:hidden">Säkerhet</span></span>
+                            )}
+                            {download.template_title === 'Händelserapport' && (
+                              <span className="font-medium text-purple-900">📄 <span className="hidden sm:inline">Händelserapport</span><span className="sm:hidden">Händelse</span></span>
+                            )}
+                            {download.template_title === 'Processbeskrivning' && (
+                              <span className="font-medium text-green-900">📑 <span className="hidden sm:inline">Processbeskrivning</span><span className="sm:hidden">Process</span></span>
+                            )}
+                            {!download.template_title && (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </span>
                         </td>
                         <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
                           {download.browser_name || 'Okänd'}
