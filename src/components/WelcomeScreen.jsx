@@ -173,7 +173,7 @@ export default function WelcomeScreen({ onStart }) {
         </div>
 
         {/* Attribution */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-2">
           <p className="text-sm text-gray-600">
             Detta frågeformulär är byggt baserat på en initial bedömning av lagen gjord av{' '}
             <a 
@@ -185,6 +185,15 @@ export default function WelcomeScreen({ onStart }) {
               lexlegal.ai
             </a>
             {' '}– en AI-driven juridisk tjänst
+          </p>
+          <p className="text-sm text-gray-600">
+            Frågor eller feedback? Kontakta oss på{' '}
+            <a 
+              href="mailto:hey@communitaslabs.io"
+              className="text-primary hover:text-primary-dark underline font-medium"
+            >
+              hey@communitaslabs.io
+            </a>
           </p>
         </div>
       </div>
