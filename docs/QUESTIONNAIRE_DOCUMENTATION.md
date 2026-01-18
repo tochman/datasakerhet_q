@@ -8,7 +8,7 @@ Detta frågeformulär är utformat för att hjälpa verksamheter bedöma om de o
 
 ## Frågestruktur
 
-Formuläret är indelat i **4 delar** med totalt **17 frågor**:
+Formuläret är indelat i **4 delar** med totalt **20 frågor**:
 
 ### Del 1: Grundläggande verksamhetstyp (Q0)
 
@@ -33,7 +33,7 @@ Formuläret är indelat i **4 delar** med totalt **17 frågor**:
 
 ---
 
-### Del 3: Etablering, storlek och generella kriterier (Q3-Q12)
+### Del 3: Etablering, storlek och generella kriterier (Q3-Q12, Q18-Q20)
 
 | Fråge-ID | Fråga | Typ | Visningsvillkor | Alternativ |
 |----------|-------|-----|-----------------|------------|
@@ -44,6 +44,9 @@ Formuläret är indelat i **4 delar** med totalt **17 frågor**:
 | Q6 | Är din verksamhet en privat utbildningsanordnare med examensrätt? | Radio | Utbildning valt i Q4 | Ja, Nej, Vet ej |
 | Q7 | Tillhandahåller din verksamhet allmänna telenät eller elektronisk kommunikation? | Radio | Telecom valt i Q4 | Ja, Nej, Vet ej |
 | Q8 | Erbjuder din verksamhet digitala tjänster? | Checkbox | Digitala leverantörer valt i Q4 | Se lista nedan |
+| **Q18** | **Är er verksamhet inom transport någon av följande?** | **Checkbox** | **Transport valt i Q4** | **Se lista nedan** |
+| **Q19** | **Producerar eller distribuerar ni dricksvatten till minst 20 000 personer ELLER till akutsjukhus?** | **Radio** | **Dricksvatten valt i Q4** | **Ja, Nej, Vet ej** |
+| **Q20** | **Tillverkar, producerar eller distribuerar ni kemikalier som överstiger 1 ton per år OCH används inom vissa områden?** | **Checkbox** | **Tillverkning valt i Q4** | **Se lista nedan** |
 | Q9 | Är din verksamhet den enda leverantören i Sverige av en kritisk tjänst? | Radio | Privat/Vet ej | Ja, Nej, Vet ej |
 | Q10 | Skulle ett avbrott i er tjänst allvarligt kunna påverka samhället? | Radio | Alla | Ja, Nej, Vet ej |
 | Q11 | Är er verksamhet extra viktig på nationell eller regional nivå? | Radio | Alla | Ja, Nej, Vet ej |
@@ -77,6 +80,24 @@ Formuläret är indelat i **4 delar** med totalt **17 frågor**:
 - Domännamnsregistreringstjänster
 - Ingen av ovanstående
 
+**Transportkriterier för Q18 (Väsentliga verksamhetsutövare enligt MCFFS 2026:1):**
+- Beredskapsflygplats (flygplats med avtal med Trafikverket)
+- Tillhandahåller flygkontrolltjänster
+- Karantänshamn (hamn utpekad av Folkhälsomyndigheten)
+- Skyddad plats (hamn, kaj eller skyddat område utpekat av Transportstyrelsen)
+- Ingen av ovanstående
+
+**Dricksvattenkritierier för Q19 (Väsentliga verksamhetsutövare enligt MCFFS 2026:1):**
+- Producerar eller distribuerar dricksvatten till minst 20 000 personer ELLER till akutsjukhus
+
+**Kemikaliekriterier för Q20 (Viktiga verksamhetsutövare enligt MCFFS 2026:1):**
+Tillverkar, producerar eller distribuerar kemikalier som överstiger 1 ton per år OCH används inom:
+- Dricksvattenrening
+- Livsmedelsproduktion
+- Hälso- och sjukvård (inklusive läkemedel)
+- Kritisk infrastruktur (energi, transport, etc.)
+- Ingen av ovanstående
+
 ---
 
 ### Del 4: Undantag (Q13-Q17)
@@ -99,7 +120,7 @@ Formuläret är indelat i **4 delar** med totalt **17 frågor**:
 
 ## Bedömningslogik
 
-Bedömningen av om en verksamhet omfattas av Cybersäkerhetslagen görs i slutet av formuläret baserat på alla insamlade svar. Logiken är uppdelad i tre steg:
+Bedömningen av om en verksamhet omfattas av Cybersäkerhetslagen görs i slutet av formuläret baserat på alla insamlade svar. Logiken är uppdelad i fyra steg:
 
 ### Steg 1: Analys av Potentiell Omfattning
 
@@ -122,7 +143,52 @@ En verksamhet kan omfattas om:
   - Q10 = "Ja" (Avbrott påverkar samhället)
   - Q11 = "Ja" (Extra viktig verksamhet)
 
-### Steg 2: Analys av Undantag
+### Steg 2: Klassificering enligt MCFFS 2026:1
+
+Om verksamheten omfattas analyseras om den klassificeras som **väsentlig** eller **viktig** verksamhetsutövare:
+
+#### Väsentlig verksamhetsutövare
+Verksamheten klassificeras som väsentlig om något av följande stämmer:
+- **Q18** (Transport): Minst ett alternativ valt (utom "Ingen av ovanstående")
+  - Beredskapsflygplats (flygplats med avtal med Trafikverket)
+  - Tillhandahåller flygkontrolltjänster
+  - Karantänshamn (hamn utpekad av Folkhälsomyndigheten)
+  - Skyddad plats (hamn, kaj eller skyddat område utpekat av Transportstyrelsen)
+- **Q19** (Dricksvatten): "Ja"
+  - Producerar eller distribuerar dricksvatten till ≥20 000 personer eller akutsjukhus
+
+**Konsekvenser för väsentliga verksamhetsutövare:**
+- Strängare krav på cybersäkerhetsstyrning
+- Obligatorisk incidentrapportering till tillsynsmyndighet
+- Krav på registrering hos tillsynsmyndighet
+- Högre krav på riskanalys och kontinuitetsplaner
+
+**Meddelande i resultat:** "Du är en **väsentlig verksamhetsutövare** enligt MCFFS 2026:1, vilket innebär höga cybersäkerhetskrav inklusive obligatorisk registrering och incidentrapportering till tillsynsmyndighet."
+
+#### Viktig verksamhetsutövare
+Verksamheten klassificeras som viktig om den inte är väsentlig men:
+- **Q20** (Kemikalier): Minst ett alternativ valt (utom "Ingen av ovanstående")
+  - Tillverkar/distribuerar kemikalier >1 ton/år för:
+    - Dricksvattenrening
+    - Livsmedelsproduktion
+    - Hälso- och sjukvård (inklusive läkemedel)
+    - Kritisk infrastruktur (energi, transport, etc.)
+
+**Konsekvenser för viktiga verksamhetsutövare:**
+- Grundläggande krav på cybersäkerhetsstyrning
+- Incidentrapportering vid allvarliga incidenter
+- Lägre krav än för väsentliga verksamhetsutövare
+
+**Meddelande i resultat:** "Du är en **viktig verksamhetsutövare** enligt MCFFS 2026:1, vilket innebär förhöjda cybersäkerhetskrav men inte lika strikta som för väsentliga verksamhetsutövare."
+
+#### Övriga omfattade verksamheter
+Om verksamheten omfattas men varken är väsentlig eller viktig:
+- Grundkrav på cybersäkerhet enligt Cybersäkerhetslagen
+- Dokumentationskrav
+- Incidentrapportering vid väsentliga incidenter
+- `category: null` i resultatet
+
+### Steg 3: Analys av Undantag
 
 Ett undantag kan gälla om MINST ETT av följande stämmer:
 - Q13 = "Ja" (Säkerhetskänslig/brottsbekämpande)
@@ -133,24 +199,42 @@ Ett undantag kan gälla om MINST ETT av följande stämmer:
 **Undantaget UPPHÄVS om:**
 - Q15 = "Ja" (Betrodda tjänster trumpfar undantag)
 
-### Steg 3: Hantering av Osäkerhet
+### Steg 4: Hantering av Osäkerhet
 
 Bedömningen markeras som "Osäker" om:
 1. Q0 = "Vet ej" OCH inga klargörande svar på Q1, Q2, Q3
 2. Q3 = "Vet ej" för privat verksamhet
-3. ≥3 "Vet ej"-svar på kritiska frågor (Q4-Q12)
+3. ≥3 "Vet ej"-svar på kritiska frågor (Q4-Q12, Q18-Q20)
 4. ≥2 "Vet ej"-svar på undantagsfrågor (Q13-Q17)
 
 ---
 
 ## Möjliga Bedömningsresultat
 
-| Resultat | Färgkod | Beskrivning |
-|----------|---------|-------------|
-| **omfattas** | 🔴 Röd | Verksamheten omfattas sannolikt av Cybersäkerhetslagen |
-| **undantag** | 🟡 Gul | Verksamheten kan vara undantagen trots att den annars skulle omfattas |
-| **osäker** | ⚪ Grå | Bedömningen är osäker på grund av "Vet ej"-svar |
-| **omfattas_ej** | 🟢 Grön | Verksamheten omfattas sannolikt inte av lagen |
+| Resultat | Färgkod | Beskrivning | Klassificering |
+|----------|---------|-------------|----------------|
+| **omfattas** | 🔴 Röd | Verksamheten omfattas sannolikt av Cybersäkerhetslagen | Kan vara väsentlig, viktig eller övrig |
+| **undantag** | 🟡 Gul | Verksamheten kan vara undantagen trots att den annars skulle omfattas | - |
+| **osäker** | ⚪ Grå | Bedömningen är osäker på grund av "Vet ej"-svar | - |
+| **omfattas_ej** | 🟢 Grön | Verksamheten omfattas sannolikt inte av lagen | - |
+
+### Klassificering i resultatet
+
+När en verksamhet bedöms omfattas av lagen, inkluderas även ett `category`-fält i resultatet:
+
+- **"väsentlig"**: Verksamheten är en väsentlig verksamhetsutövare enligt MCFFS 2026:1
+  - Baseras på Q18 (transport) eller Q19 (dricksvatten)
+  - Visas i resultattexten: "Du är en **väsentlig verksamhetsutövare** enligt MCFFS 2026:1"
+  - Innebär strängare krav på rapportering och styrning
+
+- **"viktig"**: Verksamheten är en viktig verksamhetsutövare enligt MCFFS 2026:1
+  - Baseras på Q20 (kemikalier)
+  - Visas i resultattexten: "Du är en **viktig verksamhetsutövare** enligt MCFFS 2026:1"
+  - Innebär grundläggande krav med något lägre rapporteringskrav
+
+- **null**: Verksamheten omfattas av Cybersäkerhetslagen men är varken väsentlig eller viktig
+  - Omfattas av grundkraven i Cybersäkerhetslagen
+  - Ingen särskild MCFFS 2026:1-klassificering
 
 ---
 
